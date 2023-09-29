@@ -11,8 +11,8 @@ services:
       - '3306:3306'
   
   catalog:
-    container_name: catalog-api
-    image: catalog-api
+    container_name: catalog-service
+    image: catalog-service
     build:
       context: ./services/catalog/
     depends_on:
