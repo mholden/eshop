@@ -1,0 +1,21 @@
+version: '3.5'
+
+services:
+  db:
+    container_name: mysql-db
+    image: mysql:latest
+    environment:
+      - MYSQL_ROOT_PASSWORD=password
+      - MYSQL_ROOT_HOST=%
+    ports:
+      - '3306:3306'
+  
+  catalog:
+    container_name: catalog-api
+    image: catalog-api
+    build:
+      context: ./services/catalog/
+    depends_on:
+      - db
+    ports:
+      - "5121:5121"
