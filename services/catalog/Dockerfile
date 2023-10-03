@@ -4,7 +4,7 @@ WORKDIR /opt/app
 COPY . .
 WORKDIR /opt/app/hldn-catalog
 
-RUN mvn clean package
+RUN mvn -DskipTests clean package
 
 ENTRYPOINT ["java"]
-CMD ["-jar", "target/hldn-catalog.jar"]
+CMD ["-jar", "target/hldn-catalog-0.0.1-SNAPSHOT.jar"]

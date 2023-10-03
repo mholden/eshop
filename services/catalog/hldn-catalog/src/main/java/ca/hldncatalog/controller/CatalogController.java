@@ -1,50 +1,41 @@
-package ca.hldncatalog.resource;
+package ca.hldncatalog.controller;
 
 import java.util.*;
 
-import org.hibernate.Session;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.web.bind.annotation.*;
 
 import ca.hldncatalog.catalog.CatalogItem;
-import ca.hldncatalog.hibernate.HibernateUtil;
-import jakarta.ws.rs.*;
-import jakarta.ws.rs.core.*;
+import ca.hldncatalog.repository.CatalogItemRepository;
 
-@Path("/catalog")
-public class CatalogResource {
+@RestController
+@RequestMapping("/catalog")
+public class CatalogController {
+	
+	@Autowired
+    CatalogItemRepository catalogItemRepository;
 
-    @GET
-    //@Path("/items")
-    @Produces(MediaType.TEXT_HTML)
-    public String sayHello() {
-    	System.out.println("sayHello()");
-    	return "Hello World!\n";
+	@GetMapping("/ping")
+    public String ping() {
+    	System.out.println("ping()");
+    	return "Ping successful!\n";
     }
     
-    @GET
-    @Path("/items")
-    @Produces(MediaType.APPLICATION_JSON)
-    public List<CatalogItem> getCatalogItems(@QueryParam("pageSize") Integer pageSize, @QueryParam("pageIndex") Integer pageIndex) {
+    @GetMapping("/items")
+    public List<CatalogItem> getCatalogItems(@RequestParam(required = false) Integer pageSize, @RequestParam(required = false) Integer pageIndex) {
     	List<CatalogItem> catalogItems = null;
     	Integer _pageIndex = 0;
     	
     	System.out.println("getCatalogItems() pageSize: " + pageSize + " pageIndex: " + pageIndex);
     	
-    	try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-    		catalogItems = session.createQuery("from CatalogItem", CatalogItem.class).list();
-    		/*
-    		catalogItems.forEach(ci -> {
-				System.out.println(ci);
-			});
-			*/
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-    	
     	if (pageSize != null) {
     		if (pageIndex != null) {
     			_pageIndex = pageIndex;
     		}
-    		catalogItems = catalogItems.subList(_pageIndex * pageSize, Math.min(_pageIndex * pageSize + pageSize, catalogItems.size()));
+    		catalogItems = catalogItemRepository.findAll(PageRequest.of(_pageIndex, pageSize)).getContent();
+    	} else {
+    		catalogItems = catalogItemRepository.findAll();
     	}
     	
     	return catalogItems;
