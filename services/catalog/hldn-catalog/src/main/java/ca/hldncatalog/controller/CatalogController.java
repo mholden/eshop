@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.web.bind.annotation.*;
 
-import ca.hldncatalog.catalog.CatalogItem;
+import ca.hldncatalog.dto.CatalogItem;
 import ca.hldncatalog.repository.CatalogItemRepository;
 
 @RestController
@@ -40,42 +40,11 @@ public class CatalogController {
     	
     	return catalogItems;
     }
-
-    /*
-    @GET
-    @Path("/{id}")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Client getById(@PathParam("id") Long id) {
-        return clientRepository.getById(id);
+    
+    @GetMapping("/unauthenticated")
+    public HashMap<String, String> unauthenticatedRequests() {
+        return new HashMap<String, String>(){{
+            put("this is ", "unauthenticated endpoint");
+        }};
     }
-
-    @PUT
-    @Produces(MediaType.APPLICATION_JSON)
-    @Consumes(MediaType.APPLICATION_JSON)
-    public Client insert(Client client) {
-        return clientRepository.insert(client);
-    }
-
-    @POST
-    @Produces(MediaType.APPLICATION_JSON)
-    @Consumes(MediaType.APPLICATION_JSON)
-    public Response update(Client client) {
-        if (!clientRepository.exists(client.getId())) {
-            return Response.status(Response.Status.BAD_REQUEST).entity(client.getId() + "Doesn't exist").build();
-        }
-        Client clie = clientRepository.update(client);
-        return Response.ok().entity(clie).build();
-    }
-
-    @Path("/{id}")
-    @DELETE
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response delete(@PathParam("id") Long id) {
-        if (id == 0) {
-            return Response.status(Response.Status.BAD_REQUEST).entity("Invalid ID 0").build();
-        }
-        clientRepository.delete(id);
-        return Response.ok().entity("Item has been deleted successfully.").build();
-    }
-    */
 }

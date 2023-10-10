@@ -17,5 +17,16 @@ services:
       context: ./services/catalog/
     depends_on:
       - db
+      - identity
     ports:
       - "5121:5121"
+
+  identity:
+    container_name: identity-service
+    image: quay.io/keycloak/keycloak:21.0.0
+    command: ['start-dev', '--http-port=8180']
+    environment:
+      - KEYCLOAK_ADMIN=admin
+      - KEYCLOAK_ADMIN_PASSWORD=admin
+    ports:
+      - "8180:8180"
