@@ -30,3 +30,14 @@ services:
       - KEYCLOAK_ADMIN_PASSWORD=admin
     ports:
       - "8180:8180"
+
+  basket:
+    container_name: basket-service
+    image: basket-service
+    build:
+      context: ./services/basket/
+    depends_on:
+      - db
+      - identity
+    ports:
+      - "5122:5122"
