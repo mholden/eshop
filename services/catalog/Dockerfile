@@ -2,7 +2,7 @@ FROM maven:openjdk
 
 WORKDIR /opt/app
 COPY . .
-WORKDIR /opt/app/hldn-catalog
+WORKDIR /opt/app/CatalogService
 
 RUN mvn -DskipTests clean package
 

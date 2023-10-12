@@ -2,7 +2,7 @@ FROM maven:openjdk
 
 WORKDIR /opt/app
 COPY . .
-WORKDIR /opt/app/hldn-basket
+WORKDIR /opt/app/BasketService
 
 RUN mvn -DskipTests clean package
 
