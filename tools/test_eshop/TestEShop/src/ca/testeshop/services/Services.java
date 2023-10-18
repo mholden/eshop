@@ -20,11 +20,9 @@ public class Services {
 		if (!(location == Services.location.LOCAL))
 			throw new Exception("Non-local services not yet supported");
 		
-		//aggregatorService = new AggregatorService("http://docker.for.mac.localhost:5121");
 		aggregatorService = new AggregatorService("http://localhost:5202");
-		//identityService = new IdentityService("http://docker.for.mac.localhost:5105");
-		identityService = new IdentityService("http://localhost:5105");
-		//catalogService = new CatalogService("http://docker.for.mac.localhost:5101");
-		catalogService = new CatalogService("http://localhost:5101");
+		identityService = new IdentityService("http://localhost:8180");
+		catalogService = new CatalogService("http://localhost:5121");
+		//basketService = new BasketService("http://localhost:5122");
 	}
 }

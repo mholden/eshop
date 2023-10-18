@@ -3,5 +3,5 @@ package ca.testeshop.services;
 import ca.testeshop.utils.*;
 
 public interface CatalogServiceAPI {
-	public EShopResponse getCatalogBrands(String authToken) throws Exception;
+	public EShopResponse getCatalogItems(Integer pageIndex, Integer pageSize) throws Exception;
 }

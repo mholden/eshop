@@ -27,9 +27,13 @@ public class SecurityConfiguration {
 
         http
                 .authorizeHttpRequests()
-                            .requestMatchers("/catalog/unauthenticated", "/oauth2/**", "/login/**").permitAll()
-                            .anyRequest()
-                                .fullyAuthenticated()
+                	.requestMatchers("/oauth2/**", 
+            			"/login/**", 
+            			"/catalog/items/**",
+            			"/catalog/ping")
+                		.permitAll()
+                	.anyRequest()
+                	.fullyAuthenticated()
                 .and()
                     .logout()
                     .logoutSuccessUrl("http://catalog-service:8180/realms/quickstart/protocol/openid-connect/logout?redirect_uri=http://catalog-service:5121/");

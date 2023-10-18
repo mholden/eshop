@@ -21,15 +21,7 @@ public class TestHomePage extends Test {
 		
 		System.out.println("\ntestSpecificCase1");
 		
-		response = aggregatorService.getCatalogBrands();
-		TestUtils.failIf(response.httpCode != HttpURLConnection.HTTP_OK, response.toString());
-		//response.dump();
-		
-		response = aggregatorService.getCatalogTypes();
-		TestUtils.failIf(response.httpCode != HttpURLConnection.HTTP_OK, response.toString());
-		//response.dump();
-		
-		response = aggregatorService.getCatalogItems(0, 12);
+		response = catalogService.getCatalogItems(0, 12);
 		TestUtils.failIf(response.httpCode != HttpURLConnection.HTTP_OK, response.toString());
 		//response.dump();
 	}

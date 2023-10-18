@@ -100,7 +100,7 @@ public class HttpUtils {
         
         // Set Headers
         //connection.setRequestProperty("Accept", payload.type.toString());
-        connection.setRequestProperty("Accept", "text/plain");
+        connection.setRequestProperty("Accept", "*/*");
         //connection.setRequestProperty("Content-Type", payload.type.toString());
         if (cookieManager.get().getCookieStore().getCookies().size() > 0) {
             // While joining the Cookies, use ',' or ';' as needed. Most of the servers are using ';'

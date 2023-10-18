@@ -40,11 +40,4 @@ public class CatalogController {
     	
     	return catalogItems;
     }
-    
-    @GetMapping("/unauthenticated")
-    public HashMap<String, String> unauthenticatedRequests() {
-        return new HashMap<String, String>(){{
-            put("this is ", "unauthenticated endpoint");
-        }};
-    }
 }
