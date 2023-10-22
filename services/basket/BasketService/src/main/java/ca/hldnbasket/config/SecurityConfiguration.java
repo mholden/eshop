@@ -27,9 +27,12 @@ public class SecurityConfiguration {
 
         http
                 .authorizeHttpRequests()
-                            .requestMatchers("/basket/unauthenticated", "/oauth2/**", "/login/**").permitAll()
-                            .anyRequest()
-                                .fullyAuthenticated()
+                .requestMatchers(
+                		"/oauth2/**", 
+                		"/login/**"
+                ).permitAll()
+                .anyRequest()
+                .fullyAuthenticated()
                 .and()
                     .logout()
                     .logoutSuccessUrl("http://docker.for.mac.localhost:8180/realms/quickstart/protocol/openid-connect/logout?redirect_uri=http://basket-service:5122/");

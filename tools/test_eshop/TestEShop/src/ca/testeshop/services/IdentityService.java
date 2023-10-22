@@ -1,7 +1,6 @@
 package ca.testeshop.services;
 
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
+import java.net.HttpURLConnection;
 
 import ca.testeshop.utils.*;
 
@@ -13,6 +12,10 @@ public class IdentityService extends Service implements IdentityServiceAPI {
 	
 	public IdentityService(String urlbase) {
 		super(urlbase);
+	}
+	
+	public EShopResponse login() throws Exception {
+		return HttpUtils.doGet(urlBase + "/login");
 	}
 	
 	private String buildEndSessionPayload() {
@@ -28,20 +31,11 @@ public class IdentityService extends Service implements IdentityServiceAPI {
 		return HttpUtils.doGet(urlBase + "/connect/endsession" + buildEndSessionPayload());
 	}
 	
-	private HttpUtils.HttpPayload buildLoginPayload(String email, String password, String token) throws Exception {
+	private HttpUtils.HttpPayload buildAuthenticatePayload(String email, String password) throws Exception {
 		HttpUtils.HttpPayload payload = new HttpUtils.HttpPayload();
 		StringBuilder stringBuilder = new StringBuilder();
         
-		stringBuilder.append("?ReturnUrl=%2Fconnect%2Fauthorize%2Fcallback%3Fresponse_type%3Did_token%2520token%26client_id%3Djs");
-		stringBuilder.append("%26redirect_uri%3Dhttp%253A%252F%252Fdocker.for.mac.localhost%253A5104%252F");
-		stringBuilder.append("%26scope%3Dopenid%2520profile%2520orders%2520basket%2520webshoppingagg%2520orders.signalrhub");
-		stringBuilder.append("%26nonce%3DN0.062170895354270121691431671493"); // TODO: generate this?
-		stringBuilder.append("%26state%3D16914316714920.06560784072824567"); // TODO: generate this?
-		stringBuilder.append("&Email=" + email);
-		stringBuilder.append("&Password=" + password);
-		stringBuilder.append("&button=login");
-		stringBuilder.append("&__RequestVerificationToken=" + token);
-		stringBuilder.append("&RememberLogin=false");
+		stringBuilder.append("username=" + email + "&password=" + password + "&credentialId=");
 
 		payload.type = HttpUtils.HttpPayload.types.XWWWFORMURLENCODED;
         payload.data = stringBuilder.toString();
@@ -63,25 +57,35 @@ public class IdentityService extends Service implements IdentityServiceAPI {
         return stringBuilder.toString();
 	}
 	
-	public EShopResponse login(String email, String password, String token) throws Exception {
-		return HttpUtils.doPost(urlBase + "/Account/Login" + buildLoginURL(), buildLoginPayload(email, password, token), true);
-	}
-	
-	private String buildAuthorizePayload() {
-		StringBuilder stringBuilder = new StringBuilder();
-        
-		stringBuilder.append("?response_type=id_token%20token");
-		stringBuilder.append("&client_id=js");
-		stringBuilder.append("&redirect_uri=http://docker.for.mac.localhost:5104/");
-		stringBuilder.append("&scope=openid%20profile%20orders%20basket%20webshoppingagg%20orders.signalrhub");
-		stringBuilder.append("&nonce=N0.062170895354270121691431671493"); // TODO: generate this?
-		stringBuilder.append("&state=16914316714920.06560784072824567"); // TODO: generate this?
-        
-        return stringBuilder.toString();
+	public EShopResponse authenticate(String url, String email, String password) throws Exception {
+		EShopResponse response;
+		
+		response = HttpUtils.doPost(url, buildAuthenticatePayload(email, password));
+		TestUtils.failIf(response.httpCode != HttpURLConnection.HTTP_MOVED_TEMP, response.toString()); // should get 302 here
+		
+		//System.out.println("redirect location is " + response.redirectLocation);
+		
+		response = HttpUtils.doGet(response.redirectLocation);
+		TestUtils.failIf(response.httpCode != HttpURLConnection.HTTP_MOVED_TEMP, response.toString()); // should get 302 here
+		
+		//System.out.println("redirect location is " + response.redirectLocation);
+		
+		response = HttpUtils.doGet(response.redirectLocation);
+		TestUtils.failIf(response.httpCode != HttpURLConnection.HTTP_NOT_FOUND, response.toString()); // should get 404 here
+		
+		return response;
 	}
 	
 	public EShopResponse authorize() throws Exception {
-		return HttpUtils.doGet(urlBase + "/connect/authorize" + buildAuthorizePayload());
+		EShopResponse response;
+		
+		response = HttpUtils.doGet(urlBase + "/oauth2/authorization/keycloak");
+		TestUtils.failIf(response.httpCode != HttpURLConnection.HTTP_MOVED_TEMP, response.toString());
+
+		//System.out.println("redirect location is " + response.redirectLocation);
+		
+		// note: this requires '127.0.0.1 docker.for.mac.localhost' in your /etc/hosts file
+		return HttpUtils.doGet(response.redirectLocation);
 	}
 	
 	/*

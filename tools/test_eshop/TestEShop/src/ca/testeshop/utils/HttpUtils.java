@@ -3,6 +3,7 @@ package ca.testeshop.utils;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
+import java.net.URI;
 import java.net.URL;
 import java.util.*;
 import java.net.CookieManager;
@@ -48,7 +49,7 @@ public class HttpUtils {
 		}
 	}
 	
-	private static void saveCookies(HttpURLConnection connection) {
+	private static void saveCookies(HttpURLConnection connection) throws Exception { 
 		Map<String, List<String>> headerFields = connection.getHeaderFields();
 		List<String> cookiesHeader = headerFields.get("Set-Cookie");
 
@@ -61,23 +62,29 @@ public class HttpUtils {
 	}
 	
 	public static EShopResponse doGet(String url) throws Exception {
-		return doGet(url, null, false);
+		return doGet(url, null, false, null);
+	}
+	
+	public static EShopResponse doGet(String url, HashMap<String, String> requestProps) throws Exception {
+		return doGet(url, null, false, requestProps);
 	}
 	
 	public static EShopResponse doGet(String url, HttpPayload payload) throws Exception {
-		return doGet(url, payload, false);
+		return doGet(url, payload, false, null);
 	}
 	
-	public static EShopResponse doGet(String url, boolean noRedirect) throws Exception {
-		return doGet(url, null, noRedirect);
+	public static EShopResponse doGet(String url, boolean followRedirect) throws Exception {
+		return doGet(url, null, followRedirect, null);
 	}
 
-	public static EShopResponse doGet(String url, HttpPayload payload, boolean noRedirect) throws Exception {
+	public static EShopResponse doGet(String url, HttpPayload payload, boolean followRedirect, HashMap<String, String> requestProps) throws Exception {
 		EShopResponse output = new EShopResponse();
+		
+		//System.out.println("doGet() url " + url);
 
 		URL _url = new URL(url);
         HttpURLConnection connection = (HttpURLConnection) _url.openConnection();
-
+		
         // Set timeout as per needs
         //connection.setConnectTimeout(20000);
         //connection.setReadTimeout(40000);
@@ -86,7 +93,7 @@ public class HttpUtils {
         // Default is false
         //connection.setDoOutput(true);
 
-        //connection.setUseCaches(true);
+        //connection.setUseCaches(false);
         connection.setRequestMethod("GET");
         
         if (authToken.get() != null) {
@@ -94,7 +101,7 @@ public class HttpUtils {
         }
         
         //HttpURLConnection.setFollowRedirects(false);  
-        if (noRedirect) {
+        if (!followRedirect) {
         	connection.setInstanceFollowRedirects(false);
         }
         
@@ -109,9 +116,14 @@ public class HttpUtils {
         	for (Object object : cookieList) {
         	    strings.add(Objects.toString(object, null));
         	}
-            connection.setRequestProperty("Cookie",
-            String.join(";",  strings));  
-            //System.out.println("thread " + Thread.currentThread().getId() + " using cookies " + strings);
+            connection.setRequestProperty("Cookie", String.join(";",  strings));  
+            //System.out.println("doGet() thread " + Thread.currentThread().getId() + " using cookies " + strings);
+        }
+        
+        if (requestProps != null) {
+        	for (Map.Entry<String, String> requestProp : requestProps.entrySet()) {
+        		connection.setRequestProperty(requestProp.getKey(), requestProp.getValue());
+        	}
         }
         
         //connection.setRequestProperty("Host", "docker.for.mac.localhost:5121");
@@ -147,7 +159,7 @@ public class HttpUtils {
 
         output = new EShopResponse();
         output.httpCode = connection.getResponseCode();
-        if (noRedirect && 
+        if (!followRedirect && 
         	(output.httpCode == HttpURLConnection.HTTP_MOVED_TEMP || 
         		output.httpCode == HttpURLConnection.HTTP_MOVED_PERM)) {
         	// set redirect location
@@ -166,8 +178,10 @@ public class HttpUtils {
 		return doPost(url, payload, false);
 	}
 
-	public static EShopResponse doPost(String url, HttpPayload payload, boolean noRedirect) throws Exception {
+	public static EShopResponse doPost(String url, HttpPayload payload, boolean followRedirect) throws Exception {
 		EShopResponse output = new EShopResponse();
+		
+		//System.out.println("doPost() url " + url);
 
 		URL _url = new URL(url);
         HttpURLConnection connection = (HttpURLConnection) _url.openConnection();
@@ -178,14 +192,14 @@ public class HttpUtils {
         	connection.setRequestProperty("Authorization", "Bearer " + authToken.get()); // hardcoding 'Bearer' for now (token_type in authorizeCallback response)
         }
         
-        if (noRedirect) {
+        if (!followRedirect) {
         	connection.setInstanceFollowRedirects(false);
         }
         connection.setDoOutput(true);
 
         // Set Headers
         //connection.setRequestProperty("Accept", payload.type.toString());
-        connection.setRequestProperty("Accept", "text/plain");
+        connection.setRequestProperty("Accept", "*/*");
         connection.setRequestProperty("Content-Type", payload.type.toString());
         //connection.setRequestProperty("Content-Length", String.valueOf(payload.data.length())); // doesn't work
         
@@ -196,9 +210,8 @@ public class HttpUtils {
         	for (Object object : cookieList) {
         	    strings.add(Objects.toString(object, null));
         	}
-            connection.setRequestProperty("Cookie",
-            String.join(";",  strings));  
-            //System.out.println("thread " + Thread.currentThread().getId() + " using cookies " + strings);
+            connection.setRequestProperty("Cookie", String.join(";",  strings));  
+            //System.out.println("doPost() thread " + Thread.currentThread().getId() + " using cookies " + strings);
         }
         
         OutputStream outputStream = connection.getOutputStream();
@@ -227,7 +240,7 @@ public class HttpUtils {
 
         output = new EShopResponse();
         output.httpCode = connection.getResponseCode();
-        if (noRedirect && 
+        if (!followRedirect && 
         	(output.httpCode == HttpURLConnection.HTTP_MOVED_TEMP || 
         		output.httpCode == HttpURLConnection.HTTP_MOVED_PERM)) {
         	// set redirect location

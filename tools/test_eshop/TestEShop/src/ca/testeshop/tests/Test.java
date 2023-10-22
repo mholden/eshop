@@ -1,7 +1,6 @@
 package ca.testeshop.tests;
 
 import java.net.HttpURLConnection;
-import java.util.HashMap;
 import java.util.Scanner;
 import java.util.StringTokenizer;
 import java.util.UUID;
@@ -18,6 +17,7 @@ public abstract class Test {
 	public AggregatorService aggregatorService;
 	public IdentityService identityService;
 	public CatalogService catalogService;
+	public BasketService basketService;
 	
 	//public String riaAsyncToken;
 	public static ThreadLocal<String> userId = new ThreadLocal<String>();
@@ -32,6 +32,7 @@ public abstract class Test {
 		this.aggregatorService = services.aggregatorService;
 		this.identityService = services.identityService;
 		this.catalogService = services.catalogService;
+		this.basketService = services.basketService;
 	}
 	
 	public String getUserName() {
@@ -68,11 +69,11 @@ public abstract class Test {
 	}
 	
 	public EShopResponse doUserLogin(String email, String password) throws Exception {
-		String token = null;
+		String url = null;
 		StringTokenizer st;
 		EShopResponse response;
 		
-		doUserLogout();
+		//doUserLogout();
 		
 		response = identityService.authorize();
 		//response.dump();
@@ -82,14 +83,14 @@ public abstract class Test {
 		Scanner scanner = new Scanner(response.response);
 		while (scanner.hasNextLine()) {
 		  String line = scanner.nextLine();
-		  if (line.contains("__RequestVerificationToken")) {
+		  if (line.contains("kc-form-login")) {
 			  //System.out.println(line);
 			  st = new StringTokenizer(line, "\"");  
 			  String last = "", next;
 			  while (st.hasMoreTokens()) {  
 				  next = st.nextToken();
-				  if (last.contains("value")) {
-					  token = next;
+				  if (last.contains("action")) {
+					  url = next.replaceAll("&amp;", "&");
 					  break;
 				  }
 				  last = next;
@@ -99,43 +100,12 @@ public abstract class Test {
 		}
 		scanner.close();
 		
-		//System.out.println("token is " + token);
+		//System.out.println("url is " + url);
 		
-		response = identityService.login(email, password, token);
-		TestUtils.failIf(response.httpCode != HttpURLConnection.HTTP_MOVED_TEMP, response.toString()); // should get 302 here
+		response = identityService.authenticate(url, email, password);
+		TestUtils.failIf(response.httpCode != HttpURLConnection.HTTP_NOT_FOUND, response.toString()); // should get 404 here
 		//response.dump();
-		
-		response = identityService.authorizeCallback(response.redirectLocation);
-		TestUtils.failIf(response.httpCode != HttpURLConnection.HTTP_MOVED_TEMP, response.toString()); // and again
-		//response.dump();
-		
-		st = new StringTokenizer(response.redirectLocation, "#");
-		st.nextToken(); // burn
-		String data = st.nextToken(), next;
-		//System.out.println(data);
-		st = new StringTokenizer(data, "&");
-		HashMap<String, String> kvs = new HashMap<String, String>();
-		while (st.hasMoreTokens()) {  
-			next = st.nextToken();
-			//System.out.println(next.split("=")[0] + ": " + next.split("=")[1]);
-			kvs.put(next.split("=")[0], next.split("=")[1]);
-		}  
-		//HttpUtils.authToken.set(kvs.get("token_type") + " " + kvs.get("access_token"));
-		HttpUtils.authToken.set(kvs.get("access_token"));
-		//System.out.println(HttpUtils.authToken.get());
-		
-		// alright now we have the token we need
-		
-		response = identityService.getUserInfo();
-		//response.dump();
-		TestUtils.failIf(response.httpCode != HttpURLConnection.HTTP_OK, response.toString());
-		
-		userId.set(((UserInfo)JsonUtils.jsonToPojo(response.response, UserInfo.class)).sub);
-		this.username.set(email);
-		this.password.set(password);
-		
-		//System.out.println("set userId " + userId.get());
-		
+	
 		return response;
 	}
 	

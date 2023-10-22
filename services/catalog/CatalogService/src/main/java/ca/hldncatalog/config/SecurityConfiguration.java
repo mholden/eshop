@@ -27,11 +27,13 @@ public class SecurityConfiguration {
 
         http
                 .authorizeHttpRequests()
-                	.requestMatchers("/oauth2/**", 
+                	.requestMatchers(
+                		"/oauth2/**", 
             			"/login/**", 
             			"/catalog/items/**",
-            			"/catalog/ping")
-                		.permitAll()
+            			"/catalog/ping"
+            		)
+                	.permitAll()
                 	.anyRequest()
                 	.fullyAuthenticated()
                 .and()

@@ -1,11 +1,9 @@
 package ca.testeshop.tests;
 
 import java.net.HttpURLConnection;
-import java.util.*;
 
 import ca.testeshop.services.*;
 import ca.testeshop.utils.EShopResponse;
-import ca.testeshop.utils.HttpUtils;
 import ca.testeshop.utils.TestUtils;
 
 public class TestLogin extends Test {
@@ -24,10 +22,11 @@ public class TestLogin extends Test {
 		
 		System.out.println("\ntestSpecificCase1");
 		
-		doUserLogin("demouser@microsoft.com", "Pass@word1");
+		doUserLogin("alice", "alice");
 		
-		response = identityService.getUserInfo();
+		response = basketService.doPing();
 		TestUtils.failIf(response.httpCode != HttpURLConnection.HTTP_OK, response.toString());
+		//response.dump();
 	}
 	
 	public void run() throws Exception {
