@@ -54,12 +54,8 @@ public abstract class Test {
 	public void doUserLogout() throws Exception {
 		EShopResponse response;
 		
-		if (userId.get() == null) { // not logged in
-			return;
-		}
-		
-		response = identityService.endSession();
-		TestUtils.failIf(response.httpCode != HttpURLConnection.HTTP_OK, response.toString());
+		response = identityService.logout();
+		TestUtils.failIf(response.httpCode != HttpURLConnection.HTTP_MOVED_TEMP, response.toString());
 		
 		HttpUtils.cookieManager.get().getCookieStore().removeAll();
 		HttpUtils.authToken.set(null);
@@ -73,13 +69,13 @@ public abstract class Test {
 		StringTokenizer st;
 		EShopResponse response;
 		
-		//doUserLogout();
+		doUserLogout();
 		
 		response = identityService.authorize();
-		//response.dump();
 		TestUtils.failIf(response.httpCode != HttpURLConnection.HTTP_OK, response.toString());
+		//response.dump();
 		
-		// get __RequestVerificationToken from output:
+		// get auth url from output:
 		Scanner scanner = new Scanner(response.response);
 		while (scanner.hasNextLine()) {
 		  String line = scanner.nextLine();

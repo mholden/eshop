@@ -15,10 +15,10 @@ public class SecurityConfiguration {
     public SecurityFilterChain configure(HttpSecurity http) throws Exception {
         http
                 .oauth2Client()
-                    .and()
+                .and()
                 .oauth2Login()
                 .tokenEndpoint()
-                    .and()
+                .and()
                 .userInfoEndpoint();
 
         http
@@ -34,9 +34,8 @@ public class SecurityConfiguration {
                 .anyRequest()
                 .fullyAuthenticated()
                 .and()
-                    .logout()
-                    .logoutSuccessUrl("http://docker.for.mac.localhost:8180/realms/quickstart/protocol/openid-connect/logout?redirect_uri=http://basket-service:5122/");
-                    //.logoutSuccessUrl("http://localhost:8180/realms/quickstart/protocol/openid-connect/logout?redirect_uri=http://localhost:5122/");
+                .logout()
+                .logoutSuccessUrl("http://localhost:8180/realms/quickstart/protocol/openid-connect/logout?redirect_uri=http://localhost:5122/");
 
         return http.build();
     }

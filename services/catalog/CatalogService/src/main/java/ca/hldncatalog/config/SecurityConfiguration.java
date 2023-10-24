@@ -27,19 +27,18 @@ public class SecurityConfiguration {
 
         http
                 .authorizeHttpRequests()
-                	.requestMatchers(
-                		"/oauth2/**", 
-            			"/login/**", 
-            			"/catalog/items/**",
-            			"/catalog/ping"
-            		)
-                	.permitAll()
-                	.anyRequest()
-                	.fullyAuthenticated()
+            	.requestMatchers(
+            		"/oauth2/**", 
+        			"/login/**", 
+        			"/catalog/items/**",
+        			"/catalog/ping"
+        		)
+            	.permitAll()
+            	.anyRequest()
+            	.fullyAuthenticated()
                 .and()
-                    .logout()
-                    .logoutSuccessUrl("http://catalog-service:8180/realms/quickstart/protocol/openid-connect/logout?redirect_uri=http://catalog-service:5121/");
-                    //.logoutSuccessUrl("http://localhost:8180/realms/quickstart/protocol/openid-connect/logout?redirect_uri=http://localhost:5121/");
+                .logout()
+                .logoutSuccessUrl("http://localhost:8180/realms/quickstart/protocol/openid-connect/logout?redirect_uri=http://localhost:5121/");
 
         return http.build();
     }

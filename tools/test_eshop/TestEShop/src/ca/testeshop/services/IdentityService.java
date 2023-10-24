@@ -1,6 +1,8 @@
 package ca.testeshop.services;
 
 import java.net.HttpURLConnection;
+import java.util.Scanner;
+import java.util.StringTokenizer;
 
 import ca.testeshop.utils.*;
 
@@ -18,17 +20,67 @@ public class IdentityService extends Service implements IdentityServiceAPI {
 		return HttpUtils.doGet(urlBase + "/login");
 	}
 	
-	private String buildEndSessionPayload() {
+	private HttpUtils.HttpPayload buildLogoutPayload(String token) throws Exception {
+		HttpUtils.HttpPayload payload = new HttpUtils.HttpPayload();
 		StringBuilder stringBuilder = new StringBuilder();
         
-		stringBuilder.append("?id_token_hint=" + HttpUtils.authToken.get());
-		stringBuilder.append("&post_logout_redirect_uri=http://docker.for.mac.localhost:5104/");
+		stringBuilder.append("_csrf=" + token);
+
+		payload.type = HttpUtils.HttpPayload.types.XWWWFORMURLENCODED;
+        payload.data = stringBuilder.toString();
         
-        return stringBuilder.toString();
+        //payload.dump();
+        
+        return payload;
 	}
 	
-	public EShopResponse endSession() throws Exception {
-		return HttpUtils.doGet(urlBase + "/connect/endsession" + buildEndSessionPayload());
+	public EShopResponse logout() throws Exception {
+		StringTokenizer st;
+		String csrfToken = null;
+		EShopResponse response;
+		
+		response = HttpUtils.doGet(urlBase + "/logout");
+		TestUtils.failIf(response.httpCode != HttpURLConnection.HTTP_OK, response.toString()); 
+		
+		// grab the csrf token from the response
+		Scanner scanner = new Scanner(response.response);
+		while (scanner.hasNextLine()) {
+		  String line = scanner.nextLine();
+		  if (line.contains("_csrf")) {
+			  //System.out.println(line);
+			  st = new StringTokenizer(line, "\"");  
+			  String last = "", next;
+			  while (st.hasMoreTokens()) {  
+				  next = st.nextToken();
+				  if (last.contains("value")) {
+					  csrfToken = next;
+					  break;
+				  }
+				  last = next;
+			  }  
+			  break;
+		  }
+		}
+		scanner.close();
+		
+		//System.out.println("token is " + csrfToken);
+		
+		response = HttpUtils.doPost(urlBase + "/logout", buildLogoutPayload(csrfToken));
+		TestUtils.failIf(response.httpCode != HttpURLConnection.HTTP_MOVED_TEMP, response.toString()); // should get 302 here
+		
+		//System.out.println("redirect location is " + response.redirectLocation);
+		
+		response = HttpUtils.doGet(response.redirectLocation);
+		TestUtils.failIf(response.httpCode != HttpURLConnection.HTTP_MOVED_TEMP, response.toString()); // should get 302 here
+		
+		//System.out.println("redirect location is " + response.redirectLocation);
+		
+		response = HttpUtils.doGet(response.redirectLocation);
+		TestUtils.failIf(response.httpCode != HttpURLConnection.HTTP_MOVED_TEMP, response.toString()); // should get 302 here
+		
+		//System.out.println("redirect location is " + response.redirectLocation); // should take you back to oauth link
+		
+		return response;
 	}
 	
 	private HttpUtils.HttpPayload buildAuthenticatePayload(String email, String password) throws Exception {
@@ -43,18 +95,6 @@ public class IdentityService extends Service implements IdentityServiceAPI {
         //payload.dump();
         
         return payload;
-	}
-	
-	private String buildLoginURL() {
-		StringBuilder stringBuilder = new StringBuilder();
-        
-		stringBuilder.append("?ReturnUrl=%2Fconnect%2Fauthorize%2Fcallback%3Fresponse_type%3Did_token%2520token%26client_id%3Djs");
-		stringBuilder.append("%26redirect_uri%3Dhttp%253A%252F%252Fdocker.for.mac.localhost%253A5104%252F");
-		stringBuilder.append("%26scope%3Dopenid%2520profile%2520orders%2520basket%2520webshoppingagg%2520orders.signalrhub");
-		stringBuilder.append("%26nonce%3DN0.062170895354270121691431671493"); // TODO: generate this?
-		stringBuilder.append("%26state%3D16914316714920.06560784072824567"); // TODO: generate this?
-        
-        return stringBuilder.toString();
 	}
 	
 	public EShopResponse authenticate(String url, String email, String password) throws Exception {
@@ -159,10 +199,6 @@ public class IdentityService extends Service implements IdentityServiceAPI {
 	
 	public EShopResponse register(String email, String password, String token) throws Exception {
 		return HttpUtils.doPost(urlBase + "/Account/Register" + buildRegisterURL(), buildRegisterPayload(email, password, token));
-	}
-	
-	public EShopResponse authorizeCallback(String location) throws Exception {
-		return HttpUtils.doGet(urlBase + location, true);
 	}
 	
 	public EShopResponse getUserInfo() throws Exception {
