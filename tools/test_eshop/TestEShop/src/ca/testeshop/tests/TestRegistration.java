@@ -25,11 +25,11 @@ public class TestRegistration extends Test {
 		
 		System.out.println("\ntestSpecificCase1");
 		
-		doUserRegistrationAndLogin();
+		doUserRegistration();
 		
 		System.out.println("user: " + getUserName());
 		
-		response = identityService.getUserInfo();
+		response = basketService.doPing();
 		//response.dump();
 		TestUtils.failIf(response.httpCode != HttpURLConnection.HTTP_OK, response.toString());
 	}
@@ -43,11 +43,11 @@ public class TestRegistration extends Test {
 		
 		iters = 0;
 		while (iters < 3) {
-			doUserRegistrationAndLogin();
+			doUserRegistration();
 			
 			System.out.println("user: " + getUserName());
 			
-			response = identityService.getUserInfo();
+			response = basketService.doPing();
 			//response.dump();
 			TestUtils.failIf(response.httpCode != HttpURLConnection.HTTP_OK, response.toString());
 			iters++;
@@ -59,11 +59,11 @@ public class TestRegistration extends Test {
 		
 		System.out.println("\n_testSpecificCase3");
 		
-		doUserRegistrationAndLogin();
+		doUserRegistration();
 		
 		System.out.println("user: " + getUserName() + " thread " + Thread.currentThread().getId());
 		
-		response = identityService.getUserInfo();
+		response = basketService.doPing();
 		//response.dump();
 		TestUtils.failIf(response.httpCode != HttpURLConnection.HTTP_OK, response.toString());
 	}

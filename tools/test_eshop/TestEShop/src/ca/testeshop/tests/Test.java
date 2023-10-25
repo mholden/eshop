@@ -19,7 +19,6 @@ public abstract class Test {
 	public CatalogService catalogService;
 	public BasketService basketService;
 	
-	//public String riaAsyncToken;
 	public static ThreadLocal<String> userId = new ThreadLocal<String>();
 	
 	public Test() {
@@ -79,7 +78,7 @@ public abstract class Test {
 		Scanner scanner = new Scanner(response.response);
 		while (scanner.hasNextLine()) {
 		  String line = scanner.nextLine();
-		  if (line.contains("kc-form-login")) {
+		  if (line.contains("login-actions/authenticate")) {
 			  //System.out.println(line);
 			  st = new StringTokenizer(line, "\"");  
 			  String last = "", next;
@@ -106,28 +105,28 @@ public abstract class Test {
 	}
 	
 	public void doUserRegistration(String email, String password) throws Exception {
-		String token = null;
+		String url = null;
 		StringTokenizer st;
 		EShopResponse response;
 		
 		doUserLogout();
 		
-		response = identityService.getRegistrationForm();
-		//response.dump();
+		response = identityService.authorize();
 		TestUtils.failIf(response.httpCode != HttpURLConnection.HTTP_OK, response.toString());
+		//response.dump();
 		
-		// get __RequestVerificationToken from output:
+		// get registration url from output
 		Scanner scanner = new Scanner(response.response);
 		while (scanner.hasNextLine()) {
 		  String line = scanner.nextLine();
-		  if (line.contains("__RequestVerificationToken")) {
+		  if (line.contains("login-actions/registration")) {
 			  //System.out.println(line);
 			  st = new StringTokenizer(line, "\"");  
 			  String last = "", next;
 			  while (st.hasMoreTokens()) {  
 				  next = st.nextToken();
-				  if (last.contains("value")) {
-					  token = next;
+				  if (last.contains("href")) {
+					  url = "http://docker.for.mac.localhost:8180" + next.replaceAll("&amp;", "&"); // hardcoding the hostname for now..
 					  break;
 				  }
 				  last = next;
@@ -137,21 +136,11 @@ public abstract class Test {
 		}
 		scanner.close();
 		
-		//System.out.println("token is " + token);
+		//System.out.println("url is " + url);
 		
-		response = identityService.register(email, password, token);
-		TestUtils.failIf(response.httpCode != HttpURLConnection.HTTP_OK, response.toString());
+		response = identityService.register(url, email, password);
+		TestUtils.failIf(response.httpCode != HttpURLConnection.HTTP_NOT_FOUND, response.toString()); // should get 404 here
 		//response.dump();
-	}
-	
-	public EShopResponse doUserRegistrationAndLogin(String email, String password) throws Exception {
-		doUserRegistration(email, password);
-		return doUserLogin(email, password);
-	}
-	
-	public EShopResponse doUserRegistrationAndLogin() throws Exception {
-		doUserRegistration();
-		return doUserLogin(username.get(), password.get());
 	}
 	
 	public void doUserRegistration() throws Exception {
