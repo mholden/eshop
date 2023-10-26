@@ -28,6 +28,10 @@ services:
     environment:
       - KEYCLOAK_ADMIN=admin
       - KEYCLOAK_ADMIN_PASSWORD=admin
+      - KC_DB=mysql
+      - KC_DB_URL=jdbc:mysql://mysql-db:3306/identitydb
+      - KC_DB_USERNAME=root
+      - KC_DB_PASSWORD=password
     ports:
       - "8180:8180"
 

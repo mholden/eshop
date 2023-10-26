@@ -9,7 +9,7 @@
 	<property name="main-class"  value="EDump"/>
 
 	<path id="classpath">
-		<pathelement location="/Users/mholden/Library/Java/Extensions/mssql-jdbc-12.4.0.jre11.jar"/>
+		<pathelement location="/Users/mholden/Library/Java/Extensions/mysql-connector-j-8.1.0.jar"/>
 	</path>
 	
 	<pathconvert property="class-path" pathsep=" ">

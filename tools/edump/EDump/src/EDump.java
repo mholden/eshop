@@ -2,19 +2,15 @@ import java.sql.*;
 import java.util.*;
 
 class EDump {
-	static final String USER = "sa";
-	static final String PASS = "Pass@word";
+	static final String USER = "root";
+	static final String PASS = "password";
 	static final int NHEADERCOLS = 9;
 	static final Map<String, String> defaultCommands = new HashMap<String, String>()
 	{
 		private static final long serialVersionUID = 1L;
 	{
-		put("AspNetUsers", "select id, username from AspNetUsers");
-		put("catalog", "select C.id, C.description, C.price, CT.type, CB.brand from catalog C " + 
-							"left join catalogtype CT on C.catalogtypeid = CT.id " + 
-							"left join catalogbrand CB on C.catalogbrandid = CB.id");
-		put("catalogbrand", "select id, brand from catalogbrand");
-		put("catalogtype", "select id, type from catalogtype");
+		put("catalogdb.catalogitem", "select CI.id, CI.name, CI.price from catalogdb.catalogitem CI");
+		put("identitydb.USER_ENTITY", "select UE.id, UE.username from identitydb.USER_ENTITY UE");
 	}};
 	
 	private static void usage() throws Exception {
@@ -48,7 +44,7 @@ class EDump {
 		String query;
 		ResultSet r;
 		
-		query = "select name from sys.tables";
+		query = "show tables";
 		r = c.createStatement().executeQuery(query);
 		while (r.next()) {
 			for (int i = 1; i <= r.getMetaData().getColumnCount(); i++) {
@@ -65,7 +61,7 @@ class EDump {
 		String query;
 		ResultSet r;
 		
-		query = "select name from sys.databases";
+		query = "show databases";
 		r = c.createStatement().executeQuery(query);
 		while (r.next()) {
 			for (int i = 1; i <= r.getMetaData().getColumnCount(); i++) {
@@ -114,28 +110,17 @@ class EDump {
 	        	hostName = "localhost";
 	        
 	        if (dbName == null) {
-	        	c = DriverManager.getConnection("jdbc:sqlserver://" + hostName + ":5433;encrypt=false", USER, PASS);
+	        	c = DriverManager.getConnection("jdbc:mysql://" + hostName + ":3306", USER, PASS);
 	        	dumpDBs(c);
 	        	return;
 	        }
 	        
-	        if (dbName.equals("IdentityDb")) {
-	        	// silly inconsistency..
-	        	dbName = "Microsoft.eShopOnContainers.Service." + dbName;
-	        } else {
-	        	dbName = "Microsoft.eShopOnContainers.Services." + dbName;
-	        }
-	        
-	        c = DriverManager.getConnection("jdbc:sqlserver://" + hostName + ":5433;databaseName=" + dbName + ";encrypt=false", USER, PASS);
+	        c = DriverManager.getConnection("jdbc:mysql://" + hostName + ":3306/" + dbName, USER, PASS);
 	        
 	        if (tableName == null) {
 	        	dumpTables(c);
 	        } else {
-	        	if (dbName.contains("OrderingDb")) {
-	        		// another silly inconsistency..
-	        		tableName = "ordering." + tableName;
-	        	}
-	        	dumpTable(c, tableName, dumpAllColumns, quiet);
+	        	dumpTable(c, dbName + "." + tableName, dumpAllColumns, quiet);
 	        }
 		} catch (Exception e) {
 			e.printStackTrace();
