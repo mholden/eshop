@@ -73,11 +73,11 @@ public class HttpUtils {
 		return doGet(url, payload, false, null);
 	}
 	
-	public static EShopResponse doGet(String url, boolean followRedirect) throws Exception {
-		return doGet(url, null, followRedirect, null);
+	public static EShopResponse doGet(String url, boolean noRedirect) throws Exception {
+		return doGet(url, null, noRedirect, null);
 	}
 
-	public static EShopResponse doGet(String url, HttpPayload payload, boolean followRedirect, HashMap<String, String> requestProps) throws Exception {
+	public static EShopResponse doGet(String url, HttpPayload payload, boolean noRedirect, HashMap<String, String> requestProps) throws Exception {
 		EShopResponse output = new EShopResponse();
 		
 		//System.out.println("doGet() url " + url);
@@ -101,9 +101,9 @@ public class HttpUtils {
         }
         
         //HttpURLConnection.setFollowRedirects(false);  
-        if (!followRedirect) {
+        //if (noRedirect) {
         	connection.setInstanceFollowRedirects(false);
-        }
+        //}
         
         // Set Headers
         //connection.setRequestProperty("Accept", payload.type.toString());
@@ -159,14 +159,15 @@ public class HttpUtils {
 
         output = new EShopResponse();
         output.httpCode = connection.getResponseCode();
-        if (!followRedirect && 
-        	(output.httpCode == HttpURLConnection.HTTP_MOVED_TEMP || 
-        		output.httpCode == HttpURLConnection.HTTP_MOVED_PERM)) {
-        	// set redirect location
+        if (output.httpCode == HttpURLConnection.HTTP_MOVED_TEMP || 
+        		output.httpCode == HttpURLConnection.HTTP_MOVED_PERM) {
         	output.redirectLocation = connection.getHeaderFields().get("Location").get(0);
+        	if (!noRedirect) { // follow it
+        		return doGet(output.redirectLocation, noRedirect);
+        	}	
         }
         output.response = response.toString();
-
+        
 		return output;
 	}
 	
@@ -178,7 +179,7 @@ public class HttpUtils {
 		return doPost(url, payload, false);
 	}
 
-	public static EShopResponse doPost(String url, HttpPayload payload, boolean followRedirect) throws Exception {
+	public static EShopResponse doPost(String url, HttpPayload payload, boolean noRedirect) throws Exception {
 		EShopResponse output = new EShopResponse();
 		
 		//System.out.println("doPost() url " + url);
@@ -192,9 +193,9 @@ public class HttpUtils {
         	connection.setRequestProperty("Authorization", "Bearer " + authToken.get()); // hardcoding 'Bearer' for now (token_type in authorizeCallback response)
         }
         
-        if (!followRedirect) {
+        //if (noRedirect) {
         	connection.setInstanceFollowRedirects(false);
-        }
+        //}
         connection.setDoOutput(true);
 
         // Set Headers
@@ -240,11 +241,12 @@ public class HttpUtils {
 
         output = new EShopResponse();
         output.httpCode = connection.getResponseCode();
-        if (!followRedirect && 
-        	(output.httpCode == HttpURLConnection.HTTP_MOVED_TEMP || 
-        		output.httpCode == HttpURLConnection.HTTP_MOVED_PERM)) {
-        	// set redirect location
+        if (output.httpCode == HttpURLConnection.HTTP_MOVED_TEMP || 
+        		output.httpCode == HttpURLConnection.HTTP_MOVED_PERM) {
         	output.redirectLocation = connection.getHeaderFields().get("Location").get(0);
+        	if (!noRedirect) { // follow it
+        		return doPost(output.redirectLocation, payload, noRedirect);
+        	}
         }
         output.response = response.toString();
 

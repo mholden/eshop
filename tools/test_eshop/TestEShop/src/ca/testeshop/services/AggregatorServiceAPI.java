@@ -7,5 +7,5 @@ public interface AggregatorServiceAPI {
 	public EShopResponse getCatalogBrands() throws Exception;
 	public EShopResponse getCatalogTypes() throws Exception;
 	public EShopResponse getCatalogItems(Integer pageIndex, Integer pageSize) throws Exception;
-	public EShopResponse setBasket(CustomerBasket basket) throws Exception;
+	public EShopResponse setBasket(Basket basket) throws Exception;
 }

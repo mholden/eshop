@@ -67,17 +67,17 @@ public class IdentityService extends Service implements IdentityServiceAPI {
 		
 		//System.out.println("token is " + csrfToken);
 		
-		response = HttpUtils.doPost(urlBase + "/logout", buildLogoutPayload(csrfToken));
+		response = HttpUtils.doPost(urlBase + "/logout", buildLogoutPayload(csrfToken), true);
 		TestUtils.failIf(response.httpCode != HttpURLConnection.HTTP_MOVED_TEMP, response.toString()); // should get 302 here
 		
 		//System.out.println("redirect location is " + response.redirectLocation);
 		
-		response = HttpUtils.doGet(response.redirectLocation);
+		response = HttpUtils.doGet(response.redirectLocation, true);
 		TestUtils.failIf(response.httpCode != HttpURLConnection.HTTP_MOVED_TEMP, response.toString()); // should get 302 here
 		
 		//System.out.println("redirect location is " + response.redirectLocation);
 		
-		response = HttpUtils.doGet(response.redirectLocation);
+		response = HttpUtils.doGet(response.redirectLocation, true);
 		TestUtils.failIf(response.httpCode != HttpURLConnection.HTTP_MOVED_TEMP, response.toString()); // should get 302 here
 		
 		//System.out.println("redirect location is " + response.redirectLocation); // should take you back to oauth link
@@ -102,17 +102,17 @@ public class IdentityService extends Service implements IdentityServiceAPI {
 	public EShopResponse authenticate(String url, String email, String password) throws Exception {
 		EShopResponse response;
 		
-		response = HttpUtils.doPost(url, buildAuthenticatePayload(email, password));
+		response = HttpUtils.doPost(url, buildAuthenticatePayload(email, password), true);
 		TestUtils.failIf(response.httpCode != HttpURLConnection.HTTP_MOVED_TEMP, response.toString()); // should get 302 here
 		
 		//System.out.println("redirect location is " + response.redirectLocation);
 		
-		response = HttpUtils.doGet(response.redirectLocation);
+		response = HttpUtils.doGet(response.redirectLocation, true);
 		TestUtils.failIf(response.httpCode != HttpURLConnection.HTTP_MOVED_TEMP, response.toString()); // should get 302 here
 		
 		//System.out.println("redirect location is " + response.redirectLocation);
 		
-		response = HttpUtils.doGet(response.redirectLocation);
+		response = HttpUtils.doGet(response.redirectLocation, true);
 		TestUtils.failIf(response.httpCode != HttpURLConnection.HTTP_NOT_FOUND, response.toString()); // should get 404 here
 		
 		return response;
@@ -121,7 +121,7 @@ public class IdentityService extends Service implements IdentityServiceAPI {
 	public EShopResponse authorize() throws Exception {
 		EShopResponse response;
 		
-		response = HttpUtils.doGet(urlBase + "/oauth2/authorization/keycloak");
+		response = HttpUtils.doGet(urlBase + "/oauth2/authorization/keycloak", true);
 		TestUtils.failIf(response.httpCode != HttpURLConnection.HTTP_MOVED_TEMP, response.toString());
 
 		//System.out.println("redirect location is " + response.redirectLocation);
@@ -180,12 +180,12 @@ public class IdentityService extends Service implements IdentityServiceAPI {
 		
 		//System.out.println("_url is " + _url);
 		
-		response = HttpUtils.doPost(_url, buildRegisterPayload(email, password));
+		response = HttpUtils.doPost(_url, buildRegisterPayload(email, password), true);
 		TestUtils.failIf(response.httpCode != HttpURLConnection.HTTP_MOVED_TEMP, response.toString()); // should get 302 here
 		
 		//System.out.println("redirect location is " + response.redirectLocation);
 		
-		response = HttpUtils.doGet(response.redirectLocation);
+		response = HttpUtils.doGet(response.redirectLocation, true);
 		TestUtils.failIf(response.httpCode != HttpURLConnection.HTTP_MOVED_TEMP, response.toString()); // should get 302 here
 		
 		//System.out.println("redirect location is " + response.redirectLocation);

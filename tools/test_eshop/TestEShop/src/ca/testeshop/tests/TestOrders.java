@@ -21,11 +21,12 @@ public class TestOrders extends Test {
 	// test ordering a single item
 	private void testSpecificCase1() throws Exception {
 		UserInfo userInfo;
-		PagenatedItems<CatalogItem> catalogItems;
+		List<CatalogItem> catalogItems;
 		CatalogItem catalogItem;
 		List<OrderSummary> orders;
 		Order order;
-		CustomerBasket basket;
+		Basket basket;
+		List<BasketItem> basketItems;
 		EShopResponse response;
 		
 		System.out.println("\ntestSpecificCase1");
@@ -36,22 +37,17 @@ public class TestOrders extends Test {
 		response = aggregatorService.getCatalogItems(0, 12);
 		TestUtils.failIf(response.httpCode != HttpURLConnection.HTTP_OK, response.toString());
 		
-		catalogItems = (PagenatedItems<CatalogItem>)JsonUtils.jsonToPojo(response.response, new TypeToken<PagenatedItems<CatalogItem>>(){}.getType());
+		catalogItems = (List<CatalogItem>)JsonUtils.jsonToPojo(response.response, new TypeToken<List<CatalogItem>>(){}.getType());
 		//System.out.println(catalogItems);
 		
-		response = aggregatorService.getBasket();
-		TestUtils.failIf(response.httpCode != HttpURLConnection.HTTP_OK, response.toString());
+		basketItems = (List<BasketItem>)JsonUtils.jsonToPojo(response.response, new TypeToken<List<BasketItem>>(){}.getType());
+		System.out.println(basketItems);
 		
-		basket = (CustomerBasket)JsonUtils.jsonToPojo(response.response, CustomerBasket.class);
-		//System.out.println(basket);
+		basketItems.clear();
+		basketItems.add(new BasketItem(catalogItems.get(0)));
+		System.out.println(basketItems);
 		
-		catalogItem = catalogItems.data.get(0);
-		
-		basket.items.clear();
-		basket.items.add(new BasketItem(catalogItem));
-		//System.out.println(basket);
-		
-		response = aggregatorService.setBasket(basket);
+		response = basketService.setBasketItems(basketItems);
 		TestUtils.failIf(response.httpCode != HttpURLConnection.HTTP_OK, response.toString());
 		
 		response = aggregatorService.checkout(new BasketCheckout(userInfo));

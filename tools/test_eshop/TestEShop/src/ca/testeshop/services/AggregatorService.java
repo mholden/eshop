@@ -49,14 +49,14 @@ public class AggregatorService extends Service implements AggregatorServiceAPI {
 		return HttpUtils.doGet(urlBase + "/o/api/v1/orders");
 	}
 	
-	private HttpUtils.HttpPayload buildSetBasketPayload(CustomerBasket basket) {
+	private HttpUtils.HttpPayload buildSetBasketPayload(Basket basket) {
 		HttpUtils.HttpPayload payload = new HttpUtils.HttpPayload();
 		payload.type = HttpUtils.HttpPayload.types.JSON;
         payload.data = JsonUtils.pojoToJson(basket);
         return payload;
 	}
 	
-	public EShopResponse setBasket(CustomerBasket basket) throws Exception {
+	public EShopResponse setBasket(Basket basket) throws Exception {
 		return HttpUtils.doPost(urlBase + "/b/api/v1/basket", buildSetBasketPayload(basket));
 	}
 }

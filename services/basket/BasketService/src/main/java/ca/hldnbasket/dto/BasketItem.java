@@ -8,7 +8,7 @@ public class BasketItem {
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    private Integer userId;
+    private String userId;
     private Integer catalogItemId; 
 
     public BasketItem(){
@@ -23,11 +23,11 @@ public class BasketItem {
         this.id = id;
     }
 
-    public Integer getUserId() {
+    public String getUserId() {
         return userId;
     }
 
-    public void setUserId(Integer userId) {
+    public void setUserId(String userId) {
         this.userId = userId;
     }
     
@@ -40,6 +40,6 @@ public class BasketItem {
     }
     
     public String toString() {
-    	return String.format("id: %d userId: %d catalogItemId: %d", id, userId, catalogItemId);
+    	return String.format("id: %d userId: %s catalogItemId: %d", id, userId, catalogItemId);
     }
 }

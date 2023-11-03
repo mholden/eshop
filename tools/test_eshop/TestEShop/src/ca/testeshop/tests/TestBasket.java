@@ -1,6 +1,7 @@
 package ca.testeshop.tests;
 
 import java.net.HttpURLConnection;
+import java.util.*;
 
 import com.google.gson.reflect.TypeToken;
 
@@ -19,40 +20,43 @@ public class TestBasket extends Test {
 	
 	// test get, set
 	private void testSpecificCase1() throws Exception {
-		PagenatedItems<CatalogItem> catalogItems;
-		CustomerBasket basket;
+		List<CatalogItem> catalogItems;
+		List<BasketItem> basketItems;
 		EShopResponse response;
 		
 		System.out.println("\ntestSpecificCase1");
 		
-		doUserLogin("demouser@microsoft.com", "Pass@word1");
+		doUserLogin("alice", "alice");
 		
-		response = aggregatorService.getCatalogItems(0, 12);
+		response = catalogService.getCatalogItems(0, 12);
 		TestUtils.failIf(response.httpCode != HttpURLConnection.HTTP_OK, response.toString());
 		
-		catalogItems = (PagenatedItems<CatalogItem>)JsonUtils.jsonToPojo(response.response, new TypeToken<PagenatedItems<CatalogItem>>(){}.getType());
+		catalogItems = (List<CatalogItem>)JsonUtils.jsonToPojo(response.response, new TypeToken<List<CatalogItem>>(){}.getType());
 		//System.out.println(catalogItems);
 		
-		response = aggregatorService.getBasket();
+		response = basketService.getBasketItems();
 		TestUtils.failIf(response.httpCode != HttpURLConnection.HTTP_OK, response.toString());
+		//response.dump();
 		
-		basket = (CustomerBasket)JsonUtils.jsonToPojo(response.response, CustomerBasket.class);
-		//System.out.println(basket);
+		basketItems = (List<BasketItem>)JsonUtils.jsonToPojo(response.response, new TypeToken<List<BasketItem>>(){}.getType());
+		//System.out.println(basketItems);
 		
-		basket.items.clear();
-		basket.items.add(new BasketItem(catalogItems.data.get(0)));
-		//System.out.println(basket);
+		basketItems.clear();
+		basketItems.add(new BasketItem(catalogItems.get(0)));
+		//System.out.println(basketItems);
 		
-		response = aggregatorService.setBasket(basket);
+		response = basketService.setBasketItems(basketItems);
 		TestUtils.failIf(response.httpCode != HttpURLConnection.HTTP_OK, response.toString());
 		
 		//System.out.println("set it, getting it again");
 		
-		response = aggregatorService.getBasket();
+		response = basketService.getBasketItems();
 		TestUtils.failIf(response.httpCode != HttpURLConnection.HTTP_OK, response.toString());
 		
-		basket = (CustomerBasket)JsonUtils.jsonToPojo(response.response, CustomerBasket.class);
-		//System.out.println(basket);
+		basketItems = (List<BasketItem>)JsonUtils.jsonToPojo(response.response, new TypeToken<List<BasketItem>>(){}.getType());
+		//System.out.println(basketItems);
+		TestUtils.failIf(basketItems.size() != 1, null);
+		TestUtils.failIf(basketItems.get(0).catalogItemId != catalogItems.get(0).id, null);
 	}
 	
 	public void run() throws Exception {
