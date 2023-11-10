@@ -14,6 +14,10 @@ public class BasketService extends Service implements BasketServiceAPI {
 		super(urlbase);
 	}
 	
+	public EShopResponse checkout() throws Exception {
+		return HttpUtils.doPost(urlBase + "/basket/checkout");
+	}
+	
 	public EShopResponse getBasketItems() throws Exception {
 		return HttpUtils.doGet(urlBase + "/basket/items");
 	}

@@ -201,7 +201,8 @@ public class HttpUtils {
         // Set Headers
         //connection.setRequestProperty("Accept", payload.type.toString());
         connection.setRequestProperty("Accept", "*/*");
-        connection.setRequestProperty("Content-Type", payload.type.toString());
+        if (payload != null)
+        	connection.setRequestProperty("Content-Type", payload.type.toString());
         //connection.setRequestProperty("Content-Length", String.valueOf(payload.data.length())); // doesn't work
         
         if (cookieManager.get().getCookieStore().getCookies().size() > 0) {
@@ -215,12 +216,14 @@ public class HttpUtils {
             //System.out.println("doPost() thread " + Thread.currentThread().getId() + " using cookies " + strings);
         }
         
-        OutputStream outputStream = connection.getOutputStream();
-        byte[] b = payload.data.getBytes("UTF-8");
-        outputStream.write(b);
-        outputStream.flush();
-        outputStream.close();
-
+        if (payload != null) {
+        	OutputStream outputStream = connection.getOutputStream();
+            byte[] b = payload.data.getBytes("UTF-8");
+            outputStream.write(b);
+            outputStream.flush();
+            outputStream.close();
+        }
+        
         // Read response
         connection.getResponseCode(); // this needs to be called first for the error stream logic below to work
         InputStream inputStream = connection.getErrorStream();

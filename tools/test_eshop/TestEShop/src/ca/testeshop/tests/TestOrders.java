@@ -31,14 +31,21 @@ public class TestOrders extends Test {
 		
 		System.out.println("\ntestSpecificCase1");
 		
-		response = doUserLogin("demouser@microsoft.com", "Pass@word1");
-		userInfo = ((UserInfo)JsonUtils.jsonToPojo(response.response, UserInfo.class));
+		doUserLogin("alice", "alice");
 		
+		response = basketService.checkout();
+		TestUtils.failIf(response.httpCode != HttpURLConnection.HTTP_OK, response.toString());
+		
+		/*
 		response = aggregatorService.getCatalogItems(0, 12);
 		TestUtils.failIf(response.httpCode != HttpURLConnection.HTTP_OK, response.toString());
 		
 		catalogItems = (List<CatalogItem>)JsonUtils.jsonToPojo(response.response, new TypeToken<List<CatalogItem>>(){}.getType());
 		//System.out.println(catalogItems);
+		
+		response = basketService.getBasketItems();
+		TestUtils.failIf(response.httpCode != HttpURLConnection.HTTP_OK, response.toString());
+		//response.dump();
 		
 		basketItems = (List<BasketItem>)JsonUtils.jsonToPojo(response.response, new TypeToken<List<BasketItem>>(){}.getType());
 		System.out.println(basketItems);
@@ -66,6 +73,7 @@ public class TestOrders extends Test {
 			order = (Order)JsonUtils.jsonToPojo(response.response, Order.class);
 			System.out.println(order);
 		}
+		*/
 	}
 	
 	public void run() throws Exception {

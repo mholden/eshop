@@ -17,6 +17,7 @@ services:
       context: ./services/catalog/
     depends_on:
       - db
+      - mq
       - identity
     ports:
       - "5121:5121"
@@ -42,6 +43,14 @@ services:
       context: ./services/basket/
     depends_on:
       - db
+      - mq
       - identity
     ports:
       - "5122:5122"
+
+  mq:
+    container_name: rabbit-mq
+    image: rabbitmq:3-management-alpine
+    ports:
+      - "5672:5672"
+      - "15672:15672"

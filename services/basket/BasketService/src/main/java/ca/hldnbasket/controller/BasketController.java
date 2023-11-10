@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import ca.hldnbasket.dto.Basket;
 import ca.hldnbasket.dto.BasketItem;
 import ca.hldnbasket.repository.BasketItemRepository;
+import ca.hldnbasket.service.RabbitMQPublisher;
 
 @RestController
 @RequestMapping("/basket")
@@ -18,6 +19,9 @@ public class BasketController {
 	
 	@Autowired
     BasketItemRepository basketItemRepository;
+	
+	@Autowired
+	RabbitMQPublisher rabbitMQPublisher;
 
 	@GetMapping("/ping")
     public String ping() {
@@ -60,5 +64,16 @@ public class BasketController {
 		System.out.println("setBasketItems() saving new items " + basketItems);
 
 		basketItemRepository.saveAll(basketItems);
+	}
+	
+	@PostMapping("/checkout")
+	public void checkout() {
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		DefaultOidcUser oidcUser = (DefaultOidcUser) authentication.getPrincipal();
+		String userId = oidcUser.getAttribute("sub");
+		
+		System.out.println("checkout() user " + userId);
+		
+		rabbitMQPublisher.send("CheckoutEvent:" + userId);
 	}
 }
