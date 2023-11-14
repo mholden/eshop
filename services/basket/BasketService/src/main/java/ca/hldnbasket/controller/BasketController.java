@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import ca.hldnbasket.dto.Basket;
 import ca.hldnbasket.dto.BasketItem;
+import ca.hldnbasket.event.CheckoutEvent;
 import ca.hldnbasket.repository.BasketItemRepository;
 import ca.hldnbasket.service.RabbitMQPublisher;
 
@@ -71,9 +72,14 @@ public class BasketController {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		DefaultOidcUser oidcUser = (DefaultOidcUser) authentication.getPrincipal();
 		String userId = oidcUser.getAttribute("sub");
+		List<BasketItem> basketItems = null;
 		
 		System.out.println("checkout() user " + userId);
 		
-		rabbitMQPublisher.send("CheckoutEvent:" + userId);
+		basketItems = basketItemRepository.findByUserId(userId);
+
+		System.out.println("checkout() basketItems " + basketItems);
+		
+		rabbitMQPublisher.send(new CheckoutEvent(userId, basketItems));
 	}
 }

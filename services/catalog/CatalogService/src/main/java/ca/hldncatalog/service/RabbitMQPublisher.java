@@ -5,6 +5,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import ca.hldncatalog.event.IntegrationEvent;
+
 @Service
 public class RabbitMQPublisher {
 	
@@ -14,8 +16,8 @@ public class RabbitMQPublisher {
 	@Value("${ca.hldn.catalog.rabbitmq.exchange}")
 	private String exchange;
 	
-	public void send(String message) {
-		System.out.println("send() sending message " + message);
-		rabbitTemplate.convertAndSend(exchange, message.split(":")[0], message);
+	public void send(IntegrationEvent event) {
+		System.out.println("send() sending event " + event.getEventType());
+		rabbitTemplate.convertAndSend(exchange, event.getEventType(), event);
 	}
 }

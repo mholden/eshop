@@ -13,6 +13,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import ca.hldnbasket.event.CheckoutEvent;
+
 @Configuration
 public class RabbitMQConfiguration {
 
@@ -34,15 +36,9 @@ public class RabbitMQConfiguration {
 	
 	@Bean
 	Binding checkoutEventBinding(Queue queue, DirectExchange exchange) {
-		return BindingBuilder.bind(queue).to(exchange).with("CheckoutEvent");
+		return BindingBuilder.bind(queue).to(exchange).with(CheckoutEvent.class.getSimpleName());
 	}
 
-	@Bean
-	Binding checkoutEventResponseBinding(Queue queue, DirectExchange exchange) {
-		return BindingBuilder.bind(queue).to(exchange).with("CheckoutEventResponse");
-	}
-
-	/*
 	@Bean
 	public MessageConverter jsonMessageConverter() {
 		return new Jackson2JsonMessageConverter();
@@ -54,5 +50,4 @@ public class RabbitMQConfiguration {
 		rabbitTemplate.setMessageConverter(jsonMessageConverter());
 		return rabbitTemplate;
 	}
-	*/
 }

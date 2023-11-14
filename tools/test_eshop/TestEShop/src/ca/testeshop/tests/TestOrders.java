@@ -33,11 +33,12 @@ public class TestOrders extends Test {
 		
 		doUserLogin("alice", "alice");
 		
+		/*
 		response = basketService.checkout();
 		TestUtils.failIf(response.httpCode != HttpURLConnection.HTTP_OK, response.toString());
+		*/
 		
-		/*
-		response = aggregatorService.getCatalogItems(0, 12);
+		response = catalogService.getCatalogItems(0, 12);
 		TestUtils.failIf(response.httpCode != HttpURLConnection.HTTP_OK, response.toString());
 		
 		catalogItems = (List<CatalogItem>)JsonUtils.jsonToPojo(response.response, new TypeToken<List<CatalogItem>>(){}.getType());
@@ -57,9 +58,10 @@ public class TestOrders extends Test {
 		response = basketService.setBasketItems(basketItems);
 		TestUtils.failIf(response.httpCode != HttpURLConnection.HTTP_OK, response.toString());
 		
-		response = aggregatorService.checkout(new BasketCheckout(userInfo));
-		TestUtils.failIf(response.httpCode != HttpURLConnection.HTTP_ACCEPTED, response.toString());
+		response = basketService.checkout();
+		TestUtils.failIf(response.httpCode != HttpURLConnection.HTTP_OK, response.toString());
 		
+		/*
 		response = aggregatorService.getOrders();
 		TestUtils.failIf(response.httpCode != HttpURLConnection.HTTP_OK, response.toString());
 		
