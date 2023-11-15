@@ -17,7 +17,7 @@ public class TestEShop {
 		add(TestHomePage.class);
 		add(TestLogin.class);
 		add(TestBasket.class);
-		//add(TestOrders.class);
+		add(TestOrders.class);
 		add(TestRegistration.class);
 		// ... add your new test here
 	}};

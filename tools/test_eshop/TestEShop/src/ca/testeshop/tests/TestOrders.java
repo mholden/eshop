@@ -49,11 +49,11 @@ public class TestOrders extends Test {
 		//response.dump();
 		
 		basketItems = (List<BasketItem>)JsonUtils.jsonToPojo(response.response, new TypeToken<List<BasketItem>>(){}.getType());
-		System.out.println(basketItems);
+		//System.out.println(basketItems);
 		
 		basketItems.clear();
 		basketItems.add(new BasketItem(catalogItems.get(0)));
-		System.out.println(basketItems);
+		//System.out.println(basketItems);
 		
 		response = basketService.setBasketItems(basketItems);
 		TestUtils.failIf(response.httpCode != HttpURLConnection.HTTP_OK, response.toString());

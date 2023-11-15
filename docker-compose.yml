@@ -54,3 +54,15 @@ services:
     ports:
       - "5672:5672"
       - "15672:15672"
+
+  order:
+    container_name: order-service
+    image: order-service
+    build:
+      context: ./services/order/
+    depends_on:
+      - db
+      - mq
+      - identity
+    ports:
+      - "5123:5123"
