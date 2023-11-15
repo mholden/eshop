@@ -66,3 +66,15 @@ services:
       - identity
     ports:
       - "5123:5123"
+
+  payment:
+    container_name: payment-service
+    image: payment-service
+    build:
+      context: ./services/payment/
+    depends_on:
+      - db
+      - mq
+      - identity
+    ports:
+      - "5124:5124"

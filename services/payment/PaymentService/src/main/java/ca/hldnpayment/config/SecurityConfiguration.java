@@ -1,4 +1,4 @@
-package ca.hldnorder.config;
+package ca.hldnpayment.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -30,14 +30,14 @@ public class SecurityConfiguration {
             	.requestMatchers(
             		"/oauth2/**", 
         			"/login/**", 
-        			"/order/ping"
+        			"/payment/ping"
         		)
             	.permitAll()
             	.anyRequest()
             	.fullyAuthenticated()
                 .and()
                 .logout()
-                .logoutSuccessUrl("http://localhost:8180/realms/quickstart/protocol/openid-connect/logout?redirect_uri=http://localhost:5123/")
+                .logoutSuccessUrl("http://localhost:8180/realms/quickstart/protocol/openid-connect/logout?redirect_uri=http://localhost:5124/")
                 .and()
                 .csrf().disable(); // without this, POSTs fail; TODO: revisit;
 

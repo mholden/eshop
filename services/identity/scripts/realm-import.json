@@ -10,7 +10,9 @@
             "enabled": true,	    
 						"redirectUris": [
         			"http://localhost:5121/*",
-        			"http://localhost:5122/*"
+        			"http://localhost:5122/*",
+							"http://localhost:5123/*",
+							"http://localhost:5124/*"
       	    ],
             "bearerOnly": false,
             "secret": "secret",
