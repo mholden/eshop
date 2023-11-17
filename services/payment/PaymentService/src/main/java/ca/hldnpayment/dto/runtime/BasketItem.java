@@ -1,4 +1,4 @@
-package ca.hldncatalog.dto;
+package ca.hldnpayment.dto.runtime;
 
 public class BasketItem {
     private int id;

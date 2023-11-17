@@ -1,18 +1,20 @@
-package ca.hldnorder.dto;
+package ca.hldncatalog.dto.runtime;
 
 import java.sql.Timestamp;
 
 import jakarta.persistence.*;
 
-@Entity
-@Table(name = "order")
 public class Order {
-	@Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 	private String userId;
 	private Timestamp creationTime;
-	private String state;
+	public enum OrderState { 
+		INITIATED, 
+		VERIFIED, 
+		PAYMENT_SUCCEEDED, 
+		SHIPPED 
+	}
+	private OrderState state;
 
     public Order(){
 
@@ -42,15 +44,20 @@ public class Order {
         this.creationTime = creationTime;
     }
     
-    public String getState() {
+    public OrderState getState() {
 		return state;
 	}
 
-	public void setState(String state) {
+	public void setState(OrderState state) {
 		this.state = state;
 	}
 
 	public String toString() {
-    	return String.format("id: %d userId %d creationTime %d", id, userId, creationTime);
+		StringBuilder output = new StringBuilder();
+		output.append("id: " + id);
+		output.append(" userId: " + userId);
+		output.append(" creationTime: " + creationTime);
+		output.append(" state: " + state);
+		return output.toString();
     }
 }

@@ -1,4 +1,4 @@
-package ca.hldnorder.dto;
+package ca.hldncatalog.dto.runtime;
 
 public class BasketItem {
     private int id;

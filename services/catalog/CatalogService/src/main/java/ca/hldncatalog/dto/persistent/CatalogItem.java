@@ -1,4 +1,4 @@
-package ca.hldncatalog.dto;
+package ca.hldncatalog.dto.persistent;
 
 import jakarta.persistence.*;
 

@@ -1,6 +1,6 @@
-package ca.hldnorder.event;
+package ca.hldnpayment.event;
 
-public abstract class IntegrationEvent {
+public abstract class IntegratedEvent {
 	
 	public abstract String getEventType();
 

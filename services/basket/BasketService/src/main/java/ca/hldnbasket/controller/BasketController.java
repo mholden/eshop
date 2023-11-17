@@ -2,31 +2,39 @@ package ca.hldnbasket.controller;
 
 import java.util.*;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
-import ca.hldnbasket.dto.Basket;
 import ca.hldnbasket.dto.BasketItem;
 import ca.hldnbasket.event.CheckoutEvent;
 import ca.hldnbasket.repository.BasketItemRepository;
-import ca.hldnbasket.service.RabbitMQPublisher;
+import ca.hldnbasket.service.IntegratedEventDesk;
 
 @RestController
 @RequestMapping("/basket")
 public class BasketController {
 	
-	@Autowired
-    BasketItemRepository basketItemRepository;
+	Logger logger = LoggerFactory.getLogger(BasketController.class); 
+	
+	private final AmqpTemplate amqpTemplate;
+	private final BasketItemRepository basketItemRepository;
 	
 	@Autowired
-	RabbitMQPublisher rabbitMQPublisher;
+	public BasketController(AmqpTemplate amqpTemplate, BasketItemRepository basketItemRepository) {    
+		this.amqpTemplate = amqpTemplate;
+		this.basketItemRepository = basketItemRepository;  
+	}
 
 	@GetMapping("/ping")
     public String ping() {
-		System.out.println("ping()");
+		logger.info("ping()");
 		return "Ping successful!\n";
     }
 	
@@ -37,22 +45,23 @@ public class BasketController {
 		String userId = oidcUser.getAttribute("sub");
 		List<BasketItem> basketItems = null;
 
-		System.out.println("getBasketItems() user " + userId);
+		logger.info("getBasketItems() user " + userId);
 
 		basketItems = basketItemRepository.findByUserId(userId);
 
-		System.out.println("getBasketItems() got items " + basketItems);
+		logger.info("getBasketItems() got items " + basketItems);
 
 		return basketItems;
 	}
 	
 	@PostMapping("/items")
+	@Transactional
 	public void setBasketItems(@RequestBody List<BasketItem> basketItems) {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		DefaultOidcUser oidcUser = (DefaultOidcUser) authentication.getPrincipal();
 		String userId = oidcUser.getAttribute("sub");
 
-		System.out.println("setBasketItems() user " + userId);
+		logger.info("setBasketItems() user " + userId);
 
 		// delete all existing
 		basketItemRepository.deleteAll(basketItemRepository.findByUserId(userId));
@@ -62,7 +71,7 @@ public class BasketController {
 			basketItem.setUserId(userId);
 		}
 
-		System.out.println("setBasketItems() saving new items " + basketItems);
+		logger.info("setBasketItems() saving new items " + basketItems);
 
 		basketItemRepository.saveAll(basketItems);
 	}
@@ -74,12 +83,12 @@ public class BasketController {
 		String userId = oidcUser.getAttribute("sub");
 		List<BasketItem> basketItems = null;
 		
-		System.out.println("checkout() user " + userId);
+		logger.info("checkout() user " + userId);
 		
 		basketItems = basketItemRepository.findByUserId(userId);
 
-		System.out.println("checkout() basketItems " + basketItems);
+		logger.info("checkout() basketItems " + basketItems);
 		
-		rabbitMQPublisher.send(new CheckoutEvent(userId, basketItems));
+		new IntegratedEventDesk(amqpTemplate).send(new CheckoutEvent(userId, basketItems));
 	}
 }

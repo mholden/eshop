@@ -2,9 +2,9 @@ package ca.hldnpayment.event;
 
 import java.util.List;
 
-import ca.hldnpayment.dto.BasketItem;
+import ca.hldnpayment.dto.runtime.BasketItem;
 
-public class CheckoutEvent extends IntegrationEvent {
+public class CheckoutEvent extends IntegratedEvent {
 	public String userId;
 	public List<BasketItem> basketItems;
 	

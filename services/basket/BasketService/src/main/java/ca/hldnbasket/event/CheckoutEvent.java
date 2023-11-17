@@ -4,7 +4,7 @@ import java.util.List;
 
 import ca.hldnbasket.dto.BasketItem;
 
-public class CheckoutEvent extends IntegrationEvent {
+public class CheckoutEvent extends IntegratedEvent {
 	public String userId;
 	public List<BasketItem> basketItems;
 	

@@ -17,7 +17,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import ca.hldncatalog.event.CheckoutEvent;
+import ca.hldncatalog.event.*;
 
 @Configuration
 public class RabbitMQConfiguration {
@@ -39,6 +39,11 @@ public class RabbitMQConfiguration {
 	}
 
 	@Bean
+	Binding orderInitiatedEventBinding(Queue queue, DirectExchange exchange) {
+		return BindingBuilder.bind(queue).to(exchange).with(OrderInitiatedEvent.class.getSimpleName());
+	}
+	
+	@Bean
 	Binding checkoutEventBinding(Queue queue, DirectExchange exchange) {
 		return BindingBuilder.bind(queue).to(exchange).with(CheckoutEvent.class.getSimpleName());
 	}
@@ -48,6 +53,7 @@ public class RabbitMQConfiguration {
 		DefaultClassMapper classMapper = new DefaultClassMapper();
 		Map<String, Class<?>> map = new HashMap<>();
 		map.put("ca.hldnbasket.event.CheckoutEvent", CheckoutEvent.class);
+		map.put("ca.hldnorder.event.OrderInitiatedEvent", OrderInitiatedEvent.class);
 		classMapper.setIdClassMapping(map);
 		return classMapper;
 	}

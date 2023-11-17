@@ -1,4 +1,4 @@
-package ca.hldnpayment.dto;
+package ca.hldnpayment.dto.persistent;
 
 import jakarta.persistence.*;
 

@@ -2,23 +2,34 @@ package ca.hldncatalog.controller;
 
 import java.util.*;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.web.bind.annotation.*;
 
-import ca.hldncatalog.dto.CatalogItem;
+import ca.hldncatalog.dto.persistent.CatalogItem;
 import ca.hldncatalog.repository.CatalogItemRepository;
 
 @RestController
 @RequestMapping("/catalog")
 public class CatalogController {
 	
+	Logger logger = LoggerFactory.getLogger(CatalogController.class); 
+	
+	private final AmqpTemplate amqpTemplate;
+	private final CatalogItemRepository catalogItemRepository;
+	
 	@Autowired
-    CatalogItemRepository catalogItemRepository;
+	public CatalogController(AmqpTemplate amqpTemplate, CatalogItemRepository catalogItemRepository) {    
+		this.amqpTemplate = amqpTemplate;
+		this.catalogItemRepository = catalogItemRepository;  
+	}
 
 	@GetMapping("/ping")
     public String ping() {
-    	System.out.println("ping()");
+    	logger.info("ping()");
     	return "Ping successful!\n";
     }
     
@@ -27,7 +38,7 @@ public class CatalogController {
     	List<CatalogItem> catalogItems = null;
     	Integer _pageIndex = 0;
     	
-    	System.out.println("getCatalogItems() pageSize: " + pageSize + " pageIndex: " + pageIndex);
+    	logger.info("getCatalogItems() pageSize: " + pageSize + " pageIndex: " + pageIndex);
     	
     	if (pageSize != null) {
     		if (pageIndex != null) {
