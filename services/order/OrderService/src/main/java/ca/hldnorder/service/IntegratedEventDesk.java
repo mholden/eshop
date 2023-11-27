@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import ca.hldnorder.event.CheckoutEvent;
 import ca.hldnorder.event.IntegratedEvent;
+import ca.hldnorder.event.OrderPaymentSucceededEvent;
 import ca.hldnorder.event.OrderVerifiedEvent;
 import ca.hldnorder.repository.OrderRepository;
 
@@ -52,6 +53,11 @@ public class IntegratedEventDesk {
 		new OrderDesk(amqpTemplate, orderRepository).updateOrder(orderVerifiedEvent.getOrder());
 	}
 	
+	private void handleOrderPaymentSucceededEvent(OrderPaymentSucceededEvent orderPaymentSucceededEvent) throws Exception {
+		logger.info("handleOrderPaymentSucceededEvent() orderPaymentSucceededEvent {}", orderPaymentSucceededEvent);
+		new OrderDesk(amqpTemplate, orderRepository).updateOrder(orderPaymentSucceededEvent.getOrder());
+	}
+	
 	@RabbitListener(queues = "${ca.hldn.order.rabbitmq.queue}")
 	@Transactional
 	public void receive(IntegratedEvent event) throws Exception {
@@ -64,6 +70,9 @@ public class IntegratedEventDesk {
 				break;
 			case "OrderVerifiedEvent":
 				handleOrderVerifiedEvent((OrderVerifiedEvent)event);
+				break;
+			case "OrderPaymentSucceededEvent":
+				handleOrderPaymentSucceededEvent((OrderPaymentSucceededEvent)event);
 				break;
 			default:
 				logger.info("receive() no handler for event of type " + event.getEventType());

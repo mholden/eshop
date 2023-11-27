@@ -1,8 +1,8 @@
+drop database paymentdb;
 create database paymentdb;
 use paymentdb;
 CREATE TABLE `payment` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `catalogitemid` int NOT NULL,
-	`orderitemid` int NOT NULL,
+	`order_item_id` int NOT NULL,
   PRIMARY KEY (`id`)
 );

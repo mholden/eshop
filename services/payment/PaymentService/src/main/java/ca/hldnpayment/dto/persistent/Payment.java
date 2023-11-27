@@ -1,5 +1,6 @@
 package ca.hldnpayment.dto.persistent;
 
+import ca.hldnpayment.dto.runtime.Order;
 import jakarta.persistence.*;
 
 @Entity
@@ -8,11 +9,14 @@ public class Payment {
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    private Integer catalogItemId;
     private Integer orderItemId;
 
     public Payment(){
 
+    }
+    
+    public Payment(Order order){
+    	this.orderItemId = order.getId();
     }
 
     public int getId() {
@@ -23,14 +27,6 @@ public class Payment {
         this.id = id;
     }
 
-    public Integer getCatalogItemId() {
-		return catalogItemId;
-	}
-
-	public void setCatalogItemId(Integer catalogItemId) {
-		this.catalogItemId = catalogItemId;
-	}
-
 	public Integer getOrderItemId() {
 		return orderItemId;
 	}
@@ -40,6 +36,6 @@ public class Payment {
 	}
 
 	public String toString() {
-    	return String.format("id: %d catalogItemId %d orderItemId %d", id, catalogItemId, orderItemId);
+    	return String.format("id: %d orderItemId %d", id, orderItemId);
     }
 }

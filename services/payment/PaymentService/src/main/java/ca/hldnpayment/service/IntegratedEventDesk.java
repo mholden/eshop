@@ -48,7 +48,7 @@ public class IntegratedEventDesk {
 	
 	private void handleOrderPaymentInitiatedEvent(OrderPaymentInitiatedEvent orderPaymentInitiatedEvent) throws Exception {
 		logger.info("handleOrderPaymentInitiatedEvent() orderPaymentInitiatedEvent {}", orderPaymentInitiatedEvent);
-		// TODO: paymentDesk.payForOrder(orderPaymentInitiatedEvent.getOrder())
+		new PaymentDesk(amqpTemplate, paymentRepository).payForOrder(orderPaymentInitiatedEvent.getOrder());
 	}
 	
 	@RabbitListener(queues = "${ca.hldn.payment.rabbitmq.queue}")

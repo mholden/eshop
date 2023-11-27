@@ -60,7 +60,18 @@ public class OrderDesk {
 		new IntegratedEventDesk(amqpTemplate, orderRepository).send(new OrderPaymentInitiatedEvent(existingOrder));
 	}
 	
-	// TODO: update order state and initiate payment
+	private void updateVerifiedOrder(Order existingOrder, Order order) throws Exception {
+		
+		logger.info("updateVerifiedOrder() existingOrder {}", existingOrder);
+		
+		if (!order.getState().equals(OrderState.PAYMENT_SUCCEEDED)) {
+			throw new Exception("verified order can only move to payment_succeeded state");
+		}
+		
+		existingOrder.setState(order.getState());
+		existingOrder = orderRepository.save(existingOrder);
+	}
+	
 	public void updateOrder(Order order) throws Exception {
 		Order existingOrder;
 		
@@ -71,8 +82,11 @@ public class OrderDesk {
 			case INITIATED:
 				updateInitiatedOrder(existingOrder, order);
 				break;
+			case VERIFIED:
+				updateVerifiedOrder(existingOrder, order);
+				break;
 			default:
-				throw new Exception("updatint order in state " + existingOrder.getState() + " not yet supported");
+				throw new Exception("updating order in state " + existingOrder.getState() + " not yet supported");
 		}
 	}
 }
