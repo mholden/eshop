@@ -1,22 +1,21 @@
 package ca.testeshop.utils;
 
-import java.util.*;
+import java.sql.Timestamp;
 
-//
-// Ordering.API -> Application -> Queries -> OrderViewModel.cs
-//
+//ca.hldnorder.dto.persistent.Order
 public class Order {
 	
-	public Integer ordernumber;
-    public String date;
-    public String status;
-    public String description;
-    public String street;
-    public String city;
-    public String zipcode;
-    public String country;
-    public List<OrderItem> orderitems;
-    public Double total;
+	public int id;
+	public String userId;
+	public Timestamp creationTime;
+	
+	public enum OrderState { 
+		INITIATED, 
+		VERIFIED, 
+		PAYMENT_SUCCEEDED, 
+		SHIPPED 
+	}
+	public OrderState state;
 	
 	Order() {
 		
@@ -24,11 +23,10 @@ public class Order {
 
 	public String toString() {
 		StringBuilder output = new StringBuilder();
-		output.append("ordernumber: " + ordernumber + " date: " + date + " status: " + status + " total: " + total + "\n");
-		for (OrderItem orderItem : orderitems) {
-			output.append(orderItem);
-		}
-		output.append("\n");
+		output.append("id: " + id);
+		output.append(" userId: " + userId);
+		output.append(" creationTime: " + creationTime);
+		output.append(" state: " + state);
 		return output.toString();
-	}
+    }
 }

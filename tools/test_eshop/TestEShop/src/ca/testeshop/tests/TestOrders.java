@@ -2,11 +2,13 @@ package ca.testeshop.tests;
 
 import java.net.HttpURLConnection;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 import com.google.gson.reflect.TypeToken;
 
 import ca.testeshop.services.*;
 import ca.testeshop.utils.*;
+import ca.testeshop.utils.Order.OrderState;
 
 public class TestOrders extends Test {
 	
@@ -20,10 +22,9 @@ public class TestOrders extends Test {
 	
 	// test ordering a single item
 	private void testSpecificCase1() throws Exception {
-		UserInfo userInfo;
 		List<CatalogItem> catalogItems;
 		CatalogItem catalogItem;
-		List<OrderSummary> orders;
+		List<Order> orders;
 		Order order;
 		Basket basket;
 		List<BasketItem> basketItems;
@@ -31,12 +32,9 @@ public class TestOrders extends Test {
 		
 		System.out.println("\ntestSpecificCase1");
 		
-		doUserLogin("alice", "alice");
+		doUserRegistration();
 		
-		/*
-		response = basketService.checkout();
-		TestUtils.failIf(response.httpCode != HttpURLConnection.HTTP_OK, response.toString());
-		*/
+		System.out.println("user: " + getUserName());
 		
 		response = catalogService.getCatalogItems(0, 12);
 		TestUtils.failIf(response.httpCode != HttpURLConnection.HTTP_OK, response.toString());
@@ -61,21 +59,20 @@ public class TestOrders extends Test {
 		response = basketService.checkout();
 		TestUtils.failIf(response.httpCode != HttpURLConnection.HTTP_OK, response.toString());
 		
-		/*
-		response = aggregatorService.getOrders();
+		// TODO: verify async notifications; should be getting updates for order status as it changes states
+		
+		// just wait a few seconds for now
+		TimeUnit.SECONDS.sleep(3);
+		
+		response = orderService.getOrders();
 		TestUtils.failIf(response.httpCode != HttpURLConnection.HTTP_OK, response.toString());
 		
-		orders = (List<OrderSummary>)JsonUtils.jsonToPojo(response.response, new TypeToken<List<OrderSummary>>(){}.getType());
+		orders = (List<Order>)JsonUtils.jsonToPojo(response.response, new TypeToken<List<Order>>(){}.getType());
 		//System.out.println(orders);
+		TestUtils.failIf(orders.size() != 1, null);
 		
-		for (OrderSummary orderSummary : orders) {
-			response = aggregatorService.getOrder(orderSummary.ordernumber);
-			TestUtils.failIf(response.httpCode != HttpURLConnection.HTTP_OK, response.toString());
-			
-			order = (Order)JsonUtils.jsonToPojo(response.response, Order.class);
-			System.out.println(order);
-		}
-		*/
+		order = orders.get(0);
+		TestUtils.failIf(order.state != OrderState.PAYMENT_SUCCEEDED, null);
 	}
 	
 	public void run() throws Exception {

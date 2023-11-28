@@ -44,15 +44,9 @@ public class RabbitMQConfiguration {
 	}
 	
 	@Bean
-	Binding checkoutEventBinding(Queue queue, DirectExchange exchange) {
-		return BindingBuilder.bind(queue).to(exchange).with(CheckoutEvent.class.getSimpleName());
-	}
-	
-	@Bean
 	public DefaultClassMapper getClassMapper() {
 		DefaultClassMapper classMapper = new DefaultClassMapper();
 		Map<String, Class<?>> map = new HashMap<>();
-		map.put("ca.hldnbasket.event.CheckoutEvent", CheckoutEvent.class);
 		map.put("ca.hldnorder.event.OrderInitiatedEvent", OrderInitiatedEvent.class);
 		classMapper.setIdClassMapping(map);
 		return classMapper;

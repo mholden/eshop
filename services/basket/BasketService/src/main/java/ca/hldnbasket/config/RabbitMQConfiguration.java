@@ -33,11 +33,6 @@ public class RabbitMQConfiguration {
 	DirectExchange exchange() {
 		return new DirectExchange(exchange);
 	}
-	
-	@Bean
-	Binding checkoutEventBinding(Queue queue, DirectExchange exchange) {
-		return BindingBuilder.bind(queue).to(exchange).with(CheckoutEvent.class.getSimpleName());
-	}
 
 	@Bean
 	public MessageConverter jsonMessageConverter() {

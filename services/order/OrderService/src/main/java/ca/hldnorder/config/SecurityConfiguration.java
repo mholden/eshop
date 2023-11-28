@@ -39,7 +39,7 @@ public class SecurityConfiguration {
                 .logout()
                 .logoutSuccessUrl("http://localhost:8180/realms/quickstart/protocol/openid-connect/logout?redirect_uri=http://localhost:5123/")
                 .and()
-                .csrf().disable(); // without this, POSTs fail; TODO: revisit;
+                .csrf().disable(); // without this, POSTs fail; TODO: revisit
 
         return http.build();
     }

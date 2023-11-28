@@ -37,10 +37,6 @@ public class IntegratedEventDesk {
 	 * Receiving:
 	 */
 	
-	private void handleCheckoutEvent(CheckoutEvent checkoutEvent) {
-		logger.info("handleCheckoutEvent() checkoutEvent {}", checkoutEvent);
-	}
-	
 	@RabbitListener(queues = "${ca.hldn.basket.rabbitmq.queue}")
 	@Transactional
 	public void receive(IntegratedEvent event) {
@@ -48,9 +44,6 @@ public class IntegratedEventDesk {
 		logger.info("receive() received event " + event.getEventType());
 		
 		switch (event.getEventType()) {
-			case "CheckoutEvent":
-				handleCheckoutEvent((CheckoutEvent)event);
-				break;
 			default:
 				logger.info("receive() no handler for event of type {}", event.getEventType());
 				break;

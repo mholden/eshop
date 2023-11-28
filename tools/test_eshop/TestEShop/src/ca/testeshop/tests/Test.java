@@ -18,6 +18,7 @@ public abstract class Test {
 	public IdentityService identityService;
 	public CatalogService catalogService;
 	public BasketService basketService;
+	public OrderService orderService;
 	
 	public static ThreadLocal<String> userId = new ThreadLocal<String>();
 	
@@ -28,10 +29,10 @@ public abstract class Test {
 	public Test(String username, String password, Services services) {
 		this.username.set(username);
 		this.password.set(password);
-		this.aggregatorService = services.aggregatorService;
 		this.identityService = services.identityService;
 		this.catalogService = services.catalogService;
 		this.basketService = services.basketService;
+		this.orderService = services.orderService;
 	}
 	
 	public String getUserName() {

@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import ca.hldnpayment.event.CheckoutEvent;
 import ca.hldnpayment.event.IntegratedEvent;
 import ca.hldnpayment.event.OrderPaymentInitiatedEvent;
 import ca.hldnpayment.repository.PaymentRepository;
@@ -42,10 +41,6 @@ public class IntegratedEventDesk {
 	 * Receiving:
 	 */
 	
-	private void handleCheckoutEvent(CheckoutEvent checkoutEvent) throws Exception {
-		logger.info("handleCheckoutEvent() checkoutEvent {}", checkoutEvent);
-	}
-	
 	private void handleOrderPaymentInitiatedEvent(OrderPaymentInitiatedEvent orderPaymentInitiatedEvent) throws Exception {
 		logger.info("handleOrderPaymentInitiatedEvent() orderPaymentInitiatedEvent {}", orderPaymentInitiatedEvent);
 		new PaymentDesk(amqpTemplate, paymentRepository).payForOrder(orderPaymentInitiatedEvent.getOrder());
@@ -58,9 +53,6 @@ public class IntegratedEventDesk {
 		logger.info("receive() received event " + event.getEventType());
 		
 		switch (event.getEventType()) {
-			case "CheckoutEvent":
-				handleCheckoutEvent((CheckoutEvent)event);
-				break;
 			case "OrderPaymentInitiatedEvent":
 				handleOrderPaymentInitiatedEvent((OrderPaymentInitiatedEvent)event);
 				break;

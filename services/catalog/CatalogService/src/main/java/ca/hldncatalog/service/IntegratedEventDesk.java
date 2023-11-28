@@ -44,19 +44,12 @@ public class IntegratedEventDesk {
 		new CatalogDesk(amqpTemplate, catalogItemRepository).verifyOrder(orderInitiatedEvent.getOrder());
 	}
 	
-	private void handleCheckoutEvent(CheckoutEvent checkoutEvent) {
-		logger.info("handleCheckoutEvent() checkoutEvent {}", checkoutEvent);
-	}
-	
 	@RabbitListener(queues = "${ca.hldn.catalog.rabbitmq.queue}")
 	public void receive(IntegratedEvent event) {
 		
 		logger.info("receive() received event " + event.getEventType());
 		
 		switch (event.getEventType()) {
-			case "CheckoutEvent":
-				handleCheckoutEvent((CheckoutEvent)event);
-				break;
 			case "OrderInitiatedEvent":
 				handleOrderInitiatedEvent((OrderInitiatedEvent)event);
 				break;
