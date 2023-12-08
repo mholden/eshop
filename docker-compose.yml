@@ -78,3 +78,15 @@ services:
       - identity
     ports:
       - "5124:5124"
+
+  notification:
+    container_name: notification-service
+    image: notification-service
+    build:
+      context: ./services/notification/
+    depends_on:
+      - db
+      - mq
+      - identity
+    ports:
+      - "5125:5125"

@@ -8,6 +8,7 @@ import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.core.oidc.OidcUserInfo;
 import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -38,6 +39,23 @@ public class BasketController {
 		return "Ping successful!\n";
     }
 	
+	// TODO: move this to an identity service
+	@GetMapping("/userInfo")
+    public OidcUserInfo getUserInfo() {
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		DefaultOidcUser oidcUser = (DefaultOidcUser) authentication.getPrincipal();
+		String userId = oidcUser.getAttribute("sub");
+		OidcUserInfo userInfo = oidcUser.getUserInfo();
+		
+		logger.info("getUserInfo() user {}", userId);
+		
+		userInfo = oidcUser.getUserInfo();
+		
+		logger.info("getUserInfo() userInfo {}", userInfo);
+		
+		return userInfo;
+    }
+	
 	@GetMapping("/items")
 	public List<BasketItem> getBasketItems() {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -45,7 +63,7 @@ public class BasketController {
 		String userId = oidcUser.getAttribute("sub");
 		List<BasketItem> basketItems = null;
 
-		logger.info("getBasketItems() user " + userId);
+		logger.info("getBasketItems() user {}", userId);
 
 		basketItems = basketItemRepository.findByUserId(userId);
 
@@ -61,7 +79,7 @@ public class BasketController {
 		DefaultOidcUser oidcUser = (DefaultOidcUser) authentication.getPrincipal();
 		String userId = oidcUser.getAttribute("sub");
 
-		logger.info("setBasketItems() user " + userId);
+		logger.info("setBasketItems() user {}", userId);
 
 		// delete all existing
 		basketItemRepository.deleteAll(basketItemRepository.findByUserId(userId));
@@ -83,7 +101,7 @@ public class BasketController {
 		String userId = oidcUser.getAttribute("sub");
 		List<BasketItem> basketItems = null;
 		
-		logger.info("checkout() user " + userId);
+		logger.info("checkout() user {}", userId);
 		
 		basketItems = basketItemRepository.findByUserId(userId);
 
