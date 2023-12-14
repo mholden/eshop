@@ -1,7 +1,11 @@
+package ca.edump.main;
+
 import java.sql.*;
 import java.util.*;
 
-class EDump {
+import redis.clients.jedis.Jedis;
+
+class Main {
 	static final String USER = "root";
 	static final String PASS = "password";
 	static final int NHEADERCOLS = 9;
@@ -76,6 +80,29 @@ class EDump {
 		
 		return;
 	}
+	
+	private static void dumpRedisDb() throws Exception {
+		Jedis redisDb = new Jedis();
+		Set<String> keys;
+		
+		keys = redisDb.keys("*");
+		for (String key : keys) {
+			String keyType = redisDb.type(key);
+			switch (keyType) {
+				case "hash":
+					System.out.println(key + " : " + redisDb.hgetAll(key));
+					break;
+				case "set":
+					System.out.println(key + " : IGNORING set KEY TYPE" /*redisDb.smembers(key)*/ );
+					break;
+				default:
+					System.out.println(key + " : KEY TYPE " + keyType + " NOT YET SUPPORTED");
+					break;
+			}
+		}
+		
+		redisDb.close();
+	}
 
 	public static void main(String[] args) {
 		try {
@@ -115,6 +142,11 @@ class EDump {
 	        if (dbName == null) {
 	        	c = DriverManager.getConnection("jdbc:mysql://" + hostName + ":3306", USER, PASS);
 	        	dumpDBs(c);
+	        	return;
+	        }
+	        
+	        if (dbName.equals("basketdb")) {
+	        	dumpRedisDb();
 	        	return;
 	        }
 	        

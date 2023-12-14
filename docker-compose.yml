@@ -42,7 +42,7 @@ services:
     build:
       context: ./services/basket/
     depends_on:
-      - db
+      - basket-db
       - mq
       - identity
     ports:
@@ -90,3 +90,9 @@ services:
       - identity
     ports:
       - "5125:5125"
+
+  basket-db:
+    container_name: basket-db
+    image: redis:alpine
+    ports:
+      - "6379:6379"

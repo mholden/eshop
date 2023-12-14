@@ -1,27 +1,44 @@
 package ca.hldnbasket.dto;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class Basket {
-    private List<BasketItem> basketItems;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.redis.core.RedisHash;
 
-    public Basket() {
+@RedisHash("Basket")
+public class Basket implements Serializable {
 
-    }
-    
-    public Basket(List<BasketItem> basketItems) {
-    	this.basketItems = basketItems;
-    }
-    
-    public  List<BasketItem> getBasketItems() {
-        return basketItems;
-    }
+	@Id
+	private String userId;
+	private List<BasketItem> basketItems;
 
-    public void setBasketItems(List<BasketItem> basketItems) {
-        this.basketItems = basketItems;
-    }
-    
-    public String toString() {
-    	return String.format("basketItems: {}", basketItems);
-    }
+	public Basket() {
+
+	}
+
+	public Basket(String userId, List<BasketItem> basketItems) {
+		this.userId = userId;
+		this.basketItems = basketItems;
+	}
+
+	public String getUserId() {
+		return userId;
+	}
+
+	public void setUserId(String userId) {
+		this.userId = userId;
+	}
+
+	public List<BasketItem> getBasketItems() {
+		return basketItems;
+	}
+
+	public void setBasketItems(List<BasketItem> basketItems) {
+		this.basketItems = basketItems;
+	}
+
+	public String toString() {
+		return String.format("userId: {} basketItems: {}", userId, basketItems);
+	}
 }

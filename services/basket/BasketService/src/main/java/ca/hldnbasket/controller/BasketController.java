@@ -13,9 +13,9 @@ import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
-import ca.hldnbasket.dto.BasketItem;
+import ca.hldnbasket.dto.*;
 import ca.hldnbasket.event.CheckoutEvent;
-import ca.hldnbasket.repository.BasketItemRepository;
+import ca.hldnbasket.repository.BasketRepository;
 import ca.hldnbasket.service.IntegratedEventDesk;
 
 @RestController
@@ -25,12 +25,12 @@ public class BasketController {
 	Logger logger = LoggerFactory.getLogger(BasketController.class); 
 	
 	private final AmqpTemplate amqpTemplate;
-	private final BasketItemRepository basketItemRepository;
+	private final BasketRepository basketRepository;
 	
 	@Autowired
-	public BasketController(AmqpTemplate amqpTemplate, BasketItemRepository basketItemRepository) {    
+	public BasketController(AmqpTemplate amqpTemplate, BasketRepository basketRepository) {    
 		this.amqpTemplate = amqpTemplate;
-		this.basketItemRepository = basketItemRepository;  
+		this.basketRepository = basketRepository;  
 	}
 
 	@GetMapping("/ping")
@@ -61,11 +61,18 @@ public class BasketController {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		DefaultOidcUser oidcUser = (DefaultOidcUser) authentication.getPrincipal();
 		String userId = oidcUser.getAttribute("sub");
+		Basket basket;
 		List<BasketItem> basketItems = null;
 
 		logger.info("getBasketItems() user {}", userId);
 
-		basketItems = basketItemRepository.findByUserId(userId);
+		basket = basketRepository.findById(userId).orElse(null);
+		if (basket != null) {
+			basketItems = basket.getBasketItems();
+		}
+		if (basketItems == null) {
+			basketItems = new LinkedList<BasketItem>();
+		}
 
 		logger.info("getBasketItems() got items " + basketItems);
 
@@ -81,9 +88,6 @@ public class BasketController {
 
 		logger.info("setBasketItems() user {}", userId);
 
-		// delete all existing
-		basketItemRepository.deleteAll(basketItemRepository.findByUserId(userId));
-
 		// save the new basket
 		for (BasketItem basketItem : basketItems) {
 			basketItem.setUserId(userId);
@@ -91,7 +95,7 @@ public class BasketController {
 
 		logger.info("setBasketItems() saving new items " + basketItems);
 
-		basketItemRepository.saveAll(basketItems);
+		basketRepository.save(new Basket(userId, basketItems));
 	}
 	
 	@PostMapping("/checkout")
@@ -99,14 +103,20 @@ public class BasketController {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		DefaultOidcUser oidcUser = (DefaultOidcUser) authentication.getPrincipal();
 		String userId = oidcUser.getAttribute("sub");
+		Basket basket;
 		List<BasketItem> basketItems = null;
 		
 		logger.info("checkout() user {}", userId);
 		
-		basketItems = basketItemRepository.findByUserId(userId);
+		basket = basketRepository.findById(userId).orElse(null);
+		if (basket != null) {
+			basketItems = basket.getBasketItems();
+		}
 
 		logger.info("checkout() basketItems " + basketItems);
 		
-		new IntegratedEventDesk(amqpTemplate).send(new CheckoutEvent(userId, basketItems));
+		if (basketItems != null) {
+			new IntegratedEventDesk(amqpTemplate).send(new CheckoutEvent(userId, basketItems));
+		}
 	}
 }
