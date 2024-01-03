@@ -13,16 +13,16 @@ import org.springframework.web.socket.messaging.WebSocketStompClient;
 public class AsyncChannel {
 	private EShopStompSessionHandler stompSessionHandler;
 	private BlockingQueue<Notification> notifications = new ArrayBlockingQueue<>(50);
-	
+
 	public AsyncChannel(String url, String userId) {
 		WebSocketClient client = new StandardWebSocketClient();
-        WebSocketStompClient stompClient = new WebSocketStompClient(client);
+		WebSocketStompClient stompClient = new WebSocketStompClient(client);
 
-        stompClient.setMessageConverter(new MappingJackson2MessageConverter());
-        stompSessionHandler = new EShopStompSessionHandler();
-        stompSessionHandler.userId = userId;
-        stompSessionHandler.notifications = notifications;
-        stompClient.connect(url, stompSessionHandler);
+		stompClient.setMessageConverter(new MappingJackson2MessageConverter());
+		stompSessionHandler = new EShopStompSessionHandler();
+		stompSessionHandler.userId = userId;
+		stompSessionHandler.notifications = notifications;
+		stompClient.connect(url, stompSessionHandler);
 	}
 	
 	public void waitFor(String notificationType, Duration duration) throws Exception {

@@ -12,18 +12,17 @@ import ca.hldnnotification.notification.Notification;
 @Service
 public class NotificationDesk {
 	Logger logger = LoggerFactory.getLogger(NotificationDesk.class);
-	
+
 	private final AmqpTemplate amqpTemplate;
 	private final SimpMessagingTemplate simpMessagingTemplate;
-	
+
 	@Autowired
-	public NotificationDesk(AmqpTemplate amqpTemplate, SimpMessagingTemplate simpMessagingTemplate) {    
-		this.amqpTemplate = amqpTemplate; 
+	public NotificationDesk(AmqpTemplate amqpTemplate, SimpMessagingTemplate simpMessagingTemplate) {
+		this.amqpTemplate = amqpTemplate;
 		this.simpMessagingTemplate = simpMessagingTemplate;
 	}
-	
-	public void sendUserNotification(Notification notification)
-	{
+
+	public void sendUserNotification(Notification notification) {
 		logger.info("sendUserNotification() notification {}", notification);
 		simpMessagingTemplate.convertAndSend("/queue/" + notification.getUserId(), notification);
 	}

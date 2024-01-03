@@ -9,19 +9,19 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/notification")
 public class NotificationController {
-	
-	Logger logger = LoggerFactory.getLogger(NotificationController.class); 
-	
+
+	Logger logger = LoggerFactory.getLogger(NotificationController.class);
+
 	private final AmqpTemplate amqpTemplate;
-	
+
 	@Autowired
-	public NotificationController(AmqpTemplate amqpTemplate) {    
+	public NotificationController(AmqpTemplate amqpTemplate) {
 		this.amqpTemplate = amqpTemplate;
 	}
 
 	@GetMapping("/ping")
-    public String ping() {
-    	logger.info("ping()");
-    	return "Ping successful!\n";
-    }
+	public String ping() {
+		logger.info("ping()");
+		return "Ping successful!\n";
+	}
 }

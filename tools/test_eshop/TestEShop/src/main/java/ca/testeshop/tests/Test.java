@@ -94,24 +94,24 @@ public abstract class Test {
 		// get auth url from output:
 		Scanner scanner = new Scanner(response.response);
 		while (scanner.hasNextLine()) {
-		  String line = scanner.nextLine();
-		  if (line.contains("login-actions/authenticate")) {
-			  //System.out.println(line);
-			  st = new StringTokenizer(line, "\"");  
-			  String last = "", next;
-			  while (st.hasMoreTokens()) {  
-				  next = st.nextToken();
-				  if (last.contains("action")) {
-					  url = next.replaceAll("&amp;", "&");
-					  break;
-				  }
-				  last = next;
-			  }  
-			  break;
-		  }
+			String line = scanner.nextLine();
+			if (line.contains("login-actions/authenticate")) {
+				// System.out.println(line);
+				st = new StringTokenizer(line, "\"");
+				String last = "", next;
+				while (st.hasMoreTokens()) {
+					next = st.nextToken();
+					if (last.contains("action")) {
+						url = next.replaceAll("&amp;", "&");
+						break;
+					}
+					last = next;
+				}
+				break;
+			}
 		}
 		scanner.close();
-		
+
 		//System.out.println("url is " + url);
 		
 		response = identityService.authenticate(url, email, password);
@@ -144,21 +144,21 @@ public abstract class Test {
 		// get registration url from output
 		Scanner scanner = new Scanner(response.response);
 		while (scanner.hasNextLine()) {
-		  String line = scanner.nextLine();
-		  if (line.contains("login-actions/registration")) {
-			  //System.out.println(line);
-			  st = new StringTokenizer(line, "\"");  
-			  String last = "", next;
-			  while (st.hasMoreTokens()) {  
-				  next = st.nextToken();
-				  if (last.contains("href")) {
-					  url = "http://docker.for.mac.localhost:8180" + next.replaceAll("&amp;", "&"); // hardcoding the hostname for now..
-					  break;
-				  }
-				  last = next;
-			  }  
-			  break;
-		  }
+			String line = scanner.nextLine();
+			if (line.contains("login-actions/registration")) {
+				// System.out.println(line);
+				st = new StringTokenizer(line, "\"");
+				String last = "", next;
+				while (st.hasMoreTokens()) {
+					next = st.nextToken();
+					if (last.contains("href")) {
+						url = "http://docker.for.mac.localhost:8180" + next.replaceAll("&amp;", "&"); // hardcoding the hostname for now..
+						break;
+					}
+					last = next;
+				}
+				break;
+			}
 		}
 		scanner.close();
 		

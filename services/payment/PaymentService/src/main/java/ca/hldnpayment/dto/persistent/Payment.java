@@ -7,25 +7,25 @@ import jakarta.persistence.*;
 @Table(name = "payment")
 public class Payment {
 	@Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
-    private Integer orderItemId;
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private int id;
+	private Integer orderItemId;
 
-    public Payment(){
+	public Payment() {
 
-    }
-    
-    public Payment(Order order){
-    	this.orderItemId = order.getId();
-    }
+	}
 
-    public int getId() {
-        return id;
-    }
+	public Payment(Order order) {
+		this.orderItemId = order.getId();
+	}
 
-    public void setId(int id) {
-        this.id = id;
-    }
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
 
 	public Integer getOrderItemId() {
 		return orderItemId;
@@ -36,6 +36,6 @@ public class Payment {
 	}
 
 	public String toString() {
-    	return String.format("id: %d orderItemId %d", id, orderItemId);
-    }
+		return String.format("id: %d orderItemId %d", id, orderItemId);
+	}
 }

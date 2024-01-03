@@ -16,60 +16,69 @@ import ca.testeshop.utils.TestUtils;
 
 @SpringBootApplication
 public class TestEShopApplication implements CommandLineRunner {
-	
+
 	public static void main(String[] args) {
 		SpringApplication.run(TestEShopApplication.class, args).close();
 	}
-	
+
 	@Override
-    public void run(String... args) throws Exception { 
-    	try {
-    		
-    		Logger.getLogger("sun.net.www.protocol.http.HttpURLConnection").setLevel(Level.OFF);;
-    		
+	public void run(String... args) throws Exception {
+		try {
+
+			Logger.getLogger("sun.net.www.protocol.http.HttpURLConnection").setLevel(Level.OFF);
+
 			Options options = new Options();
 			CommandLineParser parser = new DefaultParser();
 			CommandLine cmd;
 			String testName = null, userName = null;
 			TestEShop testEShop;
-			
+
 			// define the options and parse the command line
-			
+
 			// testName option
-			options.addOption(Option.builder("t")
-									.hasArg(true)
-									.required(false)
-									.desc("test name")
-									.build());
-			
+			options.addOption(
+				Option
+				.builder("t")
+				.hasArg(true)
+				.required(false)
+				.desc("test name")
+				.build()
+			);
+
 			// userName option
-			options.addOption(Option.builder("u")
-									.hasArg(true)
-									.required(false)
-									.desc("user name")
-									.build());
-			
+			options.addOption(
+				Option
+				.builder("u")
+				.hasArg(true)
+				.required(false)
+				.desc("user name")
+				.build()
+			);
+
 			// list option
-			options.addOption(Option.builder("l")
-									.required(false)
-									.desc("list tests")
-									.build());
-			 
+			options.addOption(
+				Option
+				.builder("l")
+				.required(false)
+				.desc("list tests")
+				.build()
+			);
+
 			cmd = parser.parse(options, args);
-			
+
 			if (cmd.hasOption("u"))
 				userName = cmd.getOptionValue("u");
-			
+
 			// TODO: prompt for user password
 			testEShop = new TestEShop(userName, TestUtils.defaultPassword);
-			
+
 			if (cmd.hasOption("l")) { // list tests
 				testEShop.listTests();
-				//return;
+				// return;
 			} else { // run one or all tests
 				if (cmd.hasOption("t"))
 					testName = cmd.getOptionValue("t");
-				
+
 				if (testName != null)
 					testEShop.runTest(Class.forName("ca.testeshop.tests." + testName));
 				else
@@ -78,5 +87,5 @@ public class TestEShopApplication implements CommandLineRunner {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-    }
+	}
 }

@@ -21,41 +21,41 @@ import ca.hldnbasket.service.IntegratedEventDesk;
 @RestController
 @RequestMapping("/basket")
 public class BasketController {
-	
-	Logger logger = LoggerFactory.getLogger(BasketController.class); 
-	
+
+	Logger logger = LoggerFactory.getLogger(BasketController.class);
+
 	private final AmqpTemplate amqpTemplate;
 	private final BasketRepository basketRepository;
-	
+
 	@Autowired
-	public BasketController(AmqpTemplate amqpTemplate, BasketRepository basketRepository) {    
+	public BasketController(AmqpTemplate amqpTemplate, BasketRepository basketRepository) {
 		this.amqpTemplate = amqpTemplate;
-		this.basketRepository = basketRepository;  
+		this.basketRepository = basketRepository;
 	}
 
 	@GetMapping("/ping")
-    public String ping() {
+	public String ping() {
 		logger.info("ping()");
 		return "Ping successful!\n";
-    }
-	
+	}
+
 	// TODO: move this to an identity service
 	@GetMapping("/userInfo")
-    public OidcUserInfo getUserInfo() {
+	public OidcUserInfo getUserInfo() {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		DefaultOidcUser oidcUser = (DefaultOidcUser) authentication.getPrincipal();
 		String userId = oidcUser.getAttribute("sub");
 		OidcUserInfo userInfo = oidcUser.getUserInfo();
-		
+
 		logger.info("getUserInfo() user {}", userId);
-		
+
 		userInfo = oidcUser.getUserInfo();
-		
+
 		logger.info("getUserInfo() userInfo {}", userInfo);
-		
+
 		return userInfo;
-    }
-	
+	}
+
 	@GetMapping("/items")
 	public List<BasketItem> getBasketItems() {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -78,7 +78,7 @@ public class BasketController {
 
 		return basketItems;
 	}
-	
+
 	@PostMapping("/items")
 	@Transactional
 	public void setBasketItems(@RequestBody List<BasketItem> basketItems) {
@@ -97,7 +97,7 @@ public class BasketController {
 
 		basketRepository.save(new Basket(userId, basketItems));
 	}
-	
+
 	@PostMapping("/checkout")
 	public void checkout() {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -105,16 +105,16 @@ public class BasketController {
 		String userId = oidcUser.getAttribute("sub");
 		Basket basket;
 		List<BasketItem> basketItems = null;
-		
+
 		logger.info("checkout() user {}", userId);
-		
+
 		basket = basketRepository.findById(userId).orElse(null);
 		if (basket != null) {
 			basketItems = basket.getBasketItems();
 		}
 
 		logger.info("checkout() basketItems " + basketItems);
-		
+
 		if (basketItems != null) {
 			new IntegratedEventDesk(amqpTemplate).send(new CheckoutEvent(userId, basketItems));
 		}

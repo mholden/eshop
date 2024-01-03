@@ -6,14 +6,14 @@ import java.util.*;
 // Catalog.API -> ViewModel -> PagenatedItemsViewModel.cs
 //
 public class PagenatedItems<T> {
-	
+
 	public Integer pageIndex;
-    public Integer pageSize;
-    public Long count;
-    public List<T> data;
-	
+	public Integer pageSize;
+	public Long count;
+	public List<T> data;
+
 	PagenatedItems() {
-		
+
 	}
 
 	public String toString() {

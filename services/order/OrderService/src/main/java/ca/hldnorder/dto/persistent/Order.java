@@ -8,50 +8,50 @@ import jakarta.persistence.*;
 @Table(name = "_order") // note: 'order' is a reserved word in sql
 public class Order {
 	@Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private int id;
 	private String userId;
 	private Timestamp creationTime;
-	
-	public enum OrderState { 
+
+	public enum OrderState {
 		INITIATED, 
 		VERIFIED, 
 		PAYMENT_SUCCEEDED, 
-		SHIPPED 
+		SHIPPED
 	}
-	
+
 	@Enumerated(EnumType.STRING)
 	private OrderState state;
 
-    public Order(){
+	public Order() {
 
-    }
+	}
 
-    public int getId() {
-        return id;
-    }
+	public int getId() {
+		return id;
+	}
 
-    public void setId(int id) {
-        this.id = id;
-    }
+	public void setId(int id) {
+		this.id = id;
+	}
 
-    public String getUserId() {
-        return userId;
-    }
+	public String getUserId() {
+		return userId;
+	}
 
-    public void setUserId(String userId) {
-        this.userId = userId;
-    }
-    
-    public Timestamp getCreationTime() {
-        return creationTime;
-    }
+	public void setUserId(String userId) {
+		this.userId = userId;
+	}
 
-    public void setCreationTime(Timestamp creationTime) {
-        this.creationTime = creationTime;
-    }
-    
-    public OrderState getState() {
+	public Timestamp getCreationTime() {
+		return creationTime;
+	}
+
+	public void setCreationTime(Timestamp creationTime) {
+		this.creationTime = creationTime;
+	}
+
+	public OrderState getState() {
 		return state;
 	}
 
@@ -66,5 +66,5 @@ public class Order {
 		output.append(" creationTime: " + creationTime);
 		output.append(" state: " + state);
 		return output.toString();
-    }
+	}
 }

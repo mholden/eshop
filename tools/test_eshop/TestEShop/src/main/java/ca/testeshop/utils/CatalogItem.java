@@ -1,15 +1,14 @@
 package ca.testeshop.utils;
 
-
 // ca.hldncatalog.dto.CatalogItem
 public class CatalogItem {
-	
+
 	public Integer id;
-    public String name;
-    public Integer price;
-	
+	public String name;
+	public Integer price;
+
 	CatalogItem() {
-		
+
 	}
 
 	public String toString() {

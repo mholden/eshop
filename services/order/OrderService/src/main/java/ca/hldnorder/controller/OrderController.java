@@ -17,24 +17,24 @@ import ca.hldnorder.repository.OrderRepository;
 @RestController
 @RequestMapping("/order")
 public class OrderController {
-	
-	Logger logger = LoggerFactory.getLogger(OrderController.class); 
-	
+
+	Logger logger = LoggerFactory.getLogger(OrderController.class);
+
 	private final AmqpTemplate amqpTemplate;
 	private final OrderRepository orderRepository;
-	
+
 	@Autowired
-	public OrderController(AmqpTemplate amqpTemplate, OrderRepository orderRepository) {    
+	public OrderController(AmqpTemplate amqpTemplate, OrderRepository orderRepository) {
 		this.amqpTemplate = amqpTemplate;
-		this.orderRepository = orderRepository;  
+		this.orderRepository = orderRepository;
 	}
-	
+
 	@GetMapping("/ping")
-    public String ping() {
-    	logger.info("ping()");
-    	return "Ping successful!\n";
-    }
-	
+	public String ping() {
+		logger.info("ping()");
+		return "Ping successful!\n";
+	}
+
 	// TODO: make this paged
 	@GetMapping("/orders")
 	public List<Order> getOrders() {

@@ -15,40 +15,40 @@ import ca.hldncatalog.repository.CatalogItemRepository;
 @RestController
 @RequestMapping("/catalog")
 public class CatalogController {
-	
-	Logger logger = LoggerFactory.getLogger(CatalogController.class); 
-	
+
+	Logger logger = LoggerFactory.getLogger(CatalogController.class);
+
 	private final AmqpTemplate amqpTemplate;
 	private final CatalogItemRepository catalogItemRepository;
-	
+
 	@Autowired
-	public CatalogController(AmqpTemplate amqpTemplate, CatalogItemRepository catalogItemRepository) {    
+	public CatalogController(AmqpTemplate amqpTemplate, CatalogItemRepository catalogItemRepository) {
 		this.amqpTemplate = amqpTemplate;
-		this.catalogItemRepository = catalogItemRepository;  
+		this.catalogItemRepository = catalogItemRepository;
 	}
 
 	@GetMapping("/ping")
-    public String ping() {
-    	logger.info("ping()");
-    	return "Ping successful!\n";
-    }
-    
-    @GetMapping("/items")
-    public List<CatalogItem> getCatalogItems(@RequestParam(required = false) Integer pageSize, @RequestParam(required = false) Integer pageIndex) {
-    	List<CatalogItem> catalogItems = null;
-    	Integer _pageIndex = 0;
-    	
-    	logger.info("getCatalogItems() pageSize: " + pageSize + " pageIndex: " + pageIndex);
-    	
-    	if (pageSize != null) {
-    		if (pageIndex != null) {
-    			_pageIndex = pageIndex;
-    		}
-    		catalogItems = catalogItemRepository.findAll(PageRequest.of(_pageIndex, pageSize)).getContent();
-    	} else {
-    		catalogItems = catalogItemRepository.findAll();
-    	}
-    	
-    	return catalogItems;
-    }
+	public String ping() {
+		logger.info("ping()");
+		return "Ping successful!\n";
+	}
+
+	@GetMapping("/items")
+	public List<CatalogItem> getCatalogItems(@RequestParam(required = false) Integer pageSize, @RequestParam(required = false) Integer pageIndex) {
+		List<CatalogItem> catalogItems = null;
+		Integer _pageIndex = 0;
+
+		logger.info("getCatalogItems() pageSize: " + pageSize + " pageIndex: " + pageIndex);
+
+		if (pageSize != null) {
+			if (pageIndex != null) {
+				_pageIndex = pageIndex;
+			}
+			catalogItems = catalogItemRepository.findAll(PageRequest.of(_pageIndex, pageSize)).getContent();
+		} else {
+			catalogItems = catalogItemRepository.findAll();
+		}
+
+		return catalogItems;
+	}
 }

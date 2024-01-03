@@ -10,20 +10,20 @@ import java.util.*;
 public class BasketCheckout {
 	
 	public String City;
-    public String Street;
-    public String State;
-    public String Country;
-    public String ZipCode;
-    public String CardNumber;
-    public String CardHolderName;
-    public String CardExpiration;
-    public String CardSecurityNumber;
-    public Integer CardTypeId;
-    public String Buyer;
-    public String RequestId;
-	
+	public String Street;
+	public String State;
+	public String Country;
+	public String ZipCode;
+	public String CardNumber;
+	public String CardHolderName;
+	public String CardExpiration;
+	public String CardSecurityNumber;
+	public Integer CardTypeId;
+	public String Buyer;
+	public String RequestId;
+
 	public BasketCheckout() {
-		
+
 	}
 	
 	public BasketCheckout(UserInfo userInfo) {

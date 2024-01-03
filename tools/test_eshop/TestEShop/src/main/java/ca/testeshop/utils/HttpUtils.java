@@ -77,181 +77,186 @@ public class HttpUtils {
 		return doGet(url, null, noRedirect, null);
 	}
 
-	public static EShopResponse doGet(String url, HttpPayload payload, boolean noRedirect, HashMap<String, String> requestProps) throws Exception {
+	public static EShopResponse doGet(String url, HttpPayload payload, boolean noRedirect,
+			HashMap<String, String> requestProps) throws Exception {
 		EShopResponse output = new EShopResponse();
-		
-		//System.out.println("doGet() url " + url);
+
+		// System.out.println("doGet() url " + url);
 
 		URL _url = new URL(url);
-        HttpURLConnection connection = (HttpURLConnection) _url.openConnection();
-		
-        // Set timeout as per needs
-        //connection.setConnectTimeout(20000);
-        //connection.setReadTimeout(40000);
+		HttpURLConnection connection = (HttpURLConnection) _url.openConnection();
 
-        // Set DoOutput to true if you want to use URLConnection for output.
-        // Default is false
-        //connection.setDoOutput(true);
+		// Set timeout as per needs
+		// connection.setConnectTimeout(20000);
+		// connection.setReadTimeout(40000);
 
-        //connection.setUseCaches(false);
-        connection.setRequestMethod("GET");
-        
-        if (authToken.get() != null) {
-        	connection.setRequestProperty("Authorization", "Bearer " + authToken.get()); // hardcoding 'Bearer' for now (token_type in authorizeCallback response)
-        }
-        
-        //HttpURLConnection.setFollowRedirects(false);  
-        //if (noRedirect) {
-        	connection.setInstanceFollowRedirects(false);
-        //}
-        
-        // Set Headers
-        //connection.setRequestProperty("Accept", payload.type.toString());
-        connection.setRequestProperty("Accept", "*/*");
-        //connection.setRequestProperty("Content-Type", payload.type.toString());
-        if (cookieManager.get().getCookieStore().getCookies().size() > 0) {
-            // While joining the Cookies, use ',' or ';' as needed. Most of the servers are using ';'
-        	List<HttpCookie> cookieList = cookieManager.get().getCookieStore().getCookies();
-        	List<String> strings = new ArrayList<>(cookieList.size());
-        	for (Object object : cookieList) {
-        	    strings.add(Objects.toString(object, null));
-        	}
-            connection.setRequestProperty("Cookie", String.join(";",  strings));  
-            //System.out.println("doGet() thread " + Thread.currentThread().getId() + " using cookies " + strings);
-        }
-        
-        if (requestProps != null) {
-        	for (Map.Entry<String, String> requestProp : requestProps.entrySet()) {
-        		connection.setRequestProperty(requestProp.getKey(), requestProp.getValue());
-        	}
-        }
-        
-        //connection.setRequestProperty("Host", "docker.for.mac.localhost:5121");
-        //System.out.println(connection.getRequestProperties());
+		// Set DoOutput to true if you want to use URLConnection for output.
+		// Default is false
+		// connection.setDoOutput(true);
 
-        //payload.dump();
-        
-        // Write payload
-        /*OutputStream outputStream = connection.getOutputStream();
-        byte[] b = payload.data.getBytes("UTF-8");
-        outputStream.write(b);
-        outputStream.flush();
-        outputStream.close();*/
-		
+		// connection.setUseCaches(false);
+		connection.setRequestMethod("GET");
 
-        // Read response
-        connection.getResponseCode(); // this needs to be called first for the error stream logic below to work
-        InputStream inputStream = connection.getErrorStream();
-        if (inputStream == null) {
-        	inputStream = connection.getInputStream();
-        }
-        byte[] res = new byte[2048];
-        int i = 0;
-        StringBuilder response = new StringBuilder();
-        while ((i = inputStream.read(res)) != -1) {
-            response.append(new String(res, 0, i));
-        }
-        inputStream.close();
-        
-        saveCookies(connection);
+		if (authToken.get() != null) {
+			connection.setRequestProperty("Authorization", "Bearer " + authToken.get()); // hardcoding 'Bearer' for now (token_type in authorizeCallback response)
+		}
 
-        //System.out.println("Response= " + response.toString());
+		// HttpURLConnection.setFollowRedirects(false);
+		// if (noRedirect) {
+		connection.setInstanceFollowRedirects(false);
+		// }
 
-        output = new EShopResponse();
-        output.httpCode = connection.getResponseCode();
-        if (output.httpCode == HttpURLConnection.HTTP_MOVED_TEMP || 
-        		output.httpCode == HttpURLConnection.HTTP_MOVED_PERM) {
-        	output.redirectLocation = connection.getHeaderFields().get("Location").get(0);
-        	if (!noRedirect) { // follow it
-        		return doGet(output.redirectLocation, noRedirect);
-        	}	
-        }
-        output.response = response.toString();
-        
+		// Set Headers
+		// connection.setRequestProperty("Accept", payload.type.toString());
+		connection.setRequestProperty("Accept", "*/*");
+		// connection.setRequestProperty("Content-Type", payload.type.toString());
+		if (cookieManager.get().getCookieStore().getCookies().size() > 0) {
+			// While joining the Cookies, use ',' or ';' as needed. Most of the servers are
+			// using ';'
+			List<HttpCookie> cookieList = cookieManager.get().getCookieStore().getCookies();
+			List<String> strings = new ArrayList<>(cookieList.size());
+			for (Object object : cookieList) {
+				strings.add(Objects.toString(object, null));
+			}
+			connection.setRequestProperty("Cookie", String.join(";", strings));
+			// System.out.println("doGet() thread " + Thread.currentThread().getId() + "
+			// using cookies " + strings);
+		}
+
+		if (requestProps != null) {
+			for (Map.Entry<String, String> requestProp : requestProps.entrySet()) {
+				connection.setRequestProperty(requestProp.getKey(), requestProp.getValue());
+			}
+		}
+
+		// connection.setRequestProperty("Host", "docker.for.mac.localhost:5121");
+		// System.out.println(connection.getRequestProperties());
+
+		// payload.dump();
+
+		// Write payload
+		/*
+		 * OutputStream outputStream = connection.getOutputStream(); byte[] b =
+		 * payload.data.getBytes("UTF-8"); outputStream.write(b); outputStream.flush();
+		 * outputStream.close();
+		 */
+
+		// Read response
+		connection.getResponseCode(); // this needs to be called first for the error stream logic below to work
+		InputStream inputStream = connection.getErrorStream();
+		if (inputStream == null) {
+			inputStream = connection.getInputStream();
+		}
+		byte[] res = new byte[2048];
+		int i = 0;
+		StringBuilder response = new StringBuilder();
+		while ((i = inputStream.read(res)) != -1) {
+			response.append(new String(res, 0, i));
+		}
+		inputStream.close();
+
+		saveCookies(connection);
+
+		// System.out.println("Response= " + response.toString());
+
+		output = new EShopResponse();
+		output.httpCode = connection.getResponseCode();
+		if (output.httpCode == HttpURLConnection.HTTP_MOVED_TEMP
+				|| output.httpCode == HttpURLConnection.HTTP_MOVED_PERM) {
+			output.redirectLocation = connection.getHeaderFields().get("Location").get(0);
+			if (!noRedirect) { // follow it
+				return doGet(output.redirectLocation, noRedirect);
+			}
+		}
+		output.response = response.toString();
+
 		return output;
 	}
-	
+
 	public static EShopResponse doPost(String url) throws Exception {
 		return doPost(url, null, false);
 	}
-	
+
 	public static EShopResponse doPost(String url, HttpPayload payload) throws Exception {
 		return doPost(url, payload, false);
 	}
 
 	public static EShopResponse doPost(String url, HttpPayload payload, boolean noRedirect) throws Exception {
 		EShopResponse output = new EShopResponse();
-		
-		//System.out.println("doPost() url " + url);
+
+		// System.out.println("doPost() url " + url);
 
 		URL _url = new URL(url);
-        HttpURLConnection connection = (HttpURLConnection) _url.openConnection();
-        
-        connection.setRequestMethod("POST");
-          
-        if (authToken.get() != null) {
-        	connection.setRequestProperty("Authorization", "Bearer " + authToken.get()); // hardcoding 'Bearer' for now (token_type in authorizeCallback response)
-        }
-        
-        //if (noRedirect) {
-        	connection.setInstanceFollowRedirects(false);
-        //}
-        connection.setDoOutput(true);
+		HttpURLConnection connection = (HttpURLConnection) _url.openConnection();
 
-        // Set Headers
-        //connection.setRequestProperty("Accept", payload.type.toString());
-        connection.setRequestProperty("Accept", "*/*");
-        if (payload != null)
-        	connection.setRequestProperty("Content-Type", payload.type.toString());
-        //connection.setRequestProperty("Content-Length", String.valueOf(payload.data.length())); // doesn't work
-        
-        if (cookieManager.get().getCookieStore().getCookies().size() > 0) {
-            // While joining the Cookies, use ',' or ';' as needed. Most of the servers are using ';'
-        	List<HttpCookie> cookieList = cookieManager.get().getCookieStore().getCookies();
-        	List<String> strings = new ArrayList<>(cookieList.size());
-        	for (Object object : cookieList) {
-        	    strings.add(Objects.toString(object, null));
-        	}
-            connection.setRequestProperty("Cookie", String.join(";",  strings));  
-            //System.out.println("doPost() thread " + Thread.currentThread().getId() + " using cookies " + strings);
-        }
-        
-        if (payload != null) {
-        	OutputStream outputStream = connection.getOutputStream();
-            byte[] b = payload.data.getBytes("UTF-8");
-            outputStream.write(b);
-            outputStream.flush();
-            outputStream.close();
-        }
-        
-        // Read response
-        connection.getResponseCode(); // this needs to be called first for the error stream logic below to work
-        InputStream inputStream = connection.getErrorStream();
-        if (inputStream == null) {
-        	inputStream = connection.getInputStream();
-        }
-        byte[] res = new byte[2048];
-        int i = 0;
-        StringBuilder response = new StringBuilder();
-        while ((i = inputStream.read(res)) != -1) {
-            response.append(new String(res, 0, i));
-        }
-        inputStream.close();
-        
-        saveCookies(connection);
+		connection.setRequestMethod("POST");
 
-        //System.out.println("Response= " + response.toString());
+		if (authToken.get() != null) {
+			connection.setRequestProperty("Authorization", "Bearer " + authToken.get()); // hardcoding 'Bearer' for now (token_type in authorizeCallback response)
+		}
 
-        output = new EShopResponse();
-        output.httpCode = connection.getResponseCode();
-        if (output.httpCode == HttpURLConnection.HTTP_MOVED_TEMP || 
-        		output.httpCode == HttpURLConnection.HTTP_MOVED_PERM) {
-        	output.redirectLocation = connection.getHeaderFields().get("Location").get(0);
-        	if (!noRedirect) { // follow it
-        		return doPost(output.redirectLocation, payload, noRedirect);
-        	}
-        }
-        output.response = response.toString();
+		// if (noRedirect) {
+		connection.setInstanceFollowRedirects(false);
+		// }
+		connection.setDoOutput(true);
+
+		// Set Headers
+		// connection.setRequestProperty("Accept", payload.type.toString());
+		connection.setRequestProperty("Accept", "*/*");
+		if (payload != null)
+			connection.setRequestProperty("Content-Type", payload.type.toString());
+		// connection.setRequestProperty("Content-Length",
+		// String.valueOf(payload.data.length())); // doesn't work
+
+		if (cookieManager.get().getCookieStore().getCookies().size() > 0) {
+			// While joining the Cookies, use ',' or ';' as needed. Most of the servers are
+			// using ';'
+			List<HttpCookie> cookieList = cookieManager.get().getCookieStore().getCookies();
+			List<String> strings = new ArrayList<>(cookieList.size());
+			for (Object object : cookieList) {
+				strings.add(Objects.toString(object, null));
+			}
+			connection.setRequestProperty("Cookie", String.join(";", strings));
+			// System.out.println("doPost() thread " + Thread.currentThread().getId() + "
+			// using cookies " + strings);
+		}
+
+		if (payload != null) {
+			OutputStream outputStream = connection.getOutputStream();
+			byte[] b = payload.data.getBytes("UTF-8");
+			outputStream.write(b);
+			outputStream.flush();
+			outputStream.close();
+		}
+
+		// Read response
+		connection.getResponseCode(); // this needs to be called first for the error stream logic below to work
+		InputStream inputStream = connection.getErrorStream();
+		if (inputStream == null) {
+			inputStream = connection.getInputStream();
+		}
+		byte[] res = new byte[2048];
+		int i = 0;
+		StringBuilder response = new StringBuilder();
+		while ((i = inputStream.read(res)) != -1) {
+			response.append(new String(res, 0, i));
+		}
+		inputStream.close();
+
+		saveCookies(connection);
+
+		// System.out.println("Response= " + response.toString());
+
+		output = new EShopResponse();
+		output.httpCode = connection.getResponseCode();
+		if (output.httpCode == HttpURLConnection.HTTP_MOVED_TEMP
+				|| output.httpCode == HttpURLConnection.HTTP_MOVED_PERM) {
+			output.redirectLocation = connection.getHeaderFields().get("Location").get(0);
+			if (!noRedirect) { // follow it
+				return doPost(output.redirectLocation, payload, noRedirect);
+			}
+		}
+		output.response = response.toString();
 
 		return output;
 	}

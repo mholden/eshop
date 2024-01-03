@@ -4,14 +4,14 @@ package ca.testeshop.utils;
 // Ordering.API -> Application -> Queries -> OrderViewModel.cs
 //
 public class OrderItem {
-	
+
 	public String productname;
-    public Integer units;
-    public Double unitprice;
-    public String pictureurl;
-	
+	public Integer units;
+	public Double unitprice;
+	public String pictureurl;
+
 	OrderItem() {
-		
+
 	}
 
 	public String toString() {

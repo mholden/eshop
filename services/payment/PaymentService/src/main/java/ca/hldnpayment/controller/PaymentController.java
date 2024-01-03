@@ -14,15 +14,15 @@ import ca.hldnpayment.repository.PaymentRepository;
 @RestController
 @RequestMapping("/payment")
 public class PaymentController {
-	
+
 	Logger logger = LoggerFactory.getLogger(PaymentController.class);
-	
+
 	@Autowired
-    PaymentRepository paymentRepository;
+	PaymentRepository paymentRepository;
 
 	@GetMapping("/ping")
-    public String ping() {
-    	logger.info("ping()");
-    	return "Ping successful!\n";
-    }
+	public String ping() {
+		logger.info("ping()");
+		return "Ping successful!\n";
+	}
 }

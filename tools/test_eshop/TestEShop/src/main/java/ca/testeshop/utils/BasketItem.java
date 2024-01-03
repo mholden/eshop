@@ -2,15 +2,15 @@ package ca.testeshop.utils;
 
 // ca.hldnbasket.dto.BasketItem
 public class BasketItem {
-	
+
 	public Integer id;
 	private String userId;
-    public Integer catalogItemId;
-	
+	public Integer catalogItemId;
+
 	BasketItem() {
-		
+
 	}
-	
+
 	public BasketItem(CatalogItem item) {
 		catalogItemId = item.id;
 	}
