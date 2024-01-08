@@ -31,6 +31,7 @@ public class SecurityConfiguration {
 				"/oauth2/**", 
 				"/login/**", 
 				"/catalog/items/**", 
+				"/catalog/item/**", // TODO: secure this endpoint
 				"/catalog/ping"
 			).permitAll()
 			.anyRequest()
@@ -39,7 +40,7 @@ public class SecurityConfiguration {
 			.logout()
 			.logoutSuccessUrl("http://localhost:8180/realms/quickstart/protocol/openid-connect/logout?redirect_uri=http://localhost:5121/")
 			.and()
-			.csrf().disable(); // without this, POSTs fail; TODO: revisit;
+			.csrf().disable(); // without this, POSTs fail; TODO: revisit
 
 		return http.build();
 	}

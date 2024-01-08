@@ -2,6 +2,7 @@ package ca.testeshop.utils;
 
 import java.lang.reflect.Type;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 
 public class JsonUtils {
@@ -10,7 +11,18 @@ public class JsonUtils {
 		
 	}
 	
-	public static Object jsonToPojo(String json, Class<?> _class) {
+	private static boolean shouldUseJackson(Class<?> _class) {
+		if (_class.equals(Content.class)) {
+			return true;
+		}
+		return false;
+	}
+	
+	public static Object jsonToPojo(String json, Class<?> _class) throws Exception {
+		if (shouldUseJackson(_class)) {
+			// use jackson to deal with byte[] arrays
+			return new ObjectMapper().readValue(json, _class);
+		}
 		return new Gson().fromJson(json, _class);
 	}
 	

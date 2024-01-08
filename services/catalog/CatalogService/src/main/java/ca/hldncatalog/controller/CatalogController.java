@@ -7,6 +7,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import ca.hldncatalog.dto.persistent.CatalogItem;
@@ -50,5 +54,20 @@ public class CatalogController {
 		}
 
 		return catalogItems;
+	}
+	
+	@PostMapping("/item")
+	@Transactional
+	public void createCatalogItem(@RequestBody CatalogItem catalogItem) throws Exception {
+		/* TODO: secure
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		DefaultOidcUser oidcUser = (DefaultOidcUser) authentication.getPrincipal();
+		String userId = oidcUser.getAttribute("sub");
+		*/
+		String userId = null;
+
+		logger.info("createCatalogItem() user {} catalogItem {}", userId, catalogItem);
+		
+		catalogItemRepository.save(catalogItem);
 	}
 }

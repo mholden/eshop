@@ -96,3 +96,19 @@ services:
     image: redis:alpine
     ports:
       - "6379:6379"
+
+  content:
+    container_name: content-service
+    image: content-service
+    build:
+      context: ./services/content/
+    depends_on:
+      - mq
+      - identity
+    ports:
+      - "5126:5126"
+    volumes:
+      - content:/content
+
+volumes:
+  content:

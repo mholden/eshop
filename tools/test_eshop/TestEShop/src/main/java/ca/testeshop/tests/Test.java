@@ -24,6 +24,7 @@ public abstract class Test {
 	public OrderService orderService;
 	// TODO: add payment service?
 	public NotificationService notificationService;
+	public ContentService contentService;
 	
 	public ThreadLocal<AsyncChannel> asyncChannel = new ThreadLocal<AsyncChannel>();
 	
@@ -39,6 +40,7 @@ public abstract class Test {
 		this.basketService = services.basketService;
 		this.orderService = services.orderService;
 		this.notificationService = services.notificationService;
+		this.contentService = services.contentService;
 	}
 	
 	public String getUserName() {

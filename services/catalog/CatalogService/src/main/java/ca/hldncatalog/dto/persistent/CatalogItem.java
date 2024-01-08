@@ -10,6 +10,7 @@ public class CatalogItem {
 	private int id;
 	private String name;
 	private Integer price; // in cents
+	private String imageId;
 
 	public CatalogItem() {
 
@@ -43,7 +44,15 @@ public class CatalogItem {
 		this.price = price;
 	}
 
+	public String getImageId() {
+		return imageId;
+	}
+
+	public void setImageId(String imageId) {
+		this.imageId = imageId;
+	}
+
 	public String toString() {
-		return String.format("id: %d name %s price %d.%d", id, name, price / 100, price % 100);
+		return String.format("id: %d name %s price %d.%d imageId %s", id, name, price / 100, price % 100, imageId);
 	}
 }

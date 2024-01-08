@@ -16,7 +16,7 @@ class Main {
 		put("basketdb.basketitem", "select BI.id, UE.username, CI.name, CI.price from basketdb.basketitem BI " + 
 				"left join identitydb.USER_ENTITY UE on UE.id = BI.user_id " + 
 				"left join catalogdb.catalogitem CI on CI.id = BI.catalog_item_id");
-		put("catalogdb.catalogitem", "select CI.id, CI.name, CI.price from catalogdb.catalogitem CI");
+		put("catalogdb.catalogitem", "select CI.id, CI.name, CI.price, CI.image_id from catalogdb.catalogitem CI");
 		put("identitydb.USER_ENTITY", "select UE.id, UE.username from identitydb.USER_ENTITY UE");
 	}};
 	

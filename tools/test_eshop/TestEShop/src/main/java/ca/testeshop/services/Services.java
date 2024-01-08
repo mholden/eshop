@@ -14,6 +14,7 @@ public class Services {
 	public OrderService orderService;
 	// TODO: add payment service?
 	public NotificationService notificationService;
+	public ContentService contentService;
 	
 	public Services() {
 		
@@ -29,5 +30,6 @@ public class Services {
 		orderService = new OrderService("http://localhost:5123");
 		// TODO: add payment service?
 		notificationService = new NotificationService("ws://localhost:5125/ws");
+		contentService = new ContentService("http://localhost:5126");
 	}
 }
