@@ -30,7 +30,7 @@ public class TestCatalogCRUD extends Test {
 		
 		System.out.println("\ntestSpecificCase1");
 		
-		//doUserLogin("alice", "alice"); // TODO: login as admin; shouldn't be able to upload content if not logged in as admin
+		doUserLogin("admin@testeshop.ca", "admin");
 		
 		fileName = "/TestCatalogCRUD/cute-cat.png";
 		content = new Content(fileName);

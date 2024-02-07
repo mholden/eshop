@@ -18,6 +18,8 @@ public class AsyncChannel {
 		WebSocketClient client = new StandardWebSocketClient();
 		WebSocketStompClient stompClient = new WebSocketStompClient(client);
 
+		//System.out.println("AsyncChannel() url " + url + " userId " + userId);
+		
 		stompClient.setMessageConverter(new MappingJackson2MessageConverter());
 		stompSessionHandler = new EShopStompSessionHandler();
 		stompSessionHandler.userId = userId;

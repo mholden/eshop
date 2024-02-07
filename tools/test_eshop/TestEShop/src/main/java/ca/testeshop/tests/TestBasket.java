@@ -26,7 +26,7 @@ public class TestBasket extends Test {
 		
 		System.out.println("\ntestSpecificCase1");
 		
-		doUserLogin("alice", "alice");
+		doUserLogin("alice@testeshop.ca", "alice");
 		
 		response = catalogService.getCatalogItems(0, 12);
 		TestUtils.failIf(response.httpCode != HttpURLConnection.HTTP_OK, response.toString());

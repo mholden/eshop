@@ -4,6 +4,7 @@ import java.net.HttpURLConnection;
 
 import ca.testeshop.services.*;
 import ca.testeshop.utils.EShopResponse;
+import ca.testeshop.utils.HttpUtils;
 import ca.testeshop.utils.TestUtils;
 
 public class TestLogin extends Test {
@@ -22,9 +23,19 @@ public class TestLogin extends Test {
 		
 		System.out.println("\ntestSpecificCase1");
 		
-		doUserLogin("alice", "alice");
+		doUserLogout();
 		
-		response = basketService.doPing();
+		HttpUtils.disableRedirects.set(true);
+		
+		response = basketService.getBasketItems();
+		TestUtils.failIf(response.httpCode != HttpURLConnection.HTTP_MOVED_TEMP || // should redirect to login 
+			!response.redirectLocation.contains("/oauth2/authorization"), response.toString());
+		
+		HttpUtils.disableRedirects.set(false);
+		
+		doUserLogin("alice@testeshop.ca", "alice");
+		
+		response = basketService.getBasketItems();
 		TestUtils.failIf(response.httpCode != HttpURLConnection.HTTP_OK, response.toString());
 		//response.dump();
 	}

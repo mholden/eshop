@@ -8,8 +8,11 @@ import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
+import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.security.oauth2.jwt.JwtTimestampValidator;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
@@ -59,12 +62,9 @@ public class CatalogController {
 	@PostMapping("/item")
 	@Transactional
 	public void createCatalogItem(@RequestBody CatalogItem catalogItem) throws Exception {
-		/* TODO: secure
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		DefaultOidcUser oidcUser = (DefaultOidcUser) authentication.getPrincipal();
-		String userId = oidcUser.getAttribute("sub");
-		*/
-		String userId = null;
+		Jwt jwt = (Jwt)authentication.getPrincipal();
+		String userId = jwt.getSubject();
 
 		logger.info("createCatalogItem() user {} catalogItem {}", userId, catalogItem);
 		

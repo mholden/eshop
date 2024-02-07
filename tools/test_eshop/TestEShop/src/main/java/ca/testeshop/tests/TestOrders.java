@@ -70,6 +70,8 @@ public class TestOrders extends Test {
 		
 		asyncChannel.get().waitFor("OrderPaymentSucceededNotification", Duration.ofSeconds(5));
 		
+		TimeUnit.SECONDS.sleep(3); // wait a second for OrderService to process the event(s)
+		
 		response = orderService.getOrders();
 		TestUtils.failIf(response.httpCode != HttpURLConnection.HTTP_OK, response.toString());
 		

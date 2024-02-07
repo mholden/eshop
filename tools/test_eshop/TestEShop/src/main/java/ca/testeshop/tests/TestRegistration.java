@@ -29,7 +29,7 @@ public class TestRegistration extends Test {
 		
 		System.out.println("user: " + getUserName());
 		
-		response = basketService.doPing();
+		response = basketService.getBasketItems();
 		//response.dump();
 		TestUtils.failIf(response.httpCode != HttpURLConnection.HTTP_OK, response.toString());
 	}
@@ -47,8 +47,7 @@ public class TestRegistration extends Test {
 			
 			System.out.println("user: " + getUserName());
 			
-			response = basketService.doPing();
-			//response.dump();
+			response = basketService.getBasketItems();
 			TestUtils.failIf(response.httpCode != HttpURLConnection.HTTP_OK, response.toString());
 			iters++;
 		}
@@ -63,8 +62,7 @@ public class TestRegistration extends Test {
 		
 		System.out.println("user: " + getUserName() + " thread " + Thread.currentThread().getId());
 		
-		response = basketService.doPing();
-		//response.dump();
+		response = basketService.getBasketItems();
 		TestUtils.failIf(response.httpCode != HttpURLConnection.HTTP_OK, response.toString());
 	}
 	

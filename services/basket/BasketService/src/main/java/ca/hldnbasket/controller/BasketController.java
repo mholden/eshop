@@ -8,8 +8,7 @@ import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.oauth2.core.oidc.OidcUserInfo;
-import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
@@ -41,26 +40,21 @@ public class BasketController {
 
 	// TODO: move this to an identity service
 	@GetMapping("/userInfo")
-	public OidcUserInfo getUserInfo() {
+	public Map<String, Object> getUserInfo() {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		DefaultOidcUser oidcUser = (DefaultOidcUser) authentication.getPrincipal();
-		String userId = oidcUser.getAttribute("sub");
-		OidcUserInfo userInfo = oidcUser.getUserInfo();
+		Jwt jwt = (Jwt)authentication.getPrincipal();
+		String userId = jwt.getSubject();
 
 		logger.info("getUserInfo() user {}", userId);
 
-		userInfo = oidcUser.getUserInfo();
-
-		logger.info("getUserInfo() userInfo {}", userInfo);
-
-		return userInfo;
+		return jwt.getClaims();
 	}
 
 	@GetMapping("/items")
 	public List<BasketItem> getBasketItems() {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		DefaultOidcUser oidcUser = (DefaultOidcUser) authentication.getPrincipal();
-		String userId = oidcUser.getAttribute("sub");
+		Jwt jwt = (Jwt)authentication.getPrincipal();
+		String userId = jwt.getSubject();
 		Basket basket;
 		List<BasketItem> basketItems = null;
 
@@ -83,8 +77,8 @@ public class BasketController {
 	@Transactional
 	public void setBasketItems(@RequestBody List<BasketItem> basketItems) {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		DefaultOidcUser oidcUser = (DefaultOidcUser) authentication.getPrincipal();
-		String userId = oidcUser.getAttribute("sub");
+		Jwt jwt = (Jwt)authentication.getPrincipal();
+		String userId = jwt.getSubject();
 
 		logger.info("setBasketItems() user {}", userId);
 
@@ -101,8 +95,8 @@ public class BasketController {
 	@PostMapping("/checkout")
 	public void checkout() {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		DefaultOidcUser oidcUser = (DefaultOidcUser) authentication.getPrincipal();
-		String userId = oidcUser.getAttribute("sub");
+		Jwt jwt = (Jwt)authentication.getPrincipal();
+		String userId = jwt.getSubject();
 		Basket basket;
 		List<BasketItem> basketItems = null;
 

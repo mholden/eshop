@@ -17,8 +17,19 @@ public class HttpUtils {
 			return (new CookieManager());
 		}
 	};
-	
 	static public ThreadLocal<String> authToken = new ThreadLocal<String>();
+	static public ThreadLocal<Integer> nRedirects = new ThreadLocal<Integer>() {
+		@Override
+		protected synchronized Integer initialValue() {
+			return 0;
+		}
+	};
+	static public ThreadLocal<Boolean> disableRedirects = new ThreadLocal<Boolean>() {
+		@Override
+		protected synchronized Boolean initialValue() {
+			return false;
+		}
+	};
 
 	public HttpUtils() {
 
@@ -49,6 +60,10 @@ public class HttpUtils {
 		}
 	}
 	
+	private static Boolean isHttpErrorCode(int httpCode) {
+		return httpCode >= 400;
+	}
+	
 	private static void saveCookies(HttpURLConnection connection) throws Exception { 
 		Map<String, List<String>> headerFields = connection.getHeaderFields();
 		List<String> cookiesHeader = headerFields.get("Set-Cookie");
@@ -77,11 +92,10 @@ public class HttpUtils {
 		return doGet(url, null, noRedirect, null);
 	}
 
-	public static EShopResponse doGet(String url, HttpPayload payload, boolean noRedirect,
-			HashMap<String, String> requestProps) throws Exception {
+	public static EShopResponse doGet(String url, HttpPayload payload, boolean noRedirect, HashMap<String, String> requestProps) throws Exception {
 		EShopResponse output = new EShopResponse();
 
-		// System.out.println("doGet() url " + url);
+		//System.out.println("doGet() url " + url);
 
 		URL _url = new URL(url);
 		HttpURLConnection connection = (HttpURLConnection) _url.openConnection();
@@ -116,11 +130,13 @@ public class HttpUtils {
 			List<HttpCookie> cookieList = cookieManager.get().getCookieStore().getCookies();
 			List<String> strings = new ArrayList<>(cookieList.size());
 			for (Object object : cookieList) {
+				if (Objects.toString(object, null).contains("JSESSION")) {
+					System.out.println("doGet() using " + Objects.toString(object, null));				
+				}
 				strings.add(Objects.toString(object, null));
 			}
 			connection.setRequestProperty("Cookie", String.join(";", strings));
-			// System.out.println("doGet() thread " + Thread.currentThread().getId() + "
-			// using cookies " + strings);
+			// System.out.println("doGet() thread " + Thread.currentThread().getId() + " using cookies " + strings);
 		}
 
 		if (requestProps != null) {
@@ -164,7 +180,13 @@ public class HttpUtils {
 		if (output.httpCode == HttpURLConnection.HTTP_MOVED_TEMP
 				|| output.httpCode == HttpURLConnection.HTTP_MOVED_PERM) {
 			output.redirectLocation = connection.getHeaderFields().get("Location").get(0);
-			if (!noRedirect) { // follow it
+			if (!noRedirect && !disableRedirects.get()) { // follow it
+				if (output.redirectLocation.startsWith("/")) {
+					output.redirectLocation = _url.getProtocol() + "://" + _url.getHost() + ":" + _url.getPort() + output.redirectLocation;
+					//System.out.println("doGet() adjusted redirectLocation to " + output.redirectLocation);
+				}
+				//System.out.println("doGet() redirecting " + url + " to " + output.redirectLocation);
+				nRedirects.set(nRedirects.get() + 1);
 				return doGet(output.redirectLocation, noRedirect);
 			}
 		}
@@ -184,7 +206,7 @@ public class HttpUtils {
 	public static EShopResponse doPost(String url, HttpPayload payload, boolean noRedirect) throws Exception {
 		EShopResponse output = new EShopResponse();
 
-		// System.out.println("doPost() url " + url);
+		//System.out.println("doPost() url " + url);
 
 		URL _url = new URL(url);
 		HttpURLConnection connection = (HttpURLConnection) _url.openConnection();
@@ -214,11 +236,13 @@ public class HttpUtils {
 			List<HttpCookie> cookieList = cookieManager.get().getCookieStore().getCookies();
 			List<String> strings = new ArrayList<>(cookieList.size());
 			for (Object object : cookieList) {
+				if (Objects.toString(object, null).contains("JSESSION")) {
+					System.out.println("doPost() using " + Objects.toString(object, null));				
+				}
 				strings.add(Objects.toString(object, null));
 			}
 			connection.setRequestProperty("Cookie", String.join(";", strings));
-			// System.out.println("doPost() thread " + Thread.currentThread().getId() + "
-			// using cookies " + strings);
+			// System.out.println("doPost() thread " + Thread.currentThread().getId() + " using cookies " + strings);
 		}
 
 		if (payload != null) {
@@ -230,9 +254,14 @@ public class HttpUtils {
 		}
 
 		// Read response
-		connection.getResponseCode(); // this needs to be called first for the error stream logic below to work
+		output = new EShopResponse();
+		output.httpCode = connection.getResponseCode(); 
+		
 		InputStream inputStream = connection.getErrorStream();
 		if (inputStream == null) {
+			if (isHttpErrorCode(output.httpCode)) {
+				return output;
+			}
 			inputStream = connection.getInputStream();
 		}
 		byte[] res = new byte[2048];
@@ -246,13 +275,16 @@ public class HttpUtils {
 		saveCookies(connection);
 
 		// System.out.println("Response= " + response.toString());
-
-		output = new EShopResponse();
-		output.httpCode = connection.getResponseCode();
 		if (output.httpCode == HttpURLConnection.HTTP_MOVED_TEMP
 				|| output.httpCode == HttpURLConnection.HTTP_MOVED_PERM) {
 			output.redirectLocation = connection.getHeaderFields().get("Location").get(0);
-			if (!noRedirect) { // follow it
+			if (!noRedirect && !disableRedirects.get()) { // follow it
+				//System.out.println("doPost() redirecting " + url + " to " + output.redirectLocation);
+				if (output.redirectLocation.startsWith("/")) {
+					output.redirectLocation = _url.getProtocol() + "://" + _url.getHost() + ":" + _url.getPort() + output.redirectLocation;
+					//System.out.println("doGet() adjusted redirectLocation to " + output.redirectLocation);
+				}
+				nRedirects.set(nRedirects.get() + 1);
 				return doPost(output.redirectLocation, payload, noRedirect);
 			}
 		}

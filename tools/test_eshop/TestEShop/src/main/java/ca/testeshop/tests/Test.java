@@ -2,11 +2,16 @@ package ca.testeshop.tests;
 
 import java.net.HttpURLConnection;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 import java.util.StringTokenizer;
 import java.util.UUID;
 
 import org.springframework.security.oauth2.core.oidc.OidcUserInfo;
+import org.springframework.security.oauth2.jwt.Jwt;
+
+import com.google.gson.reflect.TypeToken;
 
 import ca.testeshop.services.*;
 import ca.testeshop.utils.*;
@@ -71,7 +76,7 @@ public abstract class Test {
 		EShopResponse response;
 		
 		response = identityService.logout();
-		TestUtils.failIf(response.httpCode != HttpURLConnection.HTTP_MOVED_TEMP, response.toString());
+		TestUtils.failIf(response.httpCode != HttpURLConnection.HTTP_OK, response.toString());
 		
 		HttpUtils.cookieManager.get().getCookieStore().removeAll();
 		HttpUtils.authToken.set(null);
@@ -84,7 +89,7 @@ public abstract class Test {
 	public EShopResponse doUserLogin(String email, String password) throws Exception {
 		String url = null;
 		StringTokenizer st;
-		OidcUserInfo userInfo;
+		Map<String, Object> jwtClaims;
 		EShopResponse response;
 		
 		doUserLogout();
@@ -117,24 +122,26 @@ public abstract class Test {
 		//System.out.println("url is " + url);
 		
 		response = identityService.authenticate(url, email, password);
-		TestUtils.failIf(response.httpCode != HttpURLConnection.HTTP_NOT_FOUND, response.toString()); // should get 404 here
+		TestUtils.failIf(response.httpCode != HttpURLConnection.HTTP_OK, response.toString()); // should get 200 here
 		//response.dump();
 		
 		response = identityService.getUserInfo();
 		TestUtils.failIf(response.httpCode != HttpURLConnection.HTTP_OK, response.toString());
+		//response.dump();
 		
-		userInfo = (OidcUserInfo)JsonUtils.jsonToPojo(response.response, OidcUserInfo.class);
-		userId.set(userInfo.getSubject());
+		jwtClaims = (Map<String, Object>)JsonUtils.jsonToPojo(response.response, new TypeToken<Map<String, Object>>(){}.getType());
+		userId.set((String)jwtClaims.get("sub"));
+		//System.out.println("userId is " + userId.get());
 		
 		asyncChannel.set(new AsyncChannel(notificationService.urlBase, userId.get()));
-	
+		
 		return response;
 	}
 	
 	public void doUserRegistration(String email, String password) throws Exception {
 		String url = null;
 		StringTokenizer st;
-		OidcUserInfo userInfo;
+		Map<String, Object> jwtClaims;
 		EShopResponse response;
 		
 		doUserLogout();
@@ -154,7 +161,7 @@ public abstract class Test {
 				while (st.hasMoreTokens()) {
 					next = st.nextToken();
 					if (last.contains("href")) {
-						url = "http://docker.for.mac.localhost:8180" + next.replaceAll("&amp;", "&"); // hardcoding the hostname for now..
+						url = "http://docker.for.mac.localhost:8090" + next.replaceAll("&amp;", "&"); // hardcoding the hostname for now..
 						break;
 					}
 					last = next;
@@ -167,14 +174,15 @@ public abstract class Test {
 		//System.out.println("url is " + url);
 		
 		response = identityService.register(url, email, password);
-		TestUtils.failIf(response.httpCode != HttpURLConnection.HTTP_NOT_FOUND, response.toString()); // should get 404 here
+		TestUtils.failIf(response.httpCode != HttpURLConnection.HTTP_OK, response.toString()); // should get 200 here
 		//response.dump();
 		
 		response = identityService.getUserInfo();
 		TestUtils.failIf(response.httpCode != HttpURLConnection.HTTP_OK, response.toString());
 		
-		userInfo = (OidcUserInfo)JsonUtils.jsonToPojo(response.response, OidcUserInfo.class);
-		userId.set(userInfo.getSubject());
+		jwtClaims = (Map<String, Object>)JsonUtils.jsonToPojo(response.response, new TypeToken<Map<String, Object>>(){}.getType());
+		userId.set((String)jwtClaims.get("sub"));
+		//System.out.println("userId is " + userId.get());
 		
 		asyncChannel.set(new AsyncChannel(notificationService.urlBase, userId.get()));
 	}
@@ -187,7 +195,7 @@ public abstract class Test {
 		
 		// TODO: make this a loop that tries again if username already exists
 		/*
-		 while (retries < 5 && response.httpCode != HttpURLConnection.HTTP_MOVED_TEMP && response.toString().contains("exists")) {
+		 while (retries < 5 && response.httpCode != HttpURLConnection.HTTP_OK && response.toString().contains("exists")) {
 		 	// try again
 		 	retries++;
 		 }

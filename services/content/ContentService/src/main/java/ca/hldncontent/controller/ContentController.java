@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
@@ -41,17 +42,16 @@ public class ContentController {
 	
 	@PostMapping
 	public String uploadContent(@RequestBody Content content) throws Exception {
-		/* TODO: secure
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		DefaultOidcUser oidcUser = (DefaultOidcUser) authentication.getPrincipal();
-		String userId = oidcUser.getAttribute("sub");
-		*/
-		String userId = null;
+		Jwt jwt = (Jwt)authentication.getPrincipal();
+		String userId = jwt.getSubject();
 		String contentId;
 
 		logger.info("uploadContent() user {} content {}", userId, content);
 
 		contentId = UUID.randomUUID().toString(); // TODO: this is unsafe; need unique id generator
+		
+		// TODO: compress before storing
 		Files.write(Paths.get(contentDirectory + "/" + contentId), content.getData());
 
 		return contentId;
@@ -59,15 +59,8 @@ public class ContentController {
 	
 	@GetMapping
 	public Content downloadContent(@RequestParam String contentId) throws Exception {
-		/* TODO: secure
-		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		DefaultOidcUser oidcUser = (DefaultOidcUser) authentication.getPrincipal();
-		String userId = oidcUser.getAttribute("sub");
-		*/
-		String userId = null;
-
-		logger.info("downloadContent() user {} contentId {}", userId, contentId);
-
+		// note: no authentication required here
+		logger.info("downloadContent() contentId {}", contentId);
 		return new Content(contentId, Files.readAllBytes(Paths.get(contentDirectory + "/" + contentId)));
 	}
 }

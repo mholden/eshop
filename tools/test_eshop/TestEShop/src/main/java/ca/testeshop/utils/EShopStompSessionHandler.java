@@ -31,8 +31,7 @@ public class EShopStompSessionHandler extends StompSessionHandlerAdapter {
 	@Override
 	public void handleFrame(StompHeaders headers, Object payload) {
 		Notification notification = (Notification) payload;
-		// System.out.println("handleFrame() user " + userId + " got notification " +
-		// notification);
+		//System.out.println("handleFrame() user " + userId + " got notification " + notification);
 		notifications.add(notification); // will throw an exception if queue is full
 	}
 }

@@ -24,17 +24,18 @@ services:
 
   identity:
     container_name: identity-service
-    image: quay.io/keycloak/keycloak:17.0.0
-    command: ['start-dev', '--http-port=8180']
+    image: quay.io/keycloak/keycloak:legacy
     environment:
-      - KEYCLOAK_ADMIN=admin
-      - KEYCLOAK_ADMIN_PASSWORD=admin
-      - KC_DB=mysql
-      - KC_DB_URL=jdbc:mysql://mysql-db:3306/identitydb
-      - KC_DB_USERNAME=root
-      - KC_DB_PASSWORD=password
+      - DB_VENDOR=MYSQL
+      - DB_ADDR=mysql-db
+      - DB_DATABASE=identitydb
+      - DB_USER=root
+      - DB_SCHEMA=public
+      - DB_PASSWORD=password
+      - KEYCLOAK_USER=admin
+      - KEYCLOAK_PASSWOR=admin
     ports:
-      - "8180:8180"
+      - "8090:8080"
 
   basket:
     container_name: basket-service
@@ -109,6 +110,16 @@ services:
       - "5126:5126"
     volumes:
       - content:/content
+
+  gateway:
+    container_name: api-gateway
+    image: api-gateway
+    build:
+      context: ./gateways/gateway/
+    depends_on:
+      - identity
+    ports:
+      - "8080:8080"
 
 volumes:
   content:

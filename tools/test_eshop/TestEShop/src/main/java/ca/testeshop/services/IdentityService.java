@@ -43,7 +43,8 @@ public class IdentityService extends Service implements IdentityServiceAPI {
 
 		response = HttpUtils.doGet(urlBase + "/logout");
 		TestUtils.failIf(response.httpCode != HttpURLConnection.HTTP_OK, response.toString());
-
+		//response.dump();
+		/*
 		// grab the csrf token from the response
 		Scanner scanner = new Scanner(response.response);
 		while (scanner.hasNextLine()) {
@@ -65,23 +66,20 @@ public class IdentityService extends Service implements IdentityServiceAPI {
 		}
 		scanner.close();
 
-		// System.out.println("token is " + csrfToken);
-
-		response = HttpUtils.doPost(urlBase + "/logout", buildLogoutPayload(csrfToken), true);
+		//System.out.println("token is " + csrfToken);
+		*/
+		response = HttpUtils.doPost(urlBase + "/logout", null, true);
 		TestUtils.failIf(response.httpCode != HttpURLConnection.HTTP_MOVED_TEMP, response.toString()); // should get 302 here
 
-		// System.out.println("redirect location is " + response.redirectLocation);
-
+		//System.out.println("redirect location is " + response.redirectLocation);
+		if (response.redirectLocation.startsWith("/")) {
+			response.redirectLocation = urlBase + response.redirectLocation;
+			//System.out.println("adjusted redirect location to " + response.redirectLocation);
+		}
+		
 		response = HttpUtils.doGet(response.redirectLocation, true);
-		TestUtils.failIf(response.httpCode != HttpURLConnection.HTTP_MOVED_TEMP, response.toString()); // should get 302 here
-
-		// System.out.println("redirect location is " + response.redirectLocation);
-
-		response = HttpUtils.doGet(response.redirectLocation, true);
-		TestUtils.failIf(response.httpCode != HttpURLConnection.HTTP_MOVED_TEMP, response.toString()); // should get 302 here
-
-		// System.out.println("redirect location is " + response.redirectLocation); //
-		// should take you back to oauth link
+		TestUtils.failIf(response.httpCode != HttpURLConnection.HTTP_OK, response.toString()); // should get 200 here
+		//response.dump();
 
 		return response;
 	}
@@ -106,15 +104,15 @@ public class IdentityService extends Service implements IdentityServiceAPI {
 		response = HttpUtils.doPost(url, buildAuthenticatePayload(email, password), true);
 		TestUtils.failIf(response.httpCode != HttpURLConnection.HTTP_MOVED_TEMP, response.toString()); // should get 302 here
 
-		// System.out.println("redirect location is " + response.redirectLocation);
+		//System.out.println("redirect location is " + response.redirectLocation);
 
 		response = HttpUtils.doGet(response.redirectLocation, true);
 		TestUtils.failIf(response.httpCode != HttpURLConnection.HTTP_MOVED_TEMP, response.toString()); // should get 302 here
 
-		// System.out.println("redirect location is " + response.redirectLocation);
+		//System.out.println("redirect location is " + response.redirectLocation);
 
-		response = HttpUtils.doGet(response.redirectLocation, true);
-		TestUtils.failIf(response.httpCode != HttpURLConnection.HTTP_NOT_FOUND, response.toString()); // should get 404 here
+		response = HttpUtils.doGet(urlBase + response.redirectLocation, true);
+		TestUtils.failIf(response.httpCode != HttpURLConnection.HTTP_OK, response.toString()); // should get 200 here
 
 		return response;
 	}
@@ -184,15 +182,15 @@ public class IdentityService extends Service implements IdentityServiceAPI {
 		response = HttpUtils.doPost(_url, buildRegisterPayload(email, password), true);
 		TestUtils.failIf(response.httpCode != HttpURLConnection.HTTP_MOVED_TEMP, response.toString()); // should get 302 here
 
-		// System.out.println("redirect location is " + response.redirectLocation);
+		//System.out.println("redirect location is " + response.redirectLocation);
 
 		response = HttpUtils.doGet(response.redirectLocation, true);
 		TestUtils.failIf(response.httpCode != HttpURLConnection.HTTP_MOVED_TEMP, response.toString()); // should get 302 here
 
-		// System.out.println("redirect location is " + response.redirectLocation);
+		//System.out.println("redirect location is " + response.redirectLocation);
 
-		response = HttpUtils.doGet(response.redirectLocation);
-		TestUtils.failIf(response.httpCode != HttpURLConnection.HTTP_NOT_FOUND, response.toString()); // should get 404 here
+		response = HttpUtils.doGet(urlBase + response.redirectLocation);
+		TestUtils.failIf(response.httpCode != HttpURLConnection.HTTP_OK, response.toString()); // should get 200 here
 
 		return response;
 	}
