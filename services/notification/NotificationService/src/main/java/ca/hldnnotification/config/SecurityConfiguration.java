@@ -29,7 +29,7 @@ public class SecurityConfiguration {
 		// Require authentication for all requests
 		http.authorizeHttpRequests()
 		.requestMatchers(
-			"/ws/**" // TODO: revisit websocket security
+			"/notification/**" // TODO: revisit websocket security
 		).permitAll()
 		.anyRequest().authenticated();
 		// Allow showing pages within a frame

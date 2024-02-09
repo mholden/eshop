@@ -97,6 +97,9 @@ public class TestOrders extends Test {
 				public void run() {
 					try {
 						testSpecificCase1();
+						if (asyncChannel.get().exceptions.size() != 0) {
+							throw new Exception("Async channel exception(s)");
+						}
 					} catch (Exception e) {
 						exceptions.add(e);
 					}

@@ -63,6 +63,12 @@ public class TestEShopApplication implements CommandLineRunner {
 				.desc("list tests")
 				.build()
 			);
+			
+			// quiet option
+			options.addOption(Option.builder("q")
+					.required(false)
+					.desc("mute tests")
+					.build());
 
 			cmd = parser.parse(options, args);
 
@@ -78,6 +84,8 @@ public class TestEShopApplication implements CommandLineRunner {
 			} else { // run one or all tests
 				if (cmd.hasOption("t"))
 					testName = cmd.getOptionValue("t");
+				if (cmd.hasOption("q"))
+					testEShop.quiet = true;
 
 				if (testName != null)
 					testEShop.runTest(Class.forName("ca.testeshop.tests." + testName));

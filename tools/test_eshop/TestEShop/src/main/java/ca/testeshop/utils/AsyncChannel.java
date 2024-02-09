@@ -3,6 +3,7 @@ package ca.testeshop.utils;
 import java.time.Duration;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.TimeUnit;
 
 import org.springframework.messaging.converter.MappingJackson2MessageConverter;
@@ -13,6 +14,7 @@ import org.springframework.web.socket.messaging.WebSocketStompClient;
 public class AsyncChannel {
 	private EShopStompSessionHandler stompSessionHandler;
 	private BlockingQueue<Notification> notifications = new ArrayBlockingQueue<>(50);
+	public ConcurrentLinkedQueue<Throwable> exceptions = new ConcurrentLinkedQueue<Throwable>();
 
 	public AsyncChannel(String url, String userId) {
 		WebSocketClient client = new StandardWebSocketClient();
@@ -24,6 +26,7 @@ public class AsyncChannel {
 		stompSessionHandler = new EShopStompSessionHandler();
 		stompSessionHandler.userId = userId;
 		stompSessionHandler.notifications = notifications;
+		stompSessionHandler.exceptions = exceptions;
 		stompClient.connect(url, stompSessionHandler);
 	}
 	

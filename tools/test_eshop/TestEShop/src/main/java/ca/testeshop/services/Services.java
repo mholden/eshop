@@ -29,8 +29,7 @@ public class Services {
 		basketService = new BasketService("http://localhost:8080"); // mapped to http://localhost:5122 via gateway 
 		orderService = new OrderService("http://localhost:8080"); // mapped to http://localhost:5123 via gateway
 		// TODO: add payment service?
-		notificationService = new NotificationService("ws://localhost:5125/ws");
-		//notificationService = new NotificationService("ws://localhost:8080/ws"); // TODO: go through gateway?
+		notificationService = new NotificationService("ws://localhost:8080"); // mapped to ws://localhost:5125 via gateway
 		contentService = new ContentService("http://localhost:8080"); // mapped to http://localhost:5126 via gateway
 	}
 }

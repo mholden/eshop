@@ -1,6 +1,8 @@
 package ca.testeshop.services;
 
 public class NotificationService extends Service implements NotificationServiceAPI {
+	
+	public String asyncChannelUrl;
 
 	public NotificationService() {
 		
@@ -8,5 +10,6 @@ public class NotificationService extends Service implements NotificationServiceA
 	
 	public NotificationService(String urlbase) {
 		super(urlbase);
+		asyncChannelUrl = urlbase + "/notification/ws";
 	}
 }

@@ -7,11 +7,13 @@ import org.springframework.messaging.simp.stomp.StompSessionHandlerAdapter;
 
 import java.lang.reflect.Type;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class EShopStompSessionHandler extends StompSessionHandlerAdapter {
 
 	public String userId;
 	public BlockingQueue<Notification> notifications;
+	public ConcurrentLinkedQueue<Throwable> exceptions;
 
 	@Override
 	public void afterConnected(StompSession session, StompHeaders connectedHeaders) {
@@ -21,6 +23,13 @@ public class EShopStompSessionHandler extends StompSessionHandlerAdapter {
 	@Override
 	public void handleException(StompSession session, StompCommand command, StompHeaders headers, byte[] payload, Throwable exception) {
 		System.out.println("handleException() got an exception " + exception);
+		exceptions.add(exception);
+	}
+	
+	@Override
+	public void handleTransportError(StompSession session, Throwable exception) {
+		System.out.println("handleTransportError() got an exception " + exception);
+		exceptions.add(exception);
 	}
 
 	@Override

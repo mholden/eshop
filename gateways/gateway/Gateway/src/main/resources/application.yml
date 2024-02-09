@@ -46,9 +46,9 @@ spring:
         - Path=/content/**
         
       - id: notification-service
-        uri: ws://notification-service:5125/ws
+        uri: ws://notification-service:5125/notification
         predicates:
-        - Path=/ws/**
+        - Path=/notification/**
         
       - id: order-service
         uri: http://order-service:5123/order
@@ -63,7 +63,7 @@ spring:
 logging:
   level:
     org:
-      springframework:
+      springframework: 
         cloud.gateway: DEBUG
         http.server.reactive: DEBUG
         web.reactive: DEBUG

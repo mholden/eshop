@@ -133,7 +133,7 @@ public abstract class Test {
 		userId.set((String)jwtClaims.get("sub"));
 		//System.out.println("userId is " + userId.get());
 		
-		asyncChannel.set(new AsyncChannel(notificationService.urlBase, userId.get()));
+		asyncChannel.set(new AsyncChannel(notificationService.asyncChannelUrl, userId.get()));
 		
 		return response;
 	}
@@ -184,7 +184,7 @@ public abstract class Test {
 		userId.set((String)jwtClaims.get("sub"));
 		//System.out.println("userId is " + userId.get());
 		
-		asyncChannel.set(new AsyncChannel(notificationService.urlBase, userId.get()));
+		asyncChannel.set(new AsyncChannel(notificationService.asyncChannelUrl, userId.get()));
 	}
 	
 	public void doUserRegistration() throws Exception {

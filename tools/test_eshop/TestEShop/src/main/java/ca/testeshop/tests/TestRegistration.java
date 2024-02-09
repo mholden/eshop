@@ -81,6 +81,9 @@ public class TestRegistration extends Test {
 				public void run() {
 					try {
 						_testSpecificCase3();
+						if (asyncChannel.get().exceptions.size() != 0) {
+							throw new Exception("Async channel exception(s)");
+						}
 					} catch (Exception e) {
 						exceptions.add(e);
 					}

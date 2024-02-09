@@ -1,16 +1,21 @@
 package ca.testeshop;
 
+import java.io.FileOutputStream;
+import java.io.PrintStream;
 import java.lang.reflect.*;
 import java.util.*;
 
 import ca.testeshop.services.*;
 import ca.testeshop.tests.*;
+import ca.testeshop.utils.TestUtils;
 
 public class TestEShop {
 	
 	public String username;
 	public String password;
 	public Services services;
+	public Boolean quiet = false;
+	public String quietFile = "/tmp/test-eshop.quiet";
 	
 	static final Set<Class<?>> tests = new HashSet<Class<?>>() {
 		private static final long serialVersionUID = 1L; {
@@ -50,27 +55,58 @@ public class TestEShop {
 	}
 	
 	public void runTest(Class<?> c) throws Exception {
-		//Class<?> c = Class.forName("ca.testeshop.tests." + testName);
 		Constructor<?> constructor = c.getConstructor(String.class, String.class, Services.class);
 		Test test = (Test) constructor.newInstance(username, password, services);
+		String testName = c.getSimpleName();
+		PrintStream original = null, originalErr = null;
+		Boolean fail;
+		Exception _e = null;
 		
-		System.out.print(c.getSimpleName());
+		System.out.print(testName);
+		if (quiet) {
+			original = System.out;
+			originalErr = System.err;
+		    //System.setOut(new PrintStream(new FileOutputStream("/dev/null")));
+			System.setOut(new PrintStream(new FileOutputStream("/tmp/TestEShop-" + testName + ".out")));
+			System.setErr(System.out);
+			System.out.print(testName);
+		}
+		fail = false;
 		try {
 			test.run();
+			if (test.asyncChannel.get() != null && test.asyncChannel.get().exceptions.size() != 0) {
+				throw new Exception("Async channel exception(s)");
+			}
 		} catch (Exception e) {
-			throw e;
+			fail = true;
+			_e = e;
 		}
-		System.out.println(" PASS");
+		if (quiet) {
+			System.setOut(original);
+			System.setErr(originalErr);
+		}
+		if (fail) {
+			System.out.println(" FAIL");
+			throw _e;
+		} else {
+			System.out.println(" PASS");
+		}
 	}
 	
 	public void runTests() throws Exception {
 		Iterator<Class<?>> testsIterator;
 		Class<?> test;
+		Integer nFails = 0;
 		
 		testsIterator = tests.iterator();
 		while (testsIterator.hasNext()) {
 			test = testsIterator.next();
-			runTest(test);
+			try {
+				runTest(test);
+			} catch (Exception e) {
+				nFails++;
+			}
 		}
+		TestUtils.failIf(nFails != 0, null);
 	}
 }

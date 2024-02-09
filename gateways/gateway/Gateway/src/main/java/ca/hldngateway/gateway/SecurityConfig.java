@@ -27,6 +27,9 @@ public class SecurityConfig {
 		.pathMatchers(
 			HttpMethod.GET, "/content/**"
 		).permitAll()
+		.pathMatchers(
+			"/notification/**" // TODO: revisit websocket security
+		).permitAll()
 		.anyExchange().authenticated(); // Require authentication for all other requests
 		// Allow showing /home within a frame
 		http.headers().frameOptions().mode(Mode.SAMEORIGIN);
