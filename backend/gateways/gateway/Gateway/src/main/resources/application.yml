@@ -1,0 +1,79 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: hldn-gateway
+  security:
+    oauth2:
+      client:
+        provider:
+          keycloak:
+            issuer-uri: http://docker.for.mac.localhost:8090/auth/realms/spring-cloud-gateway-realm
+            user-name-attribute: preferred_username
+        registration:
+          keycloak:
+            client-id: spring-cloud-gateway-client
+            client-secret: asu4XxfacTTkD1UhiZTH2QZBjH6I23Xb
+            scope: openid
+
+  cloud:
+    gateway:
+      default-filters:
+      - TokenRelay
+
+      globalcors:
+        corsConfigurations:
+          '[/**]':
+            allowedOrigins: "http://localhost:3000"
+            allowedHeaders: "*"
+            allowedMethods:
+            - GET
+            - POST
+
+      routes:
+      - id: httpbin
+        uri: https://httpbin.org
+        predicates:
+        - Path=/httpbin/**
+        filters:
+        - StripPrefix=1
+        
+      - id: basket-service
+        uri: http://basket-service:5122/basket
+        predicates:
+        - Path=/basket/**
+        
+      - id: catalog-service
+        uri: http://catalog-service:5121/catalog
+        predicates:
+        - Path=/catalog/**
+        
+      - id: content-service
+        uri: http://content-service:5126/content
+        predicates:
+        - Path=/content/**
+        
+      - id: notification-service
+        uri: ws://notification-service:5125/notification
+        predicates:
+        - Path=/notification/**
+        
+      - id: order-service
+        uri: http://order-service:5123/order
+        predicates:
+        - Path=/order/**
+        
+      - id: payment-service
+        uri: http://payment-service:5124/payment
+        predicates:
+        - Path=/payment/**
+
+logging:
+  level:
+    org:
+      springframework: 
+        cloud.gateway: DEBUG
+        http.server.reactive: DEBUG
+        web.reactive: DEBUG
+        security: DEBUG
