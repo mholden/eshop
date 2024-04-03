@@ -16,6 +16,7 @@ import { colorBackgroundBody } from '../../utils/palette';
 import { paddingLeft } from '../../utils/directions';
 import Layout from '../Layout';
 import Catalog from '../ECommerce/Catalog';
+import CatalogItem from '../../pages/CatalogItem';
 
 const ThemeComponent = ({
   children, 
@@ -71,6 +72,7 @@ function App() {
           <ContainerWrap>
             <Switch>
               <Route exact path="/" component={Catalog}/>
+              <Route exact path="/catalog/item" component={CatalogItem}/>
             </Switch>
           </ContainerWrap>
         </ConnectedThemeComponent>

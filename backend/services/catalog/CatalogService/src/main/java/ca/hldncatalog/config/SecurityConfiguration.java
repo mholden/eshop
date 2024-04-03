@@ -32,6 +32,9 @@ public class SecurityConfiguration {
 			HttpMethod.GET, "/catalog/items/**"
 		).permitAll()
 		.requestMatchers(
+			HttpMethod.GET, "/catalog/item/**"
+		).permitAll()
+		.requestMatchers(
 			HttpMethod.POST, "/catalog/**"
 		).hasRole("ADMIN")
 		.anyRequest().authenticated();

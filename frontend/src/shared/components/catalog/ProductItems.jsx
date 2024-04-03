@@ -24,7 +24,7 @@ const ProductItems = ({ items, isLoading }) => (
           items.map(item => (
             <ProductCard key={item.id}>
               <ProductItem>
-                <ProductItemLink to="/e-commerce/product_page">
+                <ProductItemLink to={`/catalog/item?id=${item.id}`}>
                   {item.new ? <ProductItemLabel src={New} alt="new" /> : ''}
                   {item.sale ? <ProductItemLabel src={Sale} alt="sale" /> : ''}
                   <ProductItemImageWrap>

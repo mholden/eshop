@@ -5,6 +5,7 @@ import blocksShadowsReducer from './blocksShadowsReducer';
 import sidebarReducer from './sidebarReducer';
 import customizerReducer from './customizerReducer';
 import catalogItemsReducer from './catalogItemsReducer';
+import catalogItemReducer from './catalogItemReducer';
 
 export {
   themeReducer,
@@ -14,4 +15,5 @@ export {
   sidebarReducer,
   customizerReducer,
   catalogItemsReducer,
+  catalogItemReducer,
 };

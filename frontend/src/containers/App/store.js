@@ -7,7 +7,8 @@ import {
   blocksShadowsReducer,
   customizerReducer,
   sidebarReducer,
-  catalogItemsReducer
+  catalogItemsReducer,
+  catalogItemReducer
 } from '../../redux/reducers/index';
 
 const reducer = combineReducers({
@@ -18,6 +19,7 @@ const reducer = combineReducers({
   customizer: customizerReducer,
   sidebar: sidebarReducer,
   catalogItems: catalogItemsReducer,
+  catalogItem: catalogItemReducer,
 });
 const store = createStore(reducer, applyMiddleware(thunk));
 

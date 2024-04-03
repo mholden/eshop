@@ -6,6 +6,7 @@ import { fetchCatalogItems } from '@/redux/actions/catalogItemsActions';
 import ErrorAlert from '@/shared/components/ErrorAlert';
 
 const CatalogItems = () => {
+  
   const { 
     catalogItems, catalogItemsAreLoading, catalogItemsError,
   } = useSelector(state => ({

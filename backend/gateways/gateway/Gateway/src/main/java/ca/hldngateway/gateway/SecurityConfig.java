@@ -25,6 +25,9 @@ public class SecurityConfig {
 			HttpMethod.GET, "/catalog/items/**"
 		).permitAll()
 		.pathMatchers(
+			HttpMethod.GET, "/catalog/item/**"
+		).permitAll()
+		.pathMatchers(
 			HttpMethod.GET, "/content/**"
 		).permitAll()
 		.pathMatchers(

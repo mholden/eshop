@@ -56,6 +56,19 @@ public class CatalogController {
 		return catalogItems;
 	}
 	
+	@GetMapping("/item")
+	public CatalogItem getCatalogItem(@RequestParam Integer catalogItemId) throws Exception {
+		CatalogItem catalogItem = null;
+		
+		logger.info("getCatalogItem() catalogItemId {}", catalogItemId);
+		
+		catalogItem = catalogItemRepository.findById(catalogItemId).get();
+		
+		logger.info("getCatalogItem() got catalogItem {}", catalogItem);
+		
+		return catalogItem;
+	}
+	
 	@PostMapping("/item")
 	@Transactional
 	public void createCatalogItem(@RequestBody CatalogItem catalogItem) throws Exception {
