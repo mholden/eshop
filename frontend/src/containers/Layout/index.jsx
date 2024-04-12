@@ -2,11 +2,12 @@ import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 import { paddingLeft } from '../../utils/directions';
-import { changeMobileSidebarVisibility } from '../../redux/actions/sidebarActions';
+import { changeMobileSidebarVisibility, changeSidebarVisibility } from '../../redux/actions/sidebarActions';
 import {
   changeThemeToDark, changeThemeToLight,
 } from '../../redux/actions/themeActions';
 import Sidebar from './components/sidebar/Sidebar';
+import Topbar from './topbar/Topbar';
 
 const Layout = () => {
 
@@ -18,6 +19,10 @@ const Layout = () => {
   }));
 
   const dispatch = useDispatch();
+
+  const sidebarVisibility = () => {
+    dispatch(changeSidebarVisibility());
+  };
 
   const mobileSidebarVisibility = () => {
     dispatch(changeMobileSidebarVisibility());
@@ -36,6 +41,10 @@ const Layout = () => {
       collapse={sidebar.collapse}
       topNavigation={customizer.topNavigation}
     >
+      <Topbar
+          changeMobileSidebarVisibility={mobileSidebarVisibility}
+          changeSidebarVisibility={sidebarVisibility}
+      />
       <Sidebar
         sidebar={sidebar}
         changeToDark={changeToDark}

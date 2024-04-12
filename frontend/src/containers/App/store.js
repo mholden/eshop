@@ -8,7 +8,8 @@ import {
   customizerReducer,
   sidebarReducer,
   catalogItemsReducer,
-  catalogItemReducer
+  catalogItemReducer,
+  cartReducer,
 } from '../../redux/reducers/index';
 
 const reducer = combineReducers({
@@ -20,6 +21,7 @@ const reducer = combineReducers({
   sidebar: sidebarReducer,
   catalogItems: catalogItemsReducer,
   catalogItem: catalogItemReducer,
+  cart: cartReducer,
 });
 const store = createStore(reducer, applyMiddleware(thunk));
 

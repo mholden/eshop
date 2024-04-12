@@ -17,7 +17,7 @@ class Main {
 				"left join identitydb.USER_ENTITY UE on UE.id = BI.user_id " + 
 				"left join catalogdb.catalogitem CI on CI.id = BI.catalog_item_id");
 		put("catalogdb.catalogitem", "select CI.id, CI.name, CI.price, CI.image_id from catalogdb.catalogitem CI");
-		put("identitydb.USER_ENTITY", "select UE.id, UE.username, UE.realm_id from identitydb.USER_ENTITY UE");
+		put("identitydb.USER_ENTITY", "select UE.id, UE.username, from_unixtime(floor(UE.created_timestamp/1000)), UE.realm_id from identitydb.USER_ENTITY UE");
 		put("identitydb.USER_ROLE_MAPPING", "select RM.role_id, KR.name, RM.user_id, UE.username from identitydb.USER_ROLE_MAPPING RM " + 
 				"left join identitydb.KEYCLOAK_ROLE KR on KR.id = RM.role_id " +
 				"left join identitydb.USER_ENTITY UE on UE.id = RM.user_id ");

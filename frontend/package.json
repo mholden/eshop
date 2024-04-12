@@ -9,6 +9,8 @@
     "axios": "^1.6.8",
     "bootstrap": "^5.2.3",
     "customize-cra": "^1.0.0",
+    "keycloak-js": "^24.0.2",
+    "keycloak-react-web": "^0.1.19",
     "mdi-react": "^7.4.0",
     "polished": "^4.0.5",
     "prop-types": "^15.7.2",
@@ -24,7 +26,8 @@
     "redux-thunk": "^2.3.0",
     "smooth-scrollbar-react": "^2.4.1",
     "styled-components": "^5.3.3",
-    "styled-theming": "^2.2.0"
+    "styled-theming": "^2.2.0",
+    "web-vitals": "^3.5.2"
   },
   "scripts": {
     "start": "react-app-rewired start",

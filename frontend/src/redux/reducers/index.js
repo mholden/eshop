@@ -6,6 +6,7 @@ import sidebarReducer from './sidebarReducer';
 import customizerReducer from './customizerReducer';
 import catalogItemsReducer from './catalogItemsReducer';
 import catalogItemReducer from './catalogItemReducer';
+import cartReducer from './cartReducer';
 
 export {
   themeReducer,
@@ -16,4 +17,5 @@ export {
   customizerReducer,
   catalogItemsReducer,
   catalogItemReducer,
+  cartReducer,
 };

@@ -2,6 +2,8 @@ server:
   port: 8080
 
 spring:
+  main:
+    allow-bean-definition-overriding: true
   application:
     name: hldn-gateway
   security:
@@ -16,6 +18,9 @@ spring:
             client-id: spring-cloud-gateway-client
             client-secret: asu4XxfacTTkD1UhiZTH2QZBjH6I23Xb
             scope: openid
+      resourceserver:
+        jwt:
+          issuer-uri: http://docker.for.mac.localhost:8090/auth/realms/spring-cloud-gateway-realm
 
   cloud:
     gateway:

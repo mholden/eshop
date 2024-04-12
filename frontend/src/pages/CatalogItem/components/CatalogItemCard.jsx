@@ -4,7 +4,6 @@ import styled from 'styled-components';
 import HeartIcon from 'mdi-react/HeartIcon';
 import StarIcon from 'mdi-react/StarIcon';
 import StarOutlineIcon from 'mdi-react/StarOutlineIcon';
-import { Link } from 'react-router-dom';
 import { Button } from '@/shared/components/Button';
 import {
   Card, CardBody,
@@ -26,6 +25,9 @@ import {
 } from '@/shared/components/form/FormElements';
 import PropTypes from 'prop-types';
 import SimpleLoader from '../../../shared/components/SimpleLoader';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchCart } from '../../../redux/actions/cartActions';
+import AuthService from '../../../services/AuthService';
 //import ProductGallery from './ProductGallery';
 //import images from './imgs';
 //import ProductTabs from './ProductTabs';
@@ -34,11 +36,30 @@ import SimpleLoader from '../../../shared/components/SimpleLoader';
 const CatalogItemCard = ({ item, isLoading }) => {
   const [color, setColor] = useState('white');
 
+  const { 
+    cart, cartIsLoading, cartError,
+  } = useSelector(state => ({
+      cart: state.cart.data,
+      cartIsLoading: state.cart.isFetching,
+      cartError: state.cart.error,
+  }));
+
+  const dispatch = useDispatch();
+
   const onLike = () => {
     if (color === 'white') {
       setColor('#70bbfd');
     } else {
       setColor('white');
+    }
+  };
+
+  const onAddToCart = () => {
+    if (!AuthService.isLoggedIn()) {
+      AuthService.doLogin();
+    } else {
+      dispatch(fetchCart());
+      console.log("cart: ", {cart});
     }
   };
 
@@ -103,7 +124,7 @@ const CatalogItemCard = ({ item, isLoading }) => {
                       </FormGroupField>
                     </FormGroup>*/}
                     <FormButtonToolbar>
-                      <Button as={Link} variant="primary" to="/e-commerce/cart">Add to cart</Button>
+                      <Button variant="primary" onClick={onAddToCart}>Add to cart</Button>
                       <ProductCArdWishButton
                         type="button"
                         onClick={onLike}
