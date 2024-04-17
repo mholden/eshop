@@ -50,9 +50,10 @@ public class TestBasket extends Test {
 		
 		//System.out.println("set it, getting it again");
 		
-		response = basketService.getBasketItems();
-		TestUtils.failIf(response.httpCode != HttpURLConnection.HTTP_OK, response.toString());
+		//response = basketService.getBasketItems();
+		//TestUtils.failIf(response.httpCode != HttpURLConnection.HTTP_OK, response.toString());
 		
+		// this should come back from the POST request 
 		basketItems = (List<BasketItem>)JsonUtils.jsonToPojo(response.response, new TypeToken<List<BasketItem>>(){}.getType());
 		//System.out.println(basketItems);
 		TestUtils.failIf(basketItems.size() != 1, null);

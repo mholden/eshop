@@ -25,8 +25,8 @@ import {
 } from '@/shared/components/form/FormElements';
 import PropTypes from 'prop-types';
 import SimpleLoader from '../../../shared/components/SimpleLoader';
-import { useDispatch, useSelector } from 'react-redux';
-import { fetchCart } from '../../../redux/actions/cartActions';
+import { useDispatch } from 'react-redux';
+import { addToCart } from '../../../redux/actions/cartActions';
 import AuthService from '../../../services/AuthService';
 //import ProductGallery from './ProductGallery';
 //import images from './imgs';
@@ -35,14 +35,6 @@ import AuthService from '../../../services/AuthService';
 
 const CatalogItemCard = ({ item, isLoading }) => {
   const [color, setColor] = useState('white');
-
-  const { 
-    cart, cartIsLoading, cartError,
-  } = useSelector(state => ({
-      cart: state.cart.data,
-      cartIsLoading: state.cart.isFetching,
-      cartError: state.cart.error,
-  }));
 
   const dispatch = useDispatch();
 
@@ -57,10 +49,8 @@ const CatalogItemCard = ({ item, isLoading }) => {
   const onAddToCart = () => {
     if (!AuthService.isLoggedIn()) {
       AuthService.doLogin();
-    } else {
-      dispatch(fetchCart());
-      console.log("cart: ", {cart});
     }
+    dispatch(addToCart(item));
   };
 
   return (

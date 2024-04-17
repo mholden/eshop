@@ -1,8 +1,11 @@
 import axios from 'axios';
 
-export default async (url, body, params) => {
+const post = async (url, body, params) => {
   try {
-    return await axios.post(url, body, { ...params });
+    //console.log("post() url:", url, "body:", body, "params:", params);
+    const response = await axios.post(url, body, { ...params });
+    //console.log("post() response:", response);
+    return response;
   } catch (e) {
     if (!e || !e.response || e.response.status !== 401) throw e;
     localStorage.setItem('url', `${window.location.pathname}${window.location.search}`);
@@ -13,3 +16,5 @@ export default async (url, body, params) => {
     }
   }
 };
+
+export default post;

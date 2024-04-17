@@ -3,10 +3,10 @@ import Keycloak from "keycloak-js";
 // from: https://github.com/dasniko/keycloak-reactjs-demo/blob/main/src/services/UserService.js
 
 const keycloakConfig = {
-    url: "http://docker.for.mac.localhost:8090/auth",
-    realm: "spring-cloud-gateway-realm",
-    clientId: "spring-cloud-gateway-client",
-  };
+  url: "http://docker.for.mac.localhost:8090/auth",
+  realm: "spring-cloud-gateway-realm",
+  clientId: "spring-cloud-gateway-client",
+};
   
 const _kc = new Keycloak(keycloakConfig)
 

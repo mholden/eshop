@@ -3,11 +3,19 @@ import {
   fetchCartRequest,
   fetchCartSuccess,
   fetchCartError,
+  setCartRequest,
+  setCartSuccess,
+  setCartError,
+  addToCartRequest,
+  addToCartSuccess,
+  addToCartError,
 } from '../actions/cartActions';
 
 const defaultState = {
-  data: {},
+  data: [],
   isFetching: false,
+  isSetting: false,
+  isAdding: false,
   error: null,
 };
 
@@ -32,6 +40,50 @@ export default handleActions(
       return {
         ...state,
         isFetching: false,
+        error: payload,
+      };
+    },
+    [setCartRequest](state) {
+      return {
+        ...state,
+        isSetting: true,
+        error: null,
+      };
+    },
+    [setCartSuccess](state, { payload }) {
+      return {
+        ...state,
+        data: payload,
+        isSetting: false,
+        error: null,
+      };
+    },
+    [setCartError](state, { payload }) {
+      return {
+        ...state,
+        isSetting: false,
+        error: payload,
+      };
+    },
+    [addToCartRequest](state) {
+      return {
+        ...state,
+        isAdding: true,
+        error: null,
+      };
+    },
+    [addToCartSuccess](state, { payload }) {
+      return {
+        ...state,
+        data: payload,
+        isAdding: false,
+        error: null,
+      };
+    },
+    [addToCartError](state, { payload }) {
+      return {
+        ...state,
+        isAdding: false,
         error: payload,
       };
     },

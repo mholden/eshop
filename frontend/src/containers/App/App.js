@@ -17,6 +17,7 @@ import { paddingLeft } from '../../utils/directions';
 import Layout from '../Layout';
 import Catalog from '../ECommerce/Catalog';
 import CatalogItem from '../../pages/CatalogItem';
+import Cart from '../../pages/Cart';
 
 const ThemeComponent = ({
   children, 
@@ -73,6 +74,7 @@ function App() {
             <Switch>
               <Route exact path="/" component={Catalog}/>
               <Route exact path="/catalog/item" component={CatalogItem}/>
+              <Route exact path="/cart" component={Cart}/>
             </Switch>
           </ContainerWrap>
         </ConnectedThemeComponent>

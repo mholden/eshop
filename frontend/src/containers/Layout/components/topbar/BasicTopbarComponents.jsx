@@ -200,6 +200,14 @@ export const TopbarLinkTitle = styled.p`
   line-height: 16px;
 `;
 
+export const TopbarNumberAttribute = styled.p`
+  display: flex;
+  margin: 0;
+  font-size: 11px;
+  line-height: 16px;
+  justify-content: center;
+`;
+
 export const TopbarDownIcon = styled(DownIcon)`
   height: 18px;
   margin: auto 0;

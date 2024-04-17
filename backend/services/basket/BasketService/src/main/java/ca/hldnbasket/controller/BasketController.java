@@ -82,7 +82,7 @@ public class BasketController {
 
 	@PostMapping("/items")
 	@Transactional
-	public void setBasketItems(@RequestBody List<BasketItem> basketItems) {
+	public List<BasketItem> setBasketItems(@RequestBody List<BasketItem> basketItems) {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		Jwt jwt = (Jwt)authentication.getPrincipal();
 		String userId = jwt.getSubject();
@@ -97,6 +97,8 @@ public class BasketController {
 		logger.info("setBasketItems() saving new items " + basketItems);
 
 		basketRepository.save(new Basket(userId, basketItems));
+		
+		return basketItems;
 	}
 
 	@PostMapping("/checkout")

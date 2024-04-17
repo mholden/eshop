@@ -10,6 +10,8 @@ import {
   TopbarRightOver,
   //TopbarSearchWrap,
 } from '../components/topbar/BasicTopbarComponents';
+import TopbarCart from '../components/topbar/TopbarCart';
+import AuthService from '../../../services/AuthService';
 
 const Topbar = ({
   changeMobileSidebarVisibility,
@@ -21,7 +23,7 @@ const Topbar = ({
         onClickMobile={changeMobileSidebarVisibility}
         onClickDesktop={changeSidebarVisibility}
       /> */}
-      <TopbarLogo to="/online_marketing_dashboard" />
+      <TopbarLogo to="/" />
     </TopbarLeft>
     <TopbarRight>
       {/* <TopbarSearchWrap>
@@ -29,14 +31,17 @@ const Topbar = ({
       </TopbarSearchWrap> */}
       <TopbarRightOver>
         {/* <TopbarNotification /> */}
-        {/* <TopbarMail new /> */}
+        {
+          AuthService.isLoggedIn() && 
+          <TopbarCart />
+        }
         <TopbarProfile />
         {/* <TopbarLanguage /> */}
         {/* <TopbarWallet /> */}
       </TopbarRightOver>
     </TopbarRight>
   </TopbarContainer>
-  );
+);
 
 Topbar.propTypes = {
   changeMobileSidebarVisibility: PropTypes.func.isRequired,

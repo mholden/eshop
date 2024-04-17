@@ -40,6 +40,7 @@ public class SecurityConfig {
 		// Allow showing pages within a frame
 		http.headers().frameOptions().mode(Mode.SAMEORIGIN);
 		http.cors();
+		http.csrf().disable(); // TODO: revisit (POSTs fail without this)
 		return http.build();
 	}
 	
