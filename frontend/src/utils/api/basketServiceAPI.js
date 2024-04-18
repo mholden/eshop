@@ -25,6 +25,15 @@ const basketServiceAPI = {
     return basketResponse;
   },
 
+  checkout: async () => {
+    const basketResponse = await post(BASKET_API_BASE_URL + "/checkout", { }, {
+        headers: {
+          'Authorization': `Bearer ${AuthService.getToken()}`
+        }
+    });
+    return basketResponse;
+  },
+
 };
 
 export default basketServiceAPI;

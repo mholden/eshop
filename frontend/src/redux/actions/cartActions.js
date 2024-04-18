@@ -59,3 +59,17 @@ export const addToCart = (catalogItem) => async (dispatch) => {
     dispatch(addToCartError(e.message));
   }
 };
+
+export const cartCheckoutRequest = createAction('CART_CHECKOUT_REQUEST');
+export const cartCheckoutSuccess = createAction('CART_CHECKOUT_SUCCESS');
+export const cartCheckoutError = createAction('CART_CHECKOUT_ERROR');
+
+export const cartCheckout = () => async (dispatch) => {
+  try {
+    dispatch(cartCheckoutRequest());
+    await basketServiceAPI.checkout();
+    dispatch(cartCheckoutSuccess());
+  } catch (e) {
+    dispatch(cartCheckoutError(e.message));
+  }
+};

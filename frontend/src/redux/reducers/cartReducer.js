@@ -9,6 +9,9 @@ import {
   addToCartRequest,
   addToCartSuccess,
   addToCartError,
+  cartCheckoutRequest,
+  cartCheckoutSuccess,
+  cartCheckoutError,
 } from '../actions/cartActions';
 
 const defaultState = {
@@ -16,6 +19,7 @@ const defaultState = {
   isFetching: false,
   isSetting: false,
   isAdding: false,
+  isCheckingOut: false,
   error: null,
 };
 
@@ -84,6 +88,27 @@ export default handleActions(
       return {
         ...state,
         isAdding: false,
+        error: payload,
+      };
+    },
+    [cartCheckoutRequest](state) {
+      return {
+        ...state,
+        isCheckingOut: true,
+        error: null,
+      };
+    },
+    [cartCheckoutSuccess](state) {
+      return {
+        ...state,
+        isCheckingOut: false,
+        error: null,
+      };
+    },
+    [cartCheckoutError](state, { payload }) {
+      return {
+        ...state,
+        isCheckingOut: false,
         error: payload,
       };
     },

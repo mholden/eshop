@@ -13,19 +13,30 @@ import {
 import { colorAdditional } from '@/utils/palette';
 import { marginRight, paddingLeft } from '@/utils/directions';
 import { Button } from '@/shared/components/Button';
+import { useDispatch } from 'react-redux';
+import { cartCheckout } from '../../../redux/actions/cartActions';
 
-const CartPurchase = () => (
-  <Form onSubmit={() => {}} initialValues={{ delivery: 'russian_post' }}>
-    {({ handleSubmit }) => (
-      <CartDeliveriesForm onSubmit={handleSubmit}>
-        <CartTotal>Total: $348.00</CartTotal>
-        <FormButtonToolbar>
-          <Button as={Link} variant="primary" to="/e-commerce/payment">Checkout</Button>
-        </FormButtonToolbar>
-      </CartDeliveriesForm>
-    )}
-  </Form>
-);
+const CartPurchase = () => {
+
+  const dispatch = useDispatch();
+
+  const doCheckout = () => {
+    dispatch(cartCheckout());
+  };
+
+  return (
+    <Form onSubmit={() => {}} initialValues={{ delivery: 'russian_post' }}>
+      {({ handleSubmit }) => (
+        <CartDeliveriesForm onSubmit={handleSubmit}>
+          <CartTotal>Total: $348.00</CartTotal>
+          <FormButtonToolbar>
+            <Button onClick={doCheckout}>Checkout</Button>
+          </FormButtonToolbar>
+        </CartDeliveriesForm>
+      )}
+    </Form>
+  );
+};
 
 export default CartPurchase;
 
