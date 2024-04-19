@@ -18,6 +18,8 @@ import Layout from '../Layout';
 import Catalog from '../ECommerce/Catalog';
 import CatalogItem from '../../pages/CatalogItem';
 import Cart from '../../pages/Cart';
+import { StompSessionProvider } from 'react-stomp-hooks';
+import AsyncChannel from './asyncChannel';
 
 const ThemeComponent = ({
   children, 
@@ -67,18 +69,21 @@ const ConnectedThemeComponent = ThemeComponent;
 function App() {
   return (
     <Provider store={store}>
-      <BrowserRouter>
-        <ConnectedThemeComponent>
-          <Layout/>
-          <ContainerWrap>
-            <Switch>
-              <Route exact path="/" component={Catalog}/>
-              <Route exact path="/catalog/item" component={CatalogItem}/>
-              <Route exact path="/cart" component={Cart}/>
-            </Switch>
-          </ContainerWrap>
-        </ConnectedThemeComponent>
-      </BrowserRouter>
+      <StompSessionProvider url={"ws://localhost:8080/notification/ws"}>
+        <AsyncChannel/>
+        <BrowserRouter>
+            <ConnectedThemeComponent>
+              <Layout/>
+              <ContainerWrap>
+                <Switch>
+                  <Route exact path="/" component={Catalog}/>
+                  <Route exact path="/catalog/item" component={CatalogItem}/>
+                  <Route exact path="/cart" component={Cart}/>
+                </Switch>
+              </ContainerWrap>
+            </ConnectedThemeComponent>
+        </BrowserRouter>
+      </StompSessionProvider>
     </Provider>
   );
 }

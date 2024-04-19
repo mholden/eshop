@@ -45,6 +45,10 @@ const updateToken = (successCallback) =>
 
 const getUsername = () => _kc.tokenParsed?.preferred_username;
 
+const getUserInfo = () => _kc.userInfo;
+
+const loadUserInfo = () => _kc.loadUserInfo();
+
 const hasRole = (roles) => roles.some((role) => _kc.hasRealmRole(role));
 
 const AuthService = {
@@ -56,6 +60,8 @@ const AuthService = {
   getTokenParsed,
   updateToken,
   getUsername,
+  getUserInfo,
+  loadUserInfo,
   hasRole,
 };
 

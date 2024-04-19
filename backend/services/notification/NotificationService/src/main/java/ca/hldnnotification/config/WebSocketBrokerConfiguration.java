@@ -19,6 +19,8 @@ public class WebSocketBrokerConfiguration implements WebSocketMessageBrokerConfi
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-         registry.addEndpoint("/notification/ws");
+         registry.addEndpoint("/notification/ws").setAllowedOrigins("*");
+         // TODO: consider withSockJS()
+         // TODO: only allow origin localhost:3000
     }
 }
