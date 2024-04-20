@@ -9,23 +9,24 @@ import {
 import { marginLeft, right, left } from '@/utils/directions';
 import { TopbarBack } from './BasicTopbarComponents';
 import TopbarMenuLink, { TopbarLink } from './TopbarMenuLink';
-import AuthService from '../../../../services/AuthService';
+import { useKeycloak } from 'keycloak-react-web';
+import { useAuth } from 'react-oidc-context';
 
 //const Ava = `${process.env.PUBLIC_URL}/img/ava.png`;
 
 const TopbarProfile = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
-  //const user = useSelector(state => state.user);
+  const auth = useAuth();
 
   const toggleProfile = () => {
     setIsCollapsed(!isCollapsed);
   };
 
   const doLoginLogout = () => {
-    if (AuthService.isLoggedIn()) {
-      AuthService.doLogout();
+    if (!auth.isAuthenticated) {
+      auth.signinRedirect();
     } else {
-      AuthService.doLogin();
+      auth.signoutRedirect();
     }
   }
 
@@ -44,8 +45,8 @@ const TopbarProfile = () => {
         <TopbarAvatarName>
           {/* user && user.fullName */}
           { 
-            AuthService.isLoggedIn() ? 
-            'Log Out (' + AuthService.getUsername() + ')' : 
+            auth.isAuthenticated ? 
+            'Log Out (' + auth.user?.profile.preferred_username + ')' : 
             'Log In' 
           }
         </TopbarAvatarName>

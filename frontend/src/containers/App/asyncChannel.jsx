@@ -1,25 +1,15 @@
 import React, { useEffect } from 'react';
-import AuthService from '../../services/AuthService';
 import AsyncChannelLogginIn from './_asyncChannel';
+import { useAuth } from 'react-oidc-context';
 
 const AsyncChannel = () => {
-
-    // TODO: keycloack hook
-
-    useEffect(() => {
-        if (AuthService.isLoggedIn()) {
-            console.log("AsyncChannel logged in, getting user info");
-            AuthService.loadUserInfo().then((data) => {
-                console.log("AsyncChannel userInfo is:", data);
-            });
-        }
-    }, []);
+    const auth = useAuth();
 
     return (
         <>
         {
-          AuthService.isLoggedIn() && 
-          <AsyncChannelLogginIn userId={'pass-userInfo.sub-here'} />
+          auth.isAuthenticated && 
+          <AsyncChannelLogginIn userId={auth.user?.profile.sub} />
         }
         </>
     );

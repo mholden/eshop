@@ -27,7 +27,7 @@ import PropTypes from 'prop-types';
 import SimpleLoader from '../../../shared/components/SimpleLoader';
 import { useDispatch } from 'react-redux';
 import { addToCart } from '../../../redux/actions/cartActions';
-import AuthService from '../../../services/AuthService';
+import { useAuth } from 'react-oidc-context';
 //import ProductGallery from './ProductGallery';
 //import images from './imgs';
 //import ProductTabs from './ProductTabs';
@@ -35,6 +35,7 @@ import AuthService from '../../../services/AuthService';
 
 const CatalogItemCard = ({ item, isLoading }) => {
   const [color, setColor] = useState('white');
+  const auth = useAuth();
 
   const dispatch = useDispatch();
 
@@ -47,8 +48,8 @@ const CatalogItemCard = ({ item, isLoading }) => {
   };
 
   const onAddToCart = () => {
-    if (!AuthService.isLoggedIn()) {
-      AuthService.doLogin();
+    if (!auth.isAuthenticated) {
+      auth.signinRedirect();
     }
     dispatch(addToCart(item));
   };

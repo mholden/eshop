@@ -20,6 +20,8 @@ import CatalogItem from '../../pages/CatalogItem';
 import Cart from '../../pages/Cart';
 import { StompSessionProvider } from 'react-stomp-hooks';
 import AsyncChannel from './asyncChannel';
+import { AuthProvider } from 'react-oidc-context';
+import { WebStorageStateStore } from 'oidc-client-ts';
 
 const ThemeComponent = ({
   children, 
@@ -66,24 +68,34 @@ ThemeComponent.propTypes = {
 
 const ConnectedThemeComponent = ThemeComponent;
 
+const oidcConfig = {
+  authority: "http://docker.for.mac.localhost:8090/auth/realms/spring-cloud-gateway-realm",
+  client_id: "spring-cloud-gateway-client",
+  redirect_uri: "http://localhost:3000",
+  userStore: new WebStorageStateStore({ store: window.localStorage }),
+  // ...
+};
+
 function App() {
   return (
     <Provider store={store}>
-      <StompSessionProvider url={"ws://localhost:8080/notification/ws"}>
-        <AsyncChannel/>
-        <BrowserRouter>
-            <ConnectedThemeComponent>
-              <Layout/>
-              <ContainerWrap>
-                <Switch>
-                  <Route exact path="/" component={Catalog}/>
-                  <Route exact path="/catalog/item" component={CatalogItem}/>
-                  <Route exact path="/cart" component={Cart}/>
-                </Switch>
-              </ContainerWrap>
-            </ConnectedThemeComponent>
-        </BrowserRouter>
-      </StompSessionProvider>
+      <AuthProvider {...oidcConfig}>
+        <StompSessionProvider url={"ws://localhost:8080/notification/ws"}>
+          <AsyncChannel/>
+          <BrowserRouter>
+              <ConnectedThemeComponent>
+                <Layout/>
+                <ContainerWrap>
+                  <Switch>
+                    <Route exact path="/" component={Catalog}/>
+                    <Route exact path="/catalog/item" component={CatalogItem}/>
+                    <Route exact path="/cart" component={Cart}/>
+                  </Switch>
+                </ContainerWrap>
+              </ConnectedThemeComponent>
+          </BrowserRouter>
+        </StompSessionProvider>
+      </AuthProvider>
     </Provider>
   );
 }

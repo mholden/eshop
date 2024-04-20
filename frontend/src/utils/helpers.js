@@ -1,3 +1,5 @@
+import { User } from "oidc-client-ts";
+
 export const getOidcStorageKey = () => {
   const authSettings = JSON.parse(localStorage.getItem('authSettings'));
   if (authSettings) {
@@ -48,3 +50,13 @@ export const getWeekChartData = (cryptoHistory) => {
 
   return Object.fromEntries(weekChartDataArr.map(item => [item.currency, item.history]));
 };
+
+export const getAuthToken = () => {
+  const oidcStorage = localStorage.getItem(`oidc.user:http://docker.for.mac.localhost:8090/auth/realms/spring-cloud-gateway-realm:spring-cloud-gateway-client`);
+  if (!oidcStorage) {
+      //console.log("getAuthToken() !oidcStorage");
+      return null;
+  }
+  //console.log("getAuthToken() user is:", User.fromStorageString(oidcStorage));
+  return User.fromStorageString(oidcStorage)?.access_token;
+}
