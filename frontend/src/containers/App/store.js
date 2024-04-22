@@ -10,6 +10,7 @@ import {
   catalogItemsReducer,
   catalogItemReducer,
   cartReducer,
+  ordersReducer,
 } from '../../redux/reducers/index';
 
 const reducer = combineReducers({
@@ -22,6 +23,7 @@ const reducer = combineReducers({
   catalogItems: catalogItemsReducer,
   catalogItem: catalogItemReducer,
   cart: cartReducer,
+  orders: ordersReducer,
 });
 const store = createStore(reducer, applyMiddleware(thunk));
 

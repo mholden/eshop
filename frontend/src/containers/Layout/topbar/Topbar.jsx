@@ -11,8 +11,12 @@ import {
   //TopbarSearchWrap,
 } from '../components/topbar/BasicTopbarComponents';
 import TopbarCart from '../components/topbar/TopbarCart';
-import { useKeycloak } from 'keycloak-react-web';
 import { useAuth } from 'react-oidc-context';
+import TopbarOrders from '../components/topbar/TopbarOrders';
+import HomeOutlineIcon from 'mdi-react/HomeOutlineIcon';
+import styled from 'styled-components';
+import { Link } from 'react-router-dom';
+import { colorText } from '@/utils/palette';
 
 const Topbar = ({
   changeMobileSidebarVisibility,
@@ -27,8 +31,11 @@ const Topbar = ({
         {/* <TopbarSidebarButton
           onClickMobile={changeMobileSidebarVisibility}
           onClickDesktop={changeSidebarVisibility}
-        /> */}
-        <TopbarLogo to="/" />
+        /> 
+        <TopbarLogo to="/" /> */}
+        <TopbarHomeButton to="/">
+            <HomeOutlineIcon />
+        </TopbarHomeButton>
       </TopbarLeft>
       <TopbarRight>
         {/* <TopbarSearchWrap>
@@ -38,7 +45,12 @@ const Topbar = ({
           {/* <TopbarNotification /> */}
           {
             auth.isAuthenticated &&
-            <TopbarCart />
+            (
+            <>
+              <TopbarCart/>
+              <TopbarOrders/>
+            </>
+            )
           }
           <TopbarProfile />
           {/* <TopbarLanguage /> */}
@@ -55,3 +67,19 @@ Topbar.propTypes = {
 };
 
 export default Topbar;
+
+const TopbarHomeButton = styled(Link)`
+  display: block;
+  padding: 10px;
+  text-transform: uppercase;
+  color: ${colorText};
+  transition: 0.3s;
+  text-align: center;
+  font-weight: 500;
+  font-size: 10px;
+  line-height: 42px;
+
+  &:hover {
+    color: ${colorText}-hover;
+  }
+`;

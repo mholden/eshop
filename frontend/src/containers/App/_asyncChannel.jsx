@@ -3,10 +3,10 @@ import { useSubscription } from "react-stomp-hooks";
 
 const AsyncChannelLogginIn = ({userId}) => {
 
-    console.log("AsyncChannelLogginIn userId is:", userId);
-
+    //console.log("AsyncChannelLogginIn userId is:", userId);
+    
     useSubscription("/queue/" + userId, (message) => {
-        console.log("AsyncChannel got message:", message.body);
+        console.log("AsyncChannel got message:", JSON.stringify(JSON.parse(message.body), null, "\t"));
         // TODO: handle all async messages here
     });
 

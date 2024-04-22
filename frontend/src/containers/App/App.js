@@ -22,6 +22,7 @@ import { StompSessionProvider } from 'react-stomp-hooks';
 import AsyncChannel from './asyncChannel';
 import { AuthProvider } from 'react-oidc-context';
 import { WebStorageStateStore } from 'oidc-client-ts';
+import Orders from '../../pages/Orders';
 
 const ThemeComponent = ({
   children, 
@@ -90,6 +91,7 @@ function App() {
                     <Route exact path="/" component={Catalog}/>
                     <Route exact path="/catalog/item" component={CatalogItem}/>
                     <Route exact path="/cart" component={Cart}/>
+                    <Route exact path="/orders" component={Orders}/>
                   </Switch>
                 </ContainerWrap>
               </ConnectedThemeComponent>

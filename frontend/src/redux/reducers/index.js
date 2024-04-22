@@ -7,6 +7,7 @@ import customizerReducer from './customizerReducer';
 import catalogItemsReducer from './catalogItemsReducer';
 import catalogItemReducer from './catalogItemReducer';
 import cartReducer from './cartReducer';
+import ordersReducer from './ordersReducer';
 
 export {
   themeReducer,
@@ -18,4 +19,5 @@ export {
   catalogItemsReducer,
   catalogItemReducer,
   cartReducer,
+  ordersReducer,
 };

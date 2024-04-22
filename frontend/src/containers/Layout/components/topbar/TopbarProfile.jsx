@@ -168,7 +168,6 @@ export const TopbarAvatarName = styled.p`
   line-height: 18px;
   font-weight: 400;
   display: none;
-  ${marginLeft}: 10px;
   color: ${colorText};
 
   @media screen and (min-width: 480px) {
