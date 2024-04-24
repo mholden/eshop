@@ -22,66 +22,16 @@ public class IdentityService extends Service implements IdentityServiceAPI {
 		return HttpUtils.doGet(urlBase + "/login");
 	}
 
-	private HttpUtils.HttpPayload buildLogoutPayload(String token) throws Exception {
-		HttpUtils.HttpPayload payload = new HttpUtils.HttpPayload();
+	private String buildLogoutPayload(String idTokenHint) {
 		StringBuilder stringBuilder = new StringBuilder();
-
-		stringBuilder.append("_csrf=" + token);
-
-		payload.type = HttpUtils.HttpPayload.types.XWWWFORMURLENCODED;
-		payload.data = stringBuilder.toString();
-
-		// payload.dump();
-
-		return payload;
-	}
-
-	public EShopResponse logout() throws Exception {
-		StringTokenizer st;
-		String csrfToken = null;
-		EShopResponse response;
-
-		response = HttpUtils.doGet(urlBase + "/logout");
-		TestUtils.failIf(response.httpCode != HttpURLConnection.HTTP_OK, response.toString());
-		//response.dump();
-		/*
-		// grab the csrf token from the response
-		Scanner scanner = new Scanner(response.response);
-		while (scanner.hasNextLine()) {
-			String line = scanner.nextLine();
-			if (line.contains("_csrf")) {
-				// System.out.println(line);
-				st = new StringTokenizer(line, "\"");
-				String last = "", next;
-				while (st.hasMoreTokens()) {
-					next = st.nextToken();
-					if (last.contains("value")) {
-						csrfToken = next;
-						break;
-					}
-					last = next;
-				}
-				break;
-			}
-		}
-		scanner.close();
-
-		//System.out.println("token is " + csrfToken);
-		*/
-		response = HttpUtils.doPost(urlBase + "/logout", null, true);
-		TestUtils.failIf(response.httpCode != HttpURLConnection.HTTP_MOVED_TEMP, response.toString()); // should get 302 here
-
-		//System.out.println("redirect location is " + response.redirectLocation);
-		if (response.redirectLocation.startsWith("/")) {
-			response.redirectLocation = urlBase + response.redirectLocation;
-			//System.out.println("adjusted redirect location to " + response.redirectLocation);
-		}
+        
+		stringBuilder.append("?id_token_hint=" + idTokenHint);
 		
-		response = HttpUtils.doGet(response.redirectLocation, true);
-		TestUtils.failIf(response.httpCode != HttpURLConnection.HTTP_OK, response.toString()); // should get 200 here
-		//response.dump();
-
-		return response;
+		return stringBuilder.toString();
+	}
+	
+	public EShopResponse logout(String idTokenHint) throws Exception {
+		return HttpUtils.doGet(urlBase + "/auth/realms/spring-cloud-gateway-realm/protocol/openid-connect/logout" + buildLogoutPayload(idTokenHint));
 	}
 
 	private HttpUtils.HttpPayload buildAuthenticatePayload(String email, String password) throws Exception {
@@ -99,34 +49,25 @@ public class IdentityService extends Service implements IdentityServiceAPI {
 	}
 
 	public EShopResponse authenticate(String url, String email, String password) throws Exception {
-		EShopResponse response;
-
-		response = HttpUtils.doPost(url, buildAuthenticatePayload(email, password), true);
-		TestUtils.failIf(response.httpCode != HttpURLConnection.HTTP_MOVED_TEMP, response.toString()); // should get 302 here
-
-		//System.out.println("redirect location is " + response.redirectLocation);
-
-		response = HttpUtils.doGet(response.redirectLocation, true);
-		TestUtils.failIf(response.httpCode != HttpURLConnection.HTTP_MOVED_TEMP, response.toString()); // should get 302 here
-
-		//System.out.println("redirect location is " + response.redirectLocation);
-
-		response = HttpUtils.doGet(urlBase + response.redirectLocation, true);
-		TestUtils.failIf(response.httpCode != HttpURLConnection.HTTP_OK, response.toString()); // should get 200 here
-
-		return response;
+		return HttpUtils.doPost(url, buildAuthenticatePayload(email, password), true);
+	}
+	
+	private String buildAuthorizePayload() {
+		StringBuilder stringBuilder = new StringBuilder();
+        
+		stringBuilder.append("?client_id=spring-cloud-gateway-client"
+				+ "&redirect_uri=http%3A%2F%2Flocalhost%3A3000"
+				+ "&response_type=code"
+				+ "&scope=openid"
+				+ "&state=75bc1723c442427e85f354c143d96d29"
+				+ "&code_challenge=LaG2-QpJLKPFkIec0i0PbGOJlWkJrIrRVHa3ruOTVEc"
+				+ "&code_challenge_method=S256");
+        
+        return stringBuilder.toString();
 	}
 
 	public EShopResponse authorize() throws Exception {
-		EShopResponse response;
-
-		response = HttpUtils.doGet(urlBase + "/oauth2/authorization/keycloak", true);
-		TestUtils.failIf(response.httpCode != HttpURLConnection.HTTP_MOVED_TEMP, response.toString());
-
-		// System.out.println("redirect location is " + response.redirectLocation);
-
-		// note: this requires '127.0.0.1 docker.for.mac.localhost' in your /etc/hosts file
-		return HttpUtils.doGet(response.redirectLocation);
+		return HttpUtils.doGet(urlBase + "/auth/realms/spring-cloud-gateway-realm/protocol/openid-connect/auth" + buildAuthorizePayload());
 	}
 
 	private HttpUtils.HttpPayload buildRegisterPayload(String email, String password) throws Exception {
@@ -160,7 +101,7 @@ public class IdentityService extends Service implements IdentityServiceAPI {
 		Scanner scanner = new Scanner(response.response);
 		while (scanner.hasNextLine()) {
 			String line = scanner.nextLine();
-			if (line.contains("login-actions/registration")) {
+			if (line.contains("kc-register-form")) {
 				// System.out.println(line);
 				st = new StringTokenizer(line, "\"");
 				String last = "", next;
@@ -177,26 +118,43 @@ public class IdentityService extends Service implements IdentityServiceAPI {
 		}
 		scanner.close();
 
-		// System.out.println("_url is " + _url);
+		//System.out.println("_url is " + _url);
 
 		response = HttpUtils.doPost(_url, buildRegisterPayload(email, password), true);
 		TestUtils.failIf(response.httpCode != HttpURLConnection.HTTP_MOVED_TEMP, response.toString()); // should get 302 here
 
-		//System.out.println("redirect location is " + response.redirectLocation);
-
-		response = HttpUtils.doGet(response.redirectLocation, true);
-		TestUtils.failIf(response.httpCode != HttpURLConnection.HTTP_MOVED_TEMP, response.toString()); // should get 302 here
-
-		//System.out.println("redirect location is " + response.redirectLocation);
-
-		response = HttpUtils.doGet(urlBase + response.redirectLocation);
-		TestUtils.failIf(response.httpCode != HttpURLConnection.HTTP_OK, response.toString()); // should get 200 here
-
 		return response;
 	}
+	
+	private HttpUtils.HttpPayload buildTokenPayload(String code) throws Exception {
+		HttpUtils.HttpPayload payload = new HttpUtils.HttpPayload();
+		StringBuilder stringBuilder = new StringBuilder();
+        
+		stringBuilder.append("grant_type=authorization_code"
+				+ "&redirect_uri=http%3A%2F%2Flocalhost%3A3000"
+				+ "&code=" + code
+				//
+				// note: this code verifier pairs with the code_challenge in buildAuthorizePayload above.
+				// can use https://tonyxu-io.github.io/pkce-generator/ to generate a valid pair (pass in 
+				// code verifier, get out code challenge). should really be generating this randomly on
+				// each call though
+				//
+				+ "&code_verifier=03647067219d495795ae00fe8adaf7d56a6bfd5882ad455bb92d020541e524d1094096b498b54093b88c9455ada55c7f"
+				+ "&client_id=spring-cloud-gateway-client");
+        
+		payload.type = HttpUtils.HttpPayload.types.XWWWFORMURLENCODED;
+		payload.data = stringBuilder.toString();
 
-	// TODO: change to identity/userInfo
+		//payload.dump();
+		
+        return payload;
+	}
+	
+	public EShopResponse token(String code) throws Exception {
+		return HttpUtils.doPost(urlBase + "/auth/realms/spring-cloud-gateway-realm/protocol/openid-connect/token", buildTokenPayload(code));
+	}
+
 	public EShopResponse getUserInfo() throws Exception {
-		return HttpUtils.doGet(urlBase + "/basket/userInfo");
+		return HttpUtils.doGet(urlBase + "/auth/realms/spring-cloud-gateway-realm/protocol/openid-connect/userinfo");
 	}
 }

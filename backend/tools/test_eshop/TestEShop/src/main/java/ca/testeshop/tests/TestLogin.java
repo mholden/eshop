@@ -28,8 +28,24 @@ public class TestLogin extends Test {
 		HttpUtils.disableRedirects.set(true);
 		
 		response = basketService.getBasketItems();
-		TestUtils.failIf(response.httpCode != HttpURLConnection.HTTP_MOVED_TEMP || // should redirect to login 
-			!response.redirectLocation.contains("/oauth2/authorization"), response.toString());
+		TestUtils.failIf(response.httpCode != HttpURLConnection.HTTP_UNAUTHORIZED, response.toString());
+		
+		HttpUtils.disableRedirects.set(false);
+		
+		doUserLogin("alice@testeshop.ca", "alice");
+		
+		response = basketService.getBasketItems();
+		TestUtils.failIf(response.httpCode != HttpURLConnection.HTTP_OK, response.toString());
+		//response.dump();
+		
+		// again to verify logout after login:
+		
+		doUserLogout();
+		
+		HttpUtils.disableRedirects.set(true);
+		
+		response = basketService.getBasketItems();
+		TestUtils.failIf(response.httpCode != HttpURLConnection.HTTP_UNAUTHORIZED, response.toString());
 		
 		HttpUtils.disableRedirects.set(false);
 		

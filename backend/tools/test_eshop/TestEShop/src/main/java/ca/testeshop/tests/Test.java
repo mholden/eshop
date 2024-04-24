@@ -21,6 +21,7 @@ public abstract class Test {
 	private ThreadLocal<String> username = new ThreadLocal<String>();
 	private ThreadLocal<String> password = new ThreadLocal<String>();
 	private ThreadLocal<String> userId = new ThreadLocal<String>();
+	private ThreadLocal<OIDCTokens> oidcTokens = new ThreadLocal<OIDCTokens>();
 	
 	// Services
 	public IdentityService identityService;
@@ -75,21 +76,24 @@ public abstract class Test {
 	public void doUserLogout() throws Exception {
 		EShopResponse response;
 		
-		response = identityService.logout();
-		TestUtils.failIf(response.httpCode != HttpURLConnection.HTTP_OK, response.toString());
+		if (oidcTokens.get() != null) {
+			response = identityService.logout(oidcTokens.get().id_token);
+			TestUtils.failIf(response.httpCode != HttpURLConnection.HTTP_OK, response.toString());
+		}
 		
 		HttpUtils.cookieManager.get().getCookieStore().removeAll();
 		HttpUtils.authToken.set(null);
-		userId.set(null);
 		username.set(null);
 		password.set(null);
+		userId.set(null);
+		oidcTokens.set(null);
 		// TODO: cut off async channel?
 	}
 	
 	public EShopResponse doUserLogin(String email, String password) throws Exception {
-		String url = null;
+		String url = null, code = null;
 		StringTokenizer st;
-		Map<String, Object> jwtClaims;
+		OIDCUserInfo userInfo;
 		EShopResponse response;
 		
 		doUserLogout();
@@ -102,8 +106,8 @@ public abstract class Test {
 		Scanner scanner = new Scanner(response.response);
 		while (scanner.hasNextLine()) {
 			String line = scanner.nextLine();
-			if (line.contains("login-actions/authenticate")) {
-				// System.out.println(line);
+			if (line.contains("kc-form-login")) {
+				//System.out.println(line);
 				st = new StringTokenizer(line, "\"");
 				String last = "", next;
 				while (st.hasMoreTokens()) {
@@ -122,26 +126,45 @@ public abstract class Test {
 		//System.out.println("url is " + url);
 		
 		response = identityService.authenticate(url, email, password);
-		TestUtils.failIf(response.httpCode != HttpURLConnection.HTTP_OK, response.toString()); // should get 200 here
+		TestUtils.failIf(response.httpCode != HttpURLConnection.HTTP_MOVED_TEMP, response.toString()); // should get 302 here
+
+		//System.out.println("redirect location is " + response.redirectLocation);
+		
+		code = response.redirectLocation.split("code=")[1];
+		//System.out.println("code is " + code);
+		
+		//response = HttpUtils.doGet(response.redirectLocation, true); // not necessary?
+		//TestUtils.failIf(response.httpCode != HttpURLConnection.HTTP_OK, response.toString());
 		//response.dump();
+		
+		response = identityService.token(code);
+		TestUtils.failIf(response.httpCode != HttpURLConnection.HTTP_OK, response.toString());
+		//response.dump();
+		
+		oidcTokens.set((OIDCTokens)JsonUtils.jsonToPojo(response.response, OIDCTokens.class));
+		HttpUtils.authToken.set(oidcTokens.get().access_token);
 		
 		response = identityService.getUserInfo();
 		TestUtils.failIf(response.httpCode != HttpURLConnection.HTTP_OK, response.toString());
 		//response.dump();
 		
-		jwtClaims = (Map<String, Object>)JsonUtils.jsonToPojo(response.response, new TypeToken<Map<String, Object>>(){}.getType());
-		userId.set((String)jwtClaims.get("sub"));
+		userInfo = (OIDCUserInfo)JsonUtils.jsonToPojo(response.response, OIDCUserInfo.class);
+		
+		userId.set(userInfo.sub);
 		//System.out.println("userId is " + userId.get());
 		
 		asyncChannel.set(new AsyncChannel(notificationService.asyncChannelUrl, userId.get()));
+		
+		this.username.set(email);
+		this.password.set(password);
 		
 		return response;
 	}
 	
 	public void doUserRegistration(String email, String password) throws Exception {
-		String url = null;
+		String url = null, code = null;
 		StringTokenizer st;
-		Map<String, Object> jwtClaims;
+		OIDCUserInfo userInfo;
 		EShopResponse response;
 		
 		doUserLogout();
@@ -174,14 +197,32 @@ public abstract class Test {
 		//System.out.println("url is " + url);
 		
 		response = identityService.register(url, email, password);
-		TestUtils.failIf(response.httpCode != HttpURLConnection.HTTP_OK, response.toString()); // should get 200 here
+		TestUtils.failIf(response.httpCode != HttpURLConnection.HTTP_MOVED_TEMP, response.toString()); // should get 200 here
 		//response.dump();
+		
+		//System.out.println("redirect location is " + response.redirectLocation);
+
+		code = response.redirectLocation.split("code=")[1];
+		//System.out.println("code is " + code);
+		
+		//response = HttpUtils.doGet(response.redirectLocation, true); // not necessary?
+		//TestUtils.failIf(response.httpCode != HttpURLConnection.HTTP_OK, response.toString());
+		//response.dump();
+		
+		response = identityService.token(code);
+		TestUtils.failIf(response.httpCode != HttpURLConnection.HTTP_OK, response.toString());
+		//response.dump();
+		
+		oidcTokens.set((OIDCTokens)JsonUtils.jsonToPojo(response.response, OIDCTokens.class));
+		HttpUtils.authToken.set(oidcTokens.get().access_token);
 		
 		response = identityService.getUserInfo();
 		TestUtils.failIf(response.httpCode != HttpURLConnection.HTTP_OK, response.toString());
+		//response.dump();
 		
-		jwtClaims = (Map<String, Object>)JsonUtils.jsonToPojo(response.response, new TypeToken<Map<String, Object>>(){}.getType());
-		userId.set((String)jwtClaims.get("sub"));
+		userInfo = (OIDCUserInfo)JsonUtils.jsonToPojo(response.response, OIDCUserInfo.class);
+		
+		userId.set(userInfo.sub);
 		//System.out.println("userId is " + userId.get());
 		
 		asyncChannel.set(new AsyncChannel(notificationService.asyncChannelUrl, userId.get()));

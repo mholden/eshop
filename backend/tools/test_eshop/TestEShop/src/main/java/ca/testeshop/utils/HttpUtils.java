@@ -112,7 +112,7 @@ public class HttpUtils {
 		connection.setRequestMethod("GET");
 
 		if (authToken.get() != null) {
-			connection.setRequestProperty("Authorization", "Bearer " + authToken.get()); // hardcoding 'Bearer' for now (token_type in authorizeCallback response)
+			connection.setRequestProperty("Authorization", "Bearer " + authToken.get()); // hardcoding 'Bearer' for now (token_type in /token response)
 		}
 
 		// HttpURLConnection.setFollowRedirects(false);
@@ -156,11 +156,16 @@ public class HttpUtils {
 		 * payload.data.getBytes("UTF-8"); outputStream.write(b); outputStream.flush();
 		 * outputStream.close();
 		 */
-
+		
 		// Read response
-		connection.getResponseCode(); // this needs to be called first for the error stream logic below to work
+		output = new EShopResponse();
+		output.httpCode = connection.getResponseCode(); 
+		
 		InputStream inputStream = connection.getErrorStream();
 		if (inputStream == null) {
+			if (isHttpErrorCode(output.httpCode)) {
+				return output;
+			}
 			inputStream = connection.getInputStream();
 		}
 		byte[] res = new byte[2048];
@@ -175,8 +180,6 @@ public class HttpUtils {
 
 		// System.out.println("Response= " + response.toString());
 
-		output = new EShopResponse();
-		output.httpCode = connection.getResponseCode();
 		if (output.httpCode == HttpURLConnection.HTTP_MOVED_TEMP
 				|| output.httpCode == HttpURLConnection.HTTP_MOVED_PERM) {
 			output.redirectLocation = connection.getHeaderFields().get("Location").get(0);

@@ -1,15 +1,13 @@
 package ca.testeshop.utils;
 
-//
-// https://identityserver4.readthedocs.io/en/latest/endpoints/userinfo.html
-//
-public class UserInfo {
+// the response of the oidc /userinfo endpoint
+public class OIDCUserInfo {
 	
 	public String sub;
 	public String preferred_username;
-	public String unique_name;
+	public String given_name;
 	public String name;
-	public String last_name;
+	public String family_name;
 	public String card_number;
 	public String card_holder;
 	public String card_security_number;
@@ -24,7 +22,11 @@ public class UserInfo {
 	public String phone_number;
 	public Boolean phone_number_verified;
 	
-	UserInfo() {
+	OIDCUserInfo() {
 		
+	}
+	
+	public String toString() {
+		return String.format("sub: %s name: %s preferred_username: %s", sub, name, preferred_username);
 	}
 }

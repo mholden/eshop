@@ -26,7 +26,7 @@ public class BasketCheckout {
 
 	}
 	
-	public BasketCheckout(UserInfo userInfo) {
+	public BasketCheckout(OIDCUserInfo userInfo) {
 		ZonedDateTime cardExpiration;
 		this.City = userInfo.address_city;
 		this.Street = userInfo.address_street;

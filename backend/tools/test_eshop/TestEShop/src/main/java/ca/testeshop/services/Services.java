@@ -24,7 +24,7 @@ public class Services {
 		if (!(location == Services.location.LOCAL))
 			throw new Exception("Non-local services not yet supported");
 		
-		identityService = new IdentityService("http://localhost:8080"); // just using basket service for now
+		identityService = new IdentityService("http://docker.for.mac.localhost:8090");
 		catalogService = new CatalogService("http://localhost:8080"); // mapped to http://localhost:5121 via gateway
 		basketService = new BasketService("http://localhost:8080"); // mapped to http://localhost:5122 via gateway 
 		orderService = new OrderService("http://localhost:8080"); // mapped to http://localhost:5123 via gateway
