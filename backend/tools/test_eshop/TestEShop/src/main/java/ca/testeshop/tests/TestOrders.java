@@ -81,6 +81,14 @@ public class TestOrders extends Test {
 		
 		order = orders.get(0);
 		TestUtils.failIf(order.state != OrderState.PAYMENT_SUCCEEDED, null);
+		
+		// basket should be empty now too
+		response = basketService.getBasketItems();
+		TestUtils.failIf(response.httpCode != HttpURLConnection.HTTP_OK, response.toString());
+		//response.dump();
+		
+		basketItems = (List<BasketItem>)JsonUtils.jsonToPojo(response.response, new TypeToken<List<BasketItem>>(){}.getType());
+		TestUtils.failIf(!basketItems.isEmpty(), response.toString());
 	}
 	
 	private void testMT() throws Exception {

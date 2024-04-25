@@ -12,6 +12,7 @@ import {
   cartCheckoutRequest,
   cartCheckoutSuccess,
   cartCheckoutError,
+  setCartAsyncSuccess,
 } from '../actions/cartActions';
 
 const defaultState = {
@@ -110,6 +111,12 @@ export default handleActions(
         ...state,
         isCheckingOut: false,
         error: payload,
+      };
+    },
+    [setCartAsyncSuccess](state, { payload }) {
+      return {
+        ...state,
+        data: payload,
       };
     },
   },

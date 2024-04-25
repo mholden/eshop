@@ -13,7 +13,7 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
-import ca.hldnbasket.dto.*;
+import ca.hldnbasket.dto.persistent.*;
 import ca.hldnbasket.event.CheckoutEvent;
 import ca.hldnbasket.repository.BasketRepository;
 import ca.hldnbasket.service.IntegratedEventDesk;
@@ -119,7 +119,7 @@ public class BasketController {
 		logger.info("checkout() basketItems " + basketItems);
 
 		if (basketItems != null) {
-			new IntegratedEventDesk(amqpTemplate).send(new CheckoutEvent(userId, basketItems));
+			new IntegratedEventDesk(amqpTemplate, basketRepository).send(new CheckoutEvent(userId, basketItems));
 		}
 	}
 }

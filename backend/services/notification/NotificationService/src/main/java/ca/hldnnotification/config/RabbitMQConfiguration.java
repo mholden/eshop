@@ -49,11 +49,17 @@ public class RabbitMQConfiguration {
 	}
 	
 	@Bean
+	Binding checkoutSuccessfulEventBinding(Queue queue, DirectExchange exchange) {
+		return BindingBuilder.bind(queue).to(exchange).with(CheckoutSuccessfulEvent.class.getSimpleName());
+	}
+	
+	@Bean
 	public DefaultClassMapper getClassMapper() {
 		DefaultClassMapper classMapper = new DefaultClassMapper();
 		Map<String, Class<?>> map = new HashMap<>();
 		map.put("ca.hldncatalog.event.OrderVerifiedEvent", OrderVerifiedEvent.class);
 		map.put("ca.hldnpayment.event.OrderPaymentSucceededEvent", OrderPaymentSucceededEvent.class);
+		map.put("ca.hldnbasket.event.CheckoutSuccessfulEvent", CheckoutSuccessfulEvent.class);
 		classMapper.setIdClassMapping(map);
 		return classMapper;
 	}

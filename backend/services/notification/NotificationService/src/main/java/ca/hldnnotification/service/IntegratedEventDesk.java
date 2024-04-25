@@ -9,6 +9,7 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 import ca.hldnnotification.event.*;
+import ca.hldnnotification.notification.CheckoutSuccessfulNotification;
 import ca.hldnnotification.notification.OrderPaymentSucceededNotification;
 import ca.hldnnotification.notification.OrderVerifiedNotification;
 
@@ -51,12 +52,20 @@ public class IntegratedEventDesk {
 		new NotificationDesk(amqpTemplate, simpMessagingTemplate).sendUserNotification(new OrderPaymentSucceededNotification(orderPaymentSucceededEvent.getOrder()));
 	}
 
+	private void handleCheckoutSuccessfulEvent(CheckoutSuccessfulEvent checkoutSuccessfulEvent) throws Exception {
+		logger.info("handleCheckoutSuccessfulEvent() checkoutSuccessfulEvent {}", checkoutSuccessfulEvent);
+		new NotificationDesk(amqpTemplate, simpMessagingTemplate).sendUserNotification(new CheckoutSuccessfulNotification(checkoutSuccessfulEvent.getBasket()));
+	}
+	
 	@RabbitListener(queues = "${ca.hldn.notification.rabbitmq.queue}")
 	public void receive(IntegratedEvent event) throws Exception {
 
 		logger.info("receive() received event " + event.getEventType());
 
 		switch (event.getEventType()) {
+		case "CheckoutSuccessfulEvent":
+			handleCheckoutSuccessfulEvent((CheckoutSuccessfulEvent) event);
+			break;
 		case "OrderVerifiedEvent":
 			handleOrderVerifiedEvent((OrderVerifiedEvent) event);
 			break;

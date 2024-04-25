@@ -1,15 +1,9 @@
-package ca.hldnbasket.dto;
+package ca.hldnnotification.dto.runtime;
 
-import java.io.Serializable;
 import java.util.List;
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.redis.core.RedisHash;
+public class Basket  {
 
-@RedisHash("Basket")
-public class Basket implements Serializable {
-
-	@Id
 	private String userId;
 	private List<BasketItem> basketItems;
 
@@ -39,6 +33,9 @@ public class Basket implements Serializable {
 	}
 
 	public String toString() {
-		return String.format("userId: {} basketItems: {}", userId, basketItems);
+		StringBuilder output = new StringBuilder();
+		output.append("userId: " + userId);
+		output.append(" basketItems: " + basketItems);
+		return output.toString();
 	}
 }

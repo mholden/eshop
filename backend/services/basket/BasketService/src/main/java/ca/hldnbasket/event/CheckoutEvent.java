@@ -2,7 +2,7 @@ package ca.hldnbasket.event;
 
 import java.util.List;
 
-import ca.hldnbasket.dto.BasketItem;
+import ca.hldnbasket.dto.persistent.BasketItem;
 
 public class CheckoutEvent extends IntegratedEvent {
 	public String userId;

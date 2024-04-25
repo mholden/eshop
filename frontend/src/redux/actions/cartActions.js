@@ -73,3 +73,9 @@ export const cartCheckout = () => async (dispatch) => {
     dispatch(cartCheckoutError(e.message));
   }
 };
+
+export const setCartAsyncSuccess = createAction('SET_CART_ASYNC_SUCCESS');
+
+export const setCartAsync = (cart) => async (dispatch) => {
+  dispatch(setCartAsyncSuccess(cart));
+};

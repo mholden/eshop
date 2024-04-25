@@ -1,4 +1,4 @@
-package ca.hldnbasket.dto;
+package ca.hldnbasket.dto.persistent;
 
 import java.io.Serializable;
 
