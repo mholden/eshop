@@ -73,6 +73,7 @@ const oidcConfig = {
   authority: "http://docker.for.mac.localhost:8090/auth/realms/spring-cloud-gateway-realm",
   client_id: "spring-cloud-gateway-client",
   redirect_uri: "http://localhost:3000",
+  post_logout_redirect_uri: "http://localhost:3000",
   userStore: new WebStorageStateStore({ store: window.localStorage }),
   // ...
 };

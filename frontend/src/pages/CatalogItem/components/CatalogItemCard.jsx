@@ -49,7 +49,7 @@ const CatalogItemCard = ({ item, isLoading }) => {
 
   const onAddToCart = () => {
     if (!auth.isAuthenticated) {
-      auth.signinRedirect();
+      auth.signinRedirect({ redirect_uri: window.location.href });
     }
     dispatch(addToCart(item));
   };
