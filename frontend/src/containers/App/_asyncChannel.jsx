@@ -1,7 +1,7 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
 import { useSubscription } from "react-stomp-hooks";
-import { setCartAsync } from '../../redux/actions/cartActions';
+import { setCartAsync, setCheckoutOrder } from '../../redux/actions/cartActions';
 
 const AsyncChannelLogginIn = ({userId}) => {
 
@@ -16,6 +16,10 @@ const AsyncChannelLogginIn = ({userId}) => {
             case "CheckoutSuccessfulNotification":
                 console.log("CheckoutSuccessfulNotification basketItems:", messageBody.basket.basketItems);
                 dispatch(setCartAsync(messageBody.basket.basketItems));
+                break;
+            case "OrderVerifiedNotification":
+                console.log("OrderVerifiedNotification order:", messageBody.order);
+                dispatch(setCheckoutOrder(messageBody.order));
                 break;
             default:
                 console.log("doing nothing for notificationType", messageBody.notificationType);

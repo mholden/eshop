@@ -74,6 +74,12 @@ export const cartCheckout = () => async (dispatch) => {
   }
 };
 
+export const setCheckoutOrderSuccess = createAction('SET_CHECKOUT_ORDER_SUCCESS');
+
+export const setCheckoutOrder = (order) => async (dispatch) => {
+  dispatch(setCheckoutOrderSuccess(order));
+};
+
 export const setCartAsyncSuccess = createAction('SET_CART_ASYNC_SUCCESS');
 
 export const setCartAsync = (cart) => async (dispatch) => {

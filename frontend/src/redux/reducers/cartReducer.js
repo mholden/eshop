@@ -11,6 +11,7 @@ import {
   addToCartError,
   cartCheckoutRequest,
   cartCheckoutSuccess,
+  setCheckoutOrderSuccess,
   cartCheckoutError,
   setCartAsyncSuccess,
 } from '../actions/cartActions';
@@ -21,6 +22,7 @@ const defaultState = {
   isSetting: false,
   isAdding: false,
   isCheckingOut: false,
+  checkoutOrder: null,
   error: null,
 };
 
@@ -102,6 +104,14 @@ export default handleActions(
     [cartCheckoutSuccess](state) {
       return {
         ...state,
+        // note: isCheckingOut gets set back to false on setCheckoutOrderSuccess
+        error: null,
+      };
+    },
+    [setCheckoutOrderSuccess](state, { payload }) {
+      return {
+        ...state,
+        checkoutOrder: payload,
         isCheckingOut: false,
         error: null,
       };

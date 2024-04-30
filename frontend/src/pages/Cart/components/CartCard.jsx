@@ -13,12 +13,12 @@ import SimpleLoader from '../../../shared/components/SimpleLoader';
 
 //import cartList from './cart_list';
 
-const CartCard = ({items, isLoading, removeAllCartItems}) => {
+const CartCard = ({items, cartCheckoutOrder, shouldSpin, removeAllCartItems}) => {
   return (
     <Col md={12} lg={12}>
       <Card>
         {
-        isLoading
+        shouldSpin
         ? (
           <CartLoading>
             <SimpleLoader widthOrHeight={28} />
@@ -63,7 +63,7 @@ const CartCard = ({items, isLoading, removeAllCartItems}) => {
                 ))}
               </tbody>
             </CartTable>
-            <CartPurchase onSubmit />
+            <CartPurchase onSubmit cartCheckoutOrder={cartCheckoutOrder} />
           </CardBody>
         )
         }

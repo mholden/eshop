@@ -10,10 +10,11 @@ import { fetchCart, setCart } from '../../redux/actions/cartActions';
 const Cart = () => {
 
   const { 
-    cartItems, cartItemsAreLoading, cartItemsError,
+    cartItems, cartItemsInProgress, cartCheckoutOrder, cartItemsError,
   } = useSelector(state => ({
     cartItems: state.cart.data,
-    cartItemsAreLoading: state.cart.isFetching || state.cart.isAdding,
+    cartItemsInProgress: state.cart.isFetching || state.cart.isAdding || state.cart.isCheckingOut,
+    cartCheckoutOrder: state.cart.checkoutOrder,
     cartItemsError: state.cart.error,
   }));
 
@@ -31,7 +32,7 @@ const Cart = () => {
     <Container>
       <Row>
         <ErrorAlert subTitle="Cart" error={cartItemsError} />
-        <CartCard items={cartItems} isLoading={cartItemsAreLoading} removeAllCartItems={removeAllCartItems} />
+        <CartCard items={cartItems} cartCheckoutOrder={cartCheckoutOrder} shouldSpin={cartItemsInProgress} removeAllCartItems={removeAllCartItems} />
       </Row>
     </Container>
   );
