@@ -33,7 +33,7 @@ const Topbar = ({
           onClickDesktop={changeSidebarVisibility}
         /> 
         <TopbarLogo to="/" /> */}
-        <TopbarHomeButton to="/">
+        <TopbarHomeButton data-testid='home-button' to="/">
             <HomeOutlineIcon />
         </TopbarHomeButton>
       </TopbarLeft>

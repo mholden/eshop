@@ -50,8 +50,9 @@ const CatalogItemCard = ({ item, isLoading }) => {
   const onAddToCart = () => {
     if (!auth.isAuthenticated) {
       auth.signinRedirect({ redirect_uri: window.location.href });
+    } else {
+      dispatch(addToCart(item));
     }
-    dispatch(addToCart(item));
   };
 
   return (
@@ -115,7 +116,7 @@ const CatalogItemCard = ({ item, isLoading }) => {
                       </FormGroupField>
                     </FormGroup>*/}
                     <FormButtonToolbar>
-                      <Button variant="primary" onClick={onAddToCart}>Add to cart</Button>
+                      <Button data-testid='add-to-cart-button' variant="primary" onClick={onAddToCart}>Add to cart</Button>
                       <ProductCArdWishButton
                         type="button"
                         onClick={onLike}

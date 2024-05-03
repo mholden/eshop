@@ -27,4 +27,10 @@ const reducer = combineReducers({
 });
 const store = createStore(reducer, applyMiddleware(thunk));
 
+//
+// set this to make store available in browser console
+// window.store.getState() will show all reducers
+//
+window.store = store;
+
 export default store;

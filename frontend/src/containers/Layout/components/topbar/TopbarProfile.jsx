@@ -9,7 +9,6 @@ import {
 import { marginLeft, right, left } from '@/utils/directions';
 import { TopbarBack } from './BasicTopbarComponents';
 import TopbarMenuLink, { TopbarLink } from './TopbarMenuLink';
-import { useKeycloak } from 'keycloak-react-web';
 import { useAuth } from 'react-oidc-context';
 
 //const Ava = `${process.env.PUBLIC_URL}/img/ava.png`;
@@ -37,7 +36,7 @@ const TopbarProfile = () => {
 
   return (
     <TopbarProfileWrap>
-      <TopbarAvatarButton type="button" onClick={doLoginLogout}>
+      <TopbarAvatarButton data-testid="login-logout-button" type="button" onClick={doLoginLogout}>
         {/* <TopbarAvatarImage
           src={(user && user.avatar) || Ava}
           alt="avatar"

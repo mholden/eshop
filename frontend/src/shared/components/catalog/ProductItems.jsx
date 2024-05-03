@@ -21,10 +21,10 @@ const ProductItems = ({ items, isLoading }) => (
           </ProductItemLoading>
           )
         : (
-          items.map(item => (
+          items.map((item, i) => (
             <ProductCard key={item.id}>
               <ProductItem>
-                <ProductItemLink to={`/catalog/item?id=${item.id}`}>
+                <ProductItemLink data-testid={`cat-item-${i}-link`} to={`/catalog/item?id=${item.id}`}>
                   {item.new ? <ProductItemLabel src={New} alt="new" /> : ''}
                   {item.sale ? <ProductItemLabel src={Sale} alt="sale" /> : ''}
                   <ProductItemImageWrap>
