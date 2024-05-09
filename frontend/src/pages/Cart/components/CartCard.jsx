@@ -25,7 +25,7 @@ const CartCard = ({items, cartCheckoutOrder, shouldSpin, removeAllCartItems}) =>
           </CartLoading>
         ) : (
           <CardBody>
-            <CartTable bordered responsive>
+            <CartTable data-testid='cart-table' bordered responsive>
               <thead>
                 <tr>
                   <th>#</th>
@@ -34,7 +34,7 @@ const CartCard = ({items, cartCheckoutOrder, shouldSpin, removeAllCartItems}) =>
                   <th>Price</th>
                   <th>Total</th>
                   <th>
-                    <CartTableButton type="button" onClick={removeAllCartItems}>
+                    <CartTableButton data-testid='cart-table-remove-all-button' type="button" onClick={removeAllCartItems}>
                       <DeleteForeverIcon /> Remove All
                     </CartTableButton>
                   </th>
@@ -43,19 +43,19 @@ const CartCard = ({items, cartCheckoutOrder, shouldSpin, removeAllCartItems}) =>
               </thead>
               <tbody>
                 {items.map((ci, i) => (
-                  <tr key={`index_${i + 1}`}>
+                  <tr data-testid={`cart-table-item-${i}`} key={`index_${i + 1}`}>
                     <td>{i + 1}</td>
                     <td>
                       <CartPreviewImageWrap>
                         <img src={`data:image/png;base64,${ci.catalogItem.imageData}`} alt="product_preview" />
                       </CartPreviewImageWrap>
-                      <span>{ci.catalogItem.name}</span>
+                      <span data-testid={`cart-table-item-${i}-name`}>{ci.catalogItem.name}</span>
                     </td>
-                    <td>1</td>
-                    <td>${ci.catalogItem.price / 100}</td>
-                    <td>${ci.catalogItem.price / 100}</td>
+                    <td data-testid={`cart-table-item-${i}-quantity`}>1</td>
+                    <td data-testid={`cart-table-item-${i}-price`}>${ci.catalogItem.price / 100}</td>
+                    <td data-testid={`cart-table-item-${i}-total`}>${ci.catalogItem.price / 100}</td>
                     <td>
-                      <CartTableButton type="button">
+                      <CartTableButton data-testid={`cart-table-item-${i}-remove-button`} type="button">
                         <DeleteForeverIcon /> Remove
                       </CartTableButton>
                     </td>

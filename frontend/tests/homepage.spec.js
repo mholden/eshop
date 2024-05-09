@@ -44,7 +44,7 @@ test('test clicking catalog item', async ({ page }) => {
     timeout: 5_000
   });
   await page.getByTestId('cat-item-0-link').click();
-  await page.getByTestId('add-to-cart-button').click();
+  await page.getByTestId('add-to-cart-button').click(); // should redirect to login page
   await page.locator('id=username').fill("alice@testeshop.ca");
 });
 

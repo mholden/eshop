@@ -3,7 +3,7 @@ import { Container, Row } from 'react-bootstrap';
 import CatalogItems from './components/CatalogItems';
 
 const Catalog = () => (
-  <Container>
+  <Container data-testid='catalog-items-container'>
     <Row>
       <CatalogItems />
     </Row>

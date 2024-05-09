@@ -28,7 +28,7 @@ const CatalogItem = () => {
         <Container>
             <Row>
                 <ErrorAlert subTitle="CatalogItem" error={catalogItemError} />
-                <CatalogItemCard
+                <CatalogItemCard data-testid='catalog-item-card'
                     item={catalogItem}
                     isLoading={catalogItemIsLoading}
                 />

@@ -24,7 +24,7 @@ const OrdersCard = ({items, isLoading}) => {
           </OrdersLoading>
         ) : (
           <CardBody>
-            <OrdersTable bordered responsive>
+            <OrdersTable data-testid='orders-table' bordered responsive>
               <thead>
                 <tr>
                   <th>Order Id</th>
@@ -38,7 +38,7 @@ const OrdersCard = ({items, isLoading}) => {
                   <tr key={`index_${i + 1}`}>
                     <td>{oi.id}</td>
                     <td>{oi.creationTime}</td>
-                    <td>{oi.state}</td>
+                    <td data-testid={`orders-table-item-${i}-state`}>{oi.state}</td>
                   </tr>
                 ))}
               </tbody>

@@ -30,9 +30,9 @@ export default defineConfig({
     trace: 'on-first-retry',
 
     /* this is useful for --ui mode to watch the test at human speed */
-    launchOptions: {
-      slowMo: 1000,
-    },
+    //launchOptions: {
+    //  slowMo: 1000,
+    //},
   },
 
   /* Configure projects for major browsers */

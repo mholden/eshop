@@ -31,7 +31,7 @@ const ProductItems = ({ items, isLoading }) => (
                     <ProductItemImage src={`data:image/png;base64,${item.imageData}`} alt={"catalog-item-img"} />
                   </ProductItemImageWrap>
                   <ProductItemInfo>
-                    <ProductItemTitle>{item.name}</ProductItemTitle>
+                    <ProductItemTitle data-testid={`cat-item-${i}-name`}>{item.name}</ProductItemTitle>
                     <ProductItemDescription>{item.name}</ProductItemDescription>
                     <ProductItemPrice>${item.price / 100}</ProductItemPrice>
                     {item.sale ? <ProductItemOldPrice>${item.oldPrice}</ProductItemOldPrice> : ''}

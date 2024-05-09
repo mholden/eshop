@@ -51,12 +51,13 @@ const CartPurchase = ({cartCheckoutOrder}) => {
           <CartDeliveriesForm onSubmit={handleSubmit}>
             <CartTotal>Total: $348.00</CartTotal>
             <FormButtonToolbar>
-              <Button onClick={doCheckout}>Checkout</Button>
+              <Button data-testid='cart-checkout-button' onClick={doCheckout}>Checkout</Button>
             </FormButtonToolbar>
           </CartDeliveriesForm>
         )}
       </Form>
       <StyledModal
+        data-testid='cart-checkout-confirmation-modal'
         show={cartCheckoutOrder !== null}
         /*onHide={toggleModal}*/
         color="primary"
@@ -78,8 +79,8 @@ const CartPurchase = ({cartCheckoutOrder}) => {
               Your order confirmation number is {cartCheckoutOrder.id}
             </ModalBody>
             <ModalFooter>
-              <Button onClick={() => ackCheckoutSuccess("/")}>Back to Shopping</Button>
-              <Button onClick={() => ackCheckoutSuccess("/orders")}>View My Order</Button>
+              <Button data-testid='back-to-shopping-button' onClick={() => ackCheckoutSuccess("/")}>Back to Shopping</Button>
+              <Button data-testid='view-my-order-button' onClick={() => ackCheckoutSuccess("/orders")}>View My Order</Button>
             </ModalFooter>
             </>
           )

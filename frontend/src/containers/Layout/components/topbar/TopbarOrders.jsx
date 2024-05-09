@@ -6,7 +6,7 @@ import { colorText } from '@/utils/palette';
 
 const TopbarOrders = () => {
     return (
-        <TopbarOrdersButton to="/orders">
+        <TopbarOrdersButton data-testid='orders-button' to="/orders">
             <InvoiceIcon />
         </TopbarOrdersButton>
     );

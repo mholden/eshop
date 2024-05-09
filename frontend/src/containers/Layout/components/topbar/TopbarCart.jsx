@@ -78,7 +78,7 @@ const TopbarCart = () => {
 
   return (
     <TopbarCollapse>
-      <TopbarCartButton to="/cart">
+      <TopbarCartButton data-testid='cart-button' to="/cart">
         {
           cartItemsAreLoading
           ? (
@@ -87,7 +87,7 @@ const TopbarCart = () => {
             </CartLoading>
             )
           : (
-            <TopbarNumberAttribute>
+            <TopbarNumberAttribute data-testid='topbar-cart-number'>
               {cartItems.length}
             </TopbarNumberAttribute>
           )
