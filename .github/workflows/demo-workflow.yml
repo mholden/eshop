@@ -12,3 +12,9 @@ jobs:
           EVENT_CONTEXT: ${{ toJSON(github.event) }}
         run: |
           echo $EVENT_CONTEXT
+  conditional_job:
+    if: ${{ github.event.label.name == 'in-testing' }}
+    runs-on: ubuntu-latest
+    steps:
+    - run: |
+        echo "PR now has label in-testing"
