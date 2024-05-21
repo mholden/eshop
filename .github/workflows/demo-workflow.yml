@@ -12,11 +12,9 @@ jobs:
           EVENT_CONTEXT: ${{ toJSON(github.event) }}
           LABELS: ${{ toJSON(github.event.pull_request.labels) }}
         run: |
-          for x in ${{ github.event.pull_request.labels }}; do
-            echo "$x"
-          done
+          echo $LABELS
   conditional_job:
-    if: ${{ github.event.label.name == 'in-testing' }}
+    if: ${{ contains(github.event.pull_request.labels.*.name, 'in-testing') }}
     runs-on: ubuntu-latest
     steps:
     - run: |
