@@ -13,6 +13,7 @@ services:
   catalog:
     container_name: catalog-service
     image: catalog-service
+    env_file: ./.env
     build:
       context: ./backend/services/catalog/
     depends_on:
@@ -40,6 +41,7 @@ services:
   basket:
     container_name: basket-service
     image: basket-service
+    env_file: ./.env
     build:
       context: ./backend/services/basket/
     depends_on:
@@ -59,6 +61,7 @@ services:
   order:
     container_name: order-service
     image: order-service
+    env_file: ./.env
     build:
       context: ./backend/services/order/
     depends_on:
@@ -71,6 +74,7 @@ services:
   payment:
     container_name: payment-service
     image: payment-service
+    env_file: ./.env
     build:
       context: ./backend/services/payment/
     depends_on:
@@ -83,6 +87,7 @@ services:
   notification:
     container_name: notification-service
     image: notification-service
+    env_file: ./.env
     build:
       context: ./backend/services/notification/
     depends_on:
@@ -101,6 +106,7 @@ services:
   content:
     container_name: content-service
     image: content-service
+    env_file: ./.env
     build:
       context: ./backend/services/content/
     depends_on:
@@ -114,6 +120,7 @@ services:
   gateway:
     container_name: api-gateway
     image: api-gateway
+    env_file: ./.env
     build:
       context: ./backend/gateways/gateway/
     depends_on:
