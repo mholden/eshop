@@ -16,6 +16,14 @@ clients > spring-cloud-gateway-client > credentials > regenerate client secret, 
 users > add user for the TestEShop users (alice@testeshop.ca/alice, admin@testeshop.ca/admin)
 roles > add roles USER, ADMIN and give admin@testeshop.ca the ADMIN role
 
-4. start up the rest of the services
+3. start up the rest of the services
 
 docker-compose up  
+
+4. test
+
+currently, ESHOP_EXTERNAL_DNS_NAME_OR_IP in .env file should be set to docker.for.mac.localhost for backend tests
+
+cd test_eshop/TestEShop
+mvn -DskipTests clean package
+java -jar target/test-eshop-0.0.1-SNAPSHOT.jar

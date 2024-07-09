@@ -14,6 +14,12 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import ca.testeshop.utils.TestUtils;
 
+
+//
+// mvn -DskipTests clean package
+// java -jar target/test-eshop-0.0.1-SNAPSHOT.jar
+//
+
 @SpringBootApplication
 public class TestEShopApplication implements CommandLineRunner {
 
