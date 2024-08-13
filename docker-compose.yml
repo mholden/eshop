@@ -39,7 +39,7 @@ services:
       - "8090:8080"
       - "8543:8443"
     volumes:
-      - "/Users/mholden/devel/hldn_eshop/backend/services/identity/https/:/etc/x509/https"
+      - "/home/ec2-user/eshop/backend/services/identity/https/:/etc/x509/https"
 
   basket:
     container_name: basket-service

@@ -11,7 +11,8 @@ spring:
       client:
         provider:
           keycloak:
-            issuer-uri: http://${ESHOP_EXTERNAL_DNS_NAME_OR_IP}:8090/auth/realms/spring-cloud-gateway-realm
+            #issuer-uri: http://${ESHOP_EXTERNAL_DNS_NAME_OR_IP}:8090/auth/realms/spring-cloud-gateway-realm
+            issuer-uri: https://${ESHOP_EXTERNAL_DNS_NAME_OR_IP}:8543/auth/realms/spring-cloud-gateway-realm
             user-name-attribute: preferred_username
         registration:
           keycloak:
@@ -20,7 +21,8 @@ spring:
             scope: openid
       resourceserver:
         jwt:
-          issuer-uri: http://${ESHOP_EXTERNAL_DNS_NAME_OR_IP}:8090/auth/realms/spring-cloud-gateway-realm
+          #issuer-uri: http://${ESHOP_EXTERNAL_DNS_NAME_OR_IP}:8090/auth/realms/spring-cloud-gateway-realm
+          issuer-uri: https://${ESHOP_EXTERNAL_DNS_NAME_OR_IP}:8543/auth/realms/spring-cloud-gateway-realm
 
   cloud:
     gateway:
