@@ -184,7 +184,8 @@ public abstract class Test {
 				while (st.hasMoreTokens()) {
 					next = st.nextToken();
 					if (last.contains("href")) {
-						url = "http://docker.for.mac.localhost:8090" + next.replaceAll("&amp;", "&"); // hardcoding the hostname for now..
+						//url = "http://docker.for.mac.localhost:8090" + next.replaceAll("&amp;", "&"); // hardcoding the hostname for now..
+						url = "https://eshop.hldn.live:8543" + next.replaceAll("&amp;", "&"); // hardcoding the hostname for now..
 						break;
 					}
 					last = next;

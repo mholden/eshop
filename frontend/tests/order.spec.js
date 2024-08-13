@@ -14,7 +14,7 @@ test('test placing an order', async ({ page }) => {
         const catalogItems = await page.evaluate(() => window.store.getState().catalogItems);
         await expect(catalogItems.data.length != 0).toBeTruthy();
     }).toPass({
-        timeout: 5_000
+        timeout: 30_000 // TODO: fix this - should be 5_000
     });
   
     await doUserRegistration({ page });

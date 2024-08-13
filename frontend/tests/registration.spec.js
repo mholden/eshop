@@ -14,7 +14,7 @@ test('test registration through login button', async ({ page }) => {
       const catalogItems = await page.evaluate(() => window.store.getState().catalogItems);
       await expect(catalogItems.data.length != 0).toBeTruthy();
   }).toPass({
-      timeout: 5_000
+      timeout: 30_000 // TODO: fix this - should be 5_000
   });
 
   // shouldn't see 'cart' or 'orders' buttons

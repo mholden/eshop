@@ -70,7 +70,8 @@ ThemeComponent.propTypes = {
 const ConnectedThemeComponent = ThemeComponent;
 
 const oidcConfig = {
-  authority: "http://docker.for.mac.localhost:8090/auth/realms/spring-cloud-gateway-realm",
+  //authority: "http://docker.for.mac.localhost:8090/auth/realms/spring-cloud-gateway-realm",
+  authority: "https://eshop.hldn.live:8543/auth/realms/spring-cloud-gateway-realm",
   client_id: "spring-cloud-gateway-client",
   redirect_uri: "http://localhost:3000",
   post_logout_redirect_uri: "http://localhost:3000",
@@ -82,7 +83,7 @@ function App() {
   return (
     <Provider store={store}>
       <AuthProvider {...oidcConfig}>
-        <StompSessionProvider url={"ws://localhost:8080/notification/ws"}>
+        <StompSessionProvider url={"ws://eshop.hldn.live:8080/notification/ws"}>
           <AsyncChannel/>
           <BrowserRouter>
               <ConnectedThemeComponent>

@@ -17,7 +17,7 @@ test('test catalog items load', async ({ page }) => {
     const catalogItems = await page.evaluate(() => window.store.getState().catalogItems);
     await expect(catalogItems.data.length != 0).toBeTruthy();
   }).toPass({
-    timeout: 5_000
+    timeout: 30_000 // TODO: fix this - should be 5_000
   });
 });
 
@@ -28,7 +28,7 @@ test('test log in button works', async ({ page }) => {
     const catalogItems = await page.evaluate(() => window.store.getState().catalogItems);
     await expect(catalogItems.data.length != 0).toBeTruthy();
   }).toPass({
-    timeout: 5_000
+    timeout: 30_000 // TODO: fix this - should be 5_000
   });
   await page.getByTestId('login-logout-button').click();
   await page.locator('id=username').fill("alice@testeshop.ca");
@@ -41,7 +41,7 @@ test('test clicking catalog item', async ({ page }) => {
     const catalogItems = await page.evaluate(() => window.store.getState().catalogItems);
     await expect(catalogItems.data.length != 0).toBeTruthy();
   }).toPass({
-    timeout: 5_000
+    timeout: 30_000 // TODO: fix this - should be 5_000
   });
   await page.getByTestId('cat-item-0-link').click();
   await page.getByTestId('add-to-cart-button').click(); // should redirect to login page
@@ -55,7 +55,7 @@ test('test clicking home button', async ({ page }) => {
     const catalogItems = await page.evaluate(() => window.store.getState().catalogItems);
     await expect(catalogItems.data.length != 0).toBeTruthy();
   }).toPass({
-    timeout: 5_000
+    timeout: 30_000 // TODO: fix this - should be 5_000
   });
   await page.getByTestId('cat-item-0-link').click();
   await page.getByTestId('home-button').click();

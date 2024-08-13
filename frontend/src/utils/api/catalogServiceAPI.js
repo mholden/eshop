@@ -1,7 +1,9 @@
 import get from './base/get';
 
-const CATALOG_API_BASE_URL = "http://localhost:8080/catalog";
-const CONTENT_API_BASE_URL = "http://localhost:8080/content";
+//const CATALOG_API_BASE_URL = "http://localhost:8080/catalog";
+//const CONTENT_API_BASE_URL = "http://localhost:8080/content";
+const CATALOG_API_BASE_URL = "http://eshop.hldn.live:8080/catalog";
+const CONTENT_API_BASE_URL = "http://eshop.hldn.live:8080/content";
 
 const catalogServiceAPI = {
   
