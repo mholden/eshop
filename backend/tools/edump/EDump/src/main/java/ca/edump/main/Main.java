@@ -5,6 +5,10 @@ import java.util.*;
 
 import redis.clients.jedis.Jedis;
 
+//
+// mvn clean package
+// java -jar target/edump.jar
+//
 class Main {
 	static final String USER = "root";
 	static final String PASS = "password";
