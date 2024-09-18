@@ -29,16 +29,16 @@ public class TestEShop {
 		// ... add your new test here
 	}};
 	
-	private void init() throws Exception {
-		services = new Services(Services.location.LOCAL);
+	private void init(Services.location location) throws Exception {
+		services = new Services(location);
 	}
 	
 	public TestEShop() throws Exception {
-		init();
+		init(Services.location.LOCAL);
 	}
 	
-	public TestEShop(String username, String password) throws Exception {
-		init();
+	public TestEShop(String username, String password, Services.location location) throws Exception {
+		init(location);
 		this.username = username;
 		this.password = password;
 	}
