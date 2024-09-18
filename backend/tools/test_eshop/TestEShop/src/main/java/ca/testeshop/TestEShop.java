@@ -26,6 +26,7 @@ public class TestEShop {
 		add(TestRegistration.class);
 		add(TestCatalogCRUD.class);
 		add(TestSecurity.class);
+		add(TestContent.class);
 		// ... add your new test here
 	}};
 	

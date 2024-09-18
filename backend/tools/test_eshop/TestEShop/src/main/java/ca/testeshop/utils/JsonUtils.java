@@ -2,6 +2,7 @@ package ca.testeshop.utils;
 
 import java.lang.reflect.Type;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 
@@ -28,6 +29,10 @@ public class JsonUtils {
 	
 	public static Object jsonToPojo(String json, Type type) {
 		return new Gson().fromJson(json, type);
+	}
+	
+	public static <T> T jsonToPojo(String json, TypeReference<T> type) throws Exception {
+		return new ObjectMapper().readValue(json, type);
 	}
 	
 	public static String pojoToJson(Object pojo) {

@@ -1,5 +1,8 @@
 package ca.testeshop.services;
 
+import java.util.Arrays;
+import java.util.List;
+
 import ca.testeshop.utils.*;
 
 public class ContentService extends Service implements ContentServiceAPI {
@@ -26,7 +29,16 @@ public class ContentService extends Service implements ContentServiceAPI {
 		return HttpUtils.doPost(urlBase + "/content", buildUploadContentPayload(content)); 
 	}
 	
+	public EShopResponse downloadContent(List<String> contentIds) throws Exception {
+		String urlSuffix = "?contentId=" + contentIds.get(0);
+		for (int i = 1; i < contentIds.size(); i++) {
+			urlSuffix += "&contentId=" + contentIds.get(i);
+		}
+		//System.out.println("urlSuffix is " + urlSuffix);
+		return HttpUtils.doGet(urlBase + "/content" + urlSuffix);
+	}
+	
 	public EShopResponse downloadContent(String contentId) throws Exception {
-		return HttpUtils.doGet(urlBase + "/content" + "?contentId=" + contentId);
+		return downloadContent(Arrays.asList(contentId));
 	}
 }

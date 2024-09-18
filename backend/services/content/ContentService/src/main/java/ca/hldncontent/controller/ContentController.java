@@ -58,16 +58,20 @@ public class ContentController {
 	}
 	
 	@GetMapping
-	public Content downloadContent(@RequestParam String contentId) throws Exception {
-		Content content;
+	public List<Content> downloadContent(@RequestParam(value = "contentId") List<String> contentIds) throws Exception {
+		List<Content> content;
 		long start;
 		
 		// note: no authentication required here
 		
-		logger.info("downloadContent() contentId {}", contentId);
+		logger.info("downloadContent() contentIds {}", contentIds);
 		
 		start = System.currentTimeMillis();
-		content = new Content(contentId, Files.readAllBytes(Paths.get(contentDirectory + "/" + contentId)));
+		
+		content = new LinkedList<Content>();
+		for (String contentId : contentIds) {
+			content.add(new Content(contentId, Files.readAllBytes(Paths.get(contentDirectory + "/" + contentId))));
+		}
 		
 		logger.info("downloadContent() took {}ms", System.currentTimeMillis() - start);
 		
