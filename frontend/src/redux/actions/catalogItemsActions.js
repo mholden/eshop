@@ -5,10 +5,10 @@ export const fetchCatalogItemsRequest = createAction('FETCH_CATALOG_ITEMS_REQUES
 export const fetchCatalogItemsSuccess = createAction('FETCH_CATALOG_ITEMS_SUCCESS');
 export const fetchCatalogItemsError = createAction('FETCH_CATALOG_ITEMS_ERROR');
 
-export const fetchCatalogItems = () => async (dispatch) => {
+export const fetchCatalogItems = (pageIndex, pageSize) => async (dispatch) => {
   try {
     dispatch(fetchCatalogItemsRequest());
-    const { data } = await catalogServiceAPI.getCatalogItems();
+    const { data } = await catalogServiceAPI.getCatalogItems(pageIndex, pageSize);
     dispatch(fetchCatalogItemsSuccess(data));
   } catch (e) {
     dispatch(fetchCatalogItemsError(e.message));

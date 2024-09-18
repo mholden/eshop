@@ -1,5 +1,4 @@
-note: currently, backend should have ESHOP_EXTERNAL_DNS_NAME_OR_IP set to 
-docker.for.mac.localhost in its .env file for this frontend to work
+TODO: update this note re. BackEndServiceLocations env
 
 cd frontend && npm run start
 cd frontend && npx playwright test

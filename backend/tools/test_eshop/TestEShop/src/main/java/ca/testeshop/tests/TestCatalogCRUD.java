@@ -5,6 +5,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.reflect.TypeToken;
 
@@ -25,7 +26,8 @@ public class TestCatalogCRUD extends Test {
 		String fileName, imageId;
 		List<CatalogItem> catalogItems;
 		CatalogItem catalogItem;
-		Content content, downloadedContent;
+		Content content;
+		List<Content> downloadedContent;
 		EShopResponse response;
 		
 		System.out.println("\ntestSpecificCase1");
@@ -62,8 +64,9 @@ public class TestCatalogCRUD extends Test {
 		//response.dump();
 		
 		// verify data integrity
-		downloadedContent = (Content)JsonUtils.jsonToPojo(response.response, Content.class);
-		TestUtils.failIf(!Arrays.equals(downloadedContent.getData(), content.getData()), null);
+		downloadedContent = (List<Content>)JsonUtils.jsonToPojo(response.response, new TypeReference<List<Content>>(){});
+		TestUtils.failIf(downloadedContent.size() != 1, imageId);
+		TestUtils.failIf(!Arrays.equals(downloadedContent.get(0).getData(), content.getData()), null);
 	}
 	
 	public void run() throws Exception {

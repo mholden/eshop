@@ -1,8 +1,8 @@
 import get from './base/get';
 import { getAuthToken } from '../helpers';
+import BackEndServiceLocations from '../backEndServiceLocations';
 
-//const ORDER_API_BASE_URL = "http://localhost:8080/order";
-const ORDER_API_BASE_URL = "http://eshop.hldn.live:8080/order";
+const ORDER_API_BASE_URL = BackEndServiceLocations.getLocation("ORDER_SERVICE") + "/order";
 
 const orderServiceAPI = {
   

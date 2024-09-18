@@ -15,19 +15,28 @@ function sleepWithUpdate() {
 }
 
 ############################################################################################################
-#################################### test back end and web #################################################
+######################################## test back end #####################################################
 ############################################################################################################
 
-function testBackEndAndWeb() {
+function testBackEnd() {
 	cd "$REPO_DIR/backend/tools/test_eshop/TestEShop"
 
 	echo "building back end tests..."
 	mvn -DskipTests clean package
 
 	echo "running back end tests..."
-	java -jar target/test-eshop-0.0.1-SNAPSHOT.jar -q
+	java -jar target/test-eshop-0.0.1-SNAPSHOT.jar -b dev -q
+}
 
+############################################################################################################
+########################################## test web ########################################################
+############################################################################################################
+
+function testWeb() {
 	cd "$REPO_DIR/frontend"
+
+	ENV=DEV
+	sed -E -i '' "s|(env = ).*|\1\"${ENV}\";|g" src/utils/backEndServiceLocations.js
 
 	echo "starting front end..."
 	BROWSER=none npm run start > /tmp/frontend.logs 2>&1 &
@@ -35,14 +44,14 @@ function testBackEndAndWeb() {
 	sleepWithUpdate 10
 
 	echo "running front end tests..."
-	npx playwright test --reporter=dot
+	npx playwright test --reporter=dot --workers 3
 
 	echo "killing front end..."
 	ps aux | grep -aE 'hldn_eshop.*frontend' | grep -v grep | awk '{print $2}' | xargs kill
 }
 
 ############################################################################################################
-######################################## test mobile #######################################################
+######################################### test mobile ######################################################
 ############################################################################################################
 
 function testIOS() {
@@ -80,13 +89,13 @@ function testAndroid() {
 function testMobile() {
 	cd $MOBILE_REPO_DIR
 
-	# set ip in IP.js file
-	IP=eshop.hldn.live
-	sed -E -i '' "s|(IP = ).*|\1\"${IP}\"|g" data/api/IP.js
+	ENV=DEV
+	sed -E -i '' "s|(env = ).*|\1\"${ENV}\";|g" data/api/backEndServiceLocations.js
 
 	testIOS
 	testAndroid
 }
 
-testBackEndAndWeb
+testBackEnd
+testWeb
 testMobile

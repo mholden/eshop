@@ -12,6 +12,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+import ca.testeshop.services.Services;
 import ca.testeshop.utils.TestUtils;
 
 
@@ -37,6 +38,7 @@ public class TestEShopApplication implements CommandLineRunner {
 			CommandLineParser parser = new DefaultParser();
 			CommandLine cmd;
 			String testName = null, userName = null;
+			Services.location backEndLocation = Services.location.LOCAL;
 			TestEShop testEShop;
 
 			// define the options and parse the command line
@@ -75,14 +77,34 @@ public class TestEShopApplication implements CommandLineRunner {
 					.required(false)
 					.desc("mute tests")
 					.build());
+			
+			// back end option
+			options.addOption(Option.builder("b")
+					.required(false)
+					.hasArg(true)
+					.desc("back end")
+					.build());
 
 			cmd = parser.parse(options, args);
 
 			if (cmd.hasOption("u"))
 				userName = cmd.getOptionValue("u");
+			
+			if (cmd.hasOption("b")) {
+				switch (cmd.getOptionValue("b")) {
+					case "local":
+						backEndLocation = Services.location.LOCAL;
+						break;
+					case "dev":
+						backEndLocation = Services.location.DEV;
+						break;
+					default:
+						throw new Exception("unsupported back end " + cmd.getOptionValue("b"));
+				}
+			}
 
 			// TODO: prompt for user password
-			testEShop = new TestEShop(userName, TestUtils.defaultPassword);
+			testEShop = new TestEShop(userName, TestUtils.defaultPassword, backEndLocation);
 
 			if (cmd.hasOption("l")) { // list tests
 				testEShop.listTests();

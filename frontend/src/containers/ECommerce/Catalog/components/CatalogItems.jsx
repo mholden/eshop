@@ -18,7 +18,7 @@ const CatalogItems = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(fetchCatalogItems());
+    dispatch(fetchCatalogItems(0, 8)); // hardcoding this for now
   }, [dispatch]);
 
   return (

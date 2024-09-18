@@ -8,6 +8,7 @@
     "@testing-library/user-event": "^13.5.0",
     "axios": "^1.6.8",
     "bootstrap": "^5.2.3",
+    "caniuse-lite": "^1.0.30001662",
     "customize-cra": "^1.0.0",
     "final-form": "^4.20.2",
     "keycloak-js": "^24.0.2",

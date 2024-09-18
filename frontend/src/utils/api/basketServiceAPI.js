@@ -1,9 +1,9 @@
 import get from './base/get';
 import post from './base/post';
 import { getAuthToken } from '../helpers';
+import BackEndServiceLocations from '../backEndServiceLocations';
 
-//const BASKET_API_BASE_URL = "http://localhost:8080/basket";
-const BASKET_API_BASE_URL = "http://eshop.hldn.live:8080/basket";
+const BASKET_API_BASE_URL = BackEndServiceLocations.getLocation("BASKET_SERVICE") + "/basket";
 
 const basketServiceAPI = {
   

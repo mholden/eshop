@@ -1,4 +1,5 @@
 import { User } from "oidc-client-ts";
+import BackEndServiceLocations from "./backEndServiceLocations";
 
 export const getOidcStorageKey = () => {
   const authSettings = JSON.parse(localStorage.getItem('authSettings'));
@@ -52,8 +53,7 @@ export const getWeekChartData = (cryptoHistory) => {
 };
 
 export const getAuthToken = () => {
-  //const oidcStorage = localStorage.getItem(`oidc.user:http://docker.for.mac.localhost:8090/auth/realms/spring-cloud-gateway-realm:spring-cloud-gateway-client`);
-  const oidcStorage = localStorage.getItem(`oidc.user:https://eshop.hldn.live:8543/auth/realms/spring-cloud-gateway-realm:spring-cloud-gateway-client`);
+  const oidcStorage = localStorage.getItem("oidc.user:" + BackEndServiceLocations.getLocation("IDENTITY_SERVICE") + "/auth/realms/spring-cloud-gateway-realm:spring-cloud-gateway-client");
   if (!oidcStorage) {
       //console.log("getAuthToken() !oidcStorage");
       return null;
