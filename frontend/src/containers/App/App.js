@@ -23,6 +23,7 @@ import AsyncChannel from './asyncChannel';
 import { AuthProvider } from 'react-oidc-context';
 import { WebStorageStateStore } from 'oidc-client-ts';
 import Orders from '../../pages/Orders';
+import BackEndServiceLocations from '../../utils/backEndServiceLocations';
 
 const ThemeComponent = ({
   children, 
@@ -70,8 +71,7 @@ ThemeComponent.propTypes = {
 const ConnectedThemeComponent = ThemeComponent;
 
 const oidcConfig = {
-  //authority: "http://docker.for.mac.localhost:8090/auth/realms/spring-cloud-gateway-realm",
-  authority: "https://eshop.hldn.live:8543/auth/realms/spring-cloud-gateway-realm",
+  authority: BackEndServiceLocations.getLocation("IDENTITY_SERVICE") + "/auth/realms/spring-cloud-gateway-realm",
   client_id: "spring-cloud-gateway-client",
   redirect_uri: "http://localhost:3000",
   post_logout_redirect_uri: "http://localhost:3000",
@@ -83,7 +83,7 @@ function App() {
   return (
     <Provider store={store}>
       <AuthProvider {...oidcConfig}>
-        <StompSessionProvider url={"ws://eshop.hldn.live:8080/notification/ws"}>
+        <StompSessionProvider url={BackEndServiceLocations.getLocation("NOTIFICATION_SERVICE") + "/notification/ws"}>
           <AsyncChannel/>
           <BrowserRouter>
               <ConnectedThemeComponent>

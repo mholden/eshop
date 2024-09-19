@@ -1,22 +1,33 @@
+import BackEndServiceLocations from '../backEndServiceLocations';
 import get from './base/get';
 
-//const CATALOG_API_BASE_URL = "http://localhost:8080/catalog";
-//const CONTENT_API_BASE_URL = "http://localhost:8080/content";
-const CATALOG_API_BASE_URL = "http://eshop.hldn.live:8080/catalog";
-const CONTENT_API_BASE_URL = "http://eshop.hldn.live:8080/content";
+const CATALOG_API_BASE_URL = BackEndServiceLocations.getLocation("CATALOG_SERVICE") + "/catalog";
+const CONTENT_API_BASE_URL = BackEndServiceLocations.getLocation("CONTENT_SERVICE") + "/content";
 
 const catalogServiceAPI = {
   
   getCatalogItems: async () => {
     const catalogResponse = await get(CATALOG_API_BASE_URL + "/items");
-    // TODO: make this a bulk request
+
+    let urlSuffix = "";
+    let imageMap = {};
     for (let i = 0; i < catalogResponse.data.length; i++) {
       catalogResponse.data[i].imageData = "";
       if (catalogResponse.data[i].imageId == null) {
         continue;
       }
-      const contentResponse = await get(CONTENT_API_BASE_URL + "?contentId=" + catalogResponse.data[i].imageId);
-      catalogResponse.data[i].imageData = contentResponse.data.data;
+      imageMap[catalogResponse.data[i].imageId] = i;
+      if (urlSuffix.length === 0) {
+        urlSuffix = "?contentId=" + catalogResponse.data[i].imageId;
+      } else {
+        urlSuffix += "&contentId=" + catalogResponse.data[i].imageId;
+      }
+    }
+    //console.log("getCatalogItems() urlSuffix",urlSuffix);
+    const contentResponse = await get(CONTENT_API_BASE_URL + urlSuffix);
+    //console.log("getCatalogItems() contentResponse",contentResponse);
+    for (let i = 0; i < contentResponse.data.length; i++) {
+      catalogResponse.data[imageMap[contentResponse.data[i].id]].imageData = contentResponse.data[i].data;
     }
     //console.log("getCatalogItems() ", catalogResponse.data);
     return catalogResponse;
@@ -27,7 +38,7 @@ const catalogServiceAPI = {
     catalogResponse.data.imageData = "";
     if (catalogResponse.data.imageId != null) {
       const contentResponse = await get(CONTENT_API_BASE_URL + "?contentId=" + catalogResponse.data.imageId);
-      catalogResponse.data.imageData = contentResponse.data.data;
+      catalogResponse.data.imageData = contentResponse.data[0].data;
     }
     //console.log("getCatalogItem() ", catalogResponse.data);
     return catalogResponse;
