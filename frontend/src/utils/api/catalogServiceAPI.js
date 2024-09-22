@@ -6,10 +6,16 @@ const CONTENT_API_BASE_URL = BackEndServiceLocations.getLocation("CONTENT_SERVIC
 
 const catalogServiceAPI = {
   
-  getCatalogItems: async () => {
-    const catalogResponse = await get(CATALOG_API_BASE_URL + "/items");
-
+  getCatalogItems: async (pageIndex = null, pageSize = null) => {
     let urlSuffix = "";
+    
+    if (pageIndex != null && pageSize != null) {
+      urlSuffix = "?pageIndex=" + pageIndex + "&pageSize=" + pageSize;
+    }
+    console.log("getCatalogItems() pageIndex",pageIndex,"pageSize",pageSize,"urlSuffix",urlSuffix);
+    const catalogResponse = await get(CATALOG_API_BASE_URL + "/items" + urlSuffix);
+
+    urlSuffix = ""; // reset this
     let imageMap = {};
     for (let i = 0; i < catalogResponse.data.length; i++) {
       catalogResponse.data[i].imageData = "";
