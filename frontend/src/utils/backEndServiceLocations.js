@@ -1,6 +1,5 @@
 
-const env = "LOCAL";
-//const env = "DEV";
+const env = "DEV";
 
 export default class BackEndServiceLocations {
 
@@ -44,4 +43,5 @@ export default class BackEndServiceLocations {
                 break;
         }
     }
+    
 }

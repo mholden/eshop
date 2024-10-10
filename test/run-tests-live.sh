@@ -35,6 +35,9 @@ function testBackEnd() {
 function testWeb() {
 	cd "$REPO_DIR/frontend"
 
+	ENV=DEV
+	sed -E -i '' "s|(env = ).*|\1\"${ENV}\";|g" src/utils/backEndServiceLocations.js
+
 	echo "starting front end..."
 	BROWSER=none npm run start > /tmp/frontend.logs 2>&1 &
 
@@ -86,10 +89,8 @@ function testAndroid() {
 function testMobile() {
 	cd $MOBILE_REPO_DIR
 
-	# TODO: fix this with new backEndServiceLocations.js
-	# set ip in IP.js file
-	#IP=eshop.hldn.live
-	#sed -E -i '' "s|(IP = ).*|\1\"${IP}\"|g" data/api/IP.js
+	ENV=DEV
+	sed -E -i '' "s|(env = ).*|\1\"${ENV}\";|g" data/api/backEndServiceLocations.js
 
 	testIOS
 	testAndroid
