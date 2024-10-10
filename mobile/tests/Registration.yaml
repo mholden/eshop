@@ -1,0 +1,9 @@
+#
+# test user registration
+#
+appId: com.hldn.eshop
+---
+- clearState
+- launchApp
+- runFlow: ../test-utils/RegistrationNoLogout.yaml
+- runFlow: ../test-utils/Logout.yaml

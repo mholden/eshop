@@ -1,0 +1,15 @@
+# user log out
+appId: com.hldn.eshop
+---
+- assertVisible:
+    id: "account-tab-button"
+- tapOn:
+    id: "account-tab-button"
+- assertVisible:
+    id: "login-logout-button"
+- copyTextFrom:
+    id: "login-logout-button"
+#- evalScript: ${console.log(maestro.copiedText)}
+- assertTrue: ${maestro.copiedText.includes("Log Out")}
+- tapOn:
+    id: "login-logout-button"

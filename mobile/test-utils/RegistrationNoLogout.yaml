@@ -1,0 +1,42 @@
+# user registration
+appId: com.hldn.eshop
+---
+#- assertVisible:
+#    id: "cat-item-0-link"
+- assertVisible:
+    id: "account-tab-button"
+- tapOn:
+    id: "account-tab-button"
+- assertVisible:
+    id: "login-logout-button"
+- copyTextFrom:
+    id: "login-logout-button"
+#- evalScript: ${console.log(maestro.copiedText)}
+- assertTrue: ${maestro.copiedText.includes("Log In")}
+- tapOn:
+    id: "login-logout-button"
+- assertVisible: "Register"
+- tapOn: "Register"
+- assertVisible: "First Name"
+- tapOn: "First Name"
+- inputText: "Test"
+- assertVisible: "Last Name"
+- tapOn: "Last Name"
+- inputText: "User"
+- assertVisible: "Email"
+- tapOn: "Email"
+- inputText: ${"testuser-" + new Date().getTime() + "@testeshop.com"}
+- scrollUntilVisible:
+    element: "Confirm Password"
+    direction: DOWN
+    timeout: 50000
+    speed: 40
+    visibilityPercentage: 100
+- assertVisible: "Password"
+- tapOn: "Password"
+- inputText: "Password1"
+- assertVisible: "Confirm Password"
+- tapOn: "Confirm Password"
+- inputText: "Password1"
+- pressKey: Enter
+#- tapOn: "Register"
