@@ -37,3 +37,8 @@ the release flag will prevent the expo dev menu / warnings / errors from interfe
 
 test:
 cd mobile && maestro test tests/
+
+
+# PACKAGE INSTALLATION
+
+npx expo install <package-name>

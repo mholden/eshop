@@ -1,0 +1,27 @@
+appId: com.hldn.eshop
+---
+- clearState
+- launchApp
+- assertVisible:
+    id: "cat-item-0-link"
+- assertVisible:
+    id: "account-tab-button"
+- tapOn:
+    id: "account-tab-button"
+- assertVisible:
+    id: "login-logout-button"
+- copyTextFrom:
+    id: "login-logout-button"
+#- evalScript: ${console.log(maestro.copiedText)}
+- assertTrue: ${maestro.copiedText.includes("Log In")}
+- tapOn:
+    id: "login-logout-button"
+- assertVisible: "Email"
+- tapOn: "Email"
+- inputText: "alice@testeshop.ca"
+- assertVisible: "Password"
+- tapOn: "Password"
+- inputText: "alice"
+- assertVisible: "Sign In"
+- tapOn: "Sign In"
+- runFlow: ../test-utils/Logout.yaml

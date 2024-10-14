@@ -1,0 +1,49 @@
+appId: com.hldn.eshop
+---
+- clearState
+- launchApp
+- runFlow: ../test-utils/RegistrationNoLogout.yaml
+- assertVisible:
+    id: "home-tab-button"
+- tapOn:
+    id: "home-tab-button"
+- scrollUntilVisible:
+    element:
+      id: "cat-item-5-link"
+    direction: DOWN
+    timeout: 50000
+    speed: 40
+    visibilityPercentage: 100
+- tapOn: 
+    id: "cat-item-5-link"
+- assertVisible:
+    id: "cat-item-add-to-cart-button"
+- tapOn:
+    id: "cat-item-add-to-cart-button"
+- assertVisible:
+    id: "cart-tab-button"
+- tapOn:
+    id: "cart-tab-button"
+- assertVisible:
+    id: "cart-table"
+- assertVisible:
+    id: "cart-checkout-button"
+- tapOn:
+    id: "cart-checkout-button"
+- assertVisible:
+    id: "cart-checkout-success-modal-body"
+- assertVisible: 
+    id: "cart-checkout-success-modal-back-to-shopping-button"
+- assertVisible: 
+    id: "cart-checkout-success-modal-view-orders-button"
+- tapOn: 
+    id: "cart-checkout-success-modal-view-orders-button"
+- assertVisible:
+    id: "order-0" 
+- assertNotVisible: # there should only be 1 order
+    id: "order-1"
+- copyTextFrom:
+    id: "order-0"
+#- evalScript: ${console.log(maestro.copiedText)}
+- assertTrue: ${maestro.copiedText.includes("PAYMENT_SUCCEEDED")}
+- runFlow: ../test-utils/Logout.yaml

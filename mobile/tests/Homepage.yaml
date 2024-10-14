@@ -2,4 +2,20 @@ appId: com.hldn.eshop
 ---
 - clearState
 - launchApp
-- assertVisible: "Welcome!"
+- assertVisible:
+    id: "cat-item-0-link"
+- tapOn:
+    id: "cat-item-0-link"
+- tapOn:
+    id: "cat-item-back-button"
+- scrollUntilVisible:
+    element:
+      id: "cat-item-5-link"
+    direction: DOWN
+    timeout: 50000
+    speed: 40
+    visibilityPercentage: 100
+- tapOn:
+    id: "cat-item-5-link"
+- tapOn:
+    id: "cat-item-back-button"

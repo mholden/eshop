@@ -53,7 +53,7 @@ function testWeb() {
 ######################################### test mobile ######################################################
 ############################################################################################################
 
-MOBILE_SLEEP_TIME=45
+MOBILE_SLEEP_TIME=60
 
 function testIOS() {
 	echo "starting ios..."
@@ -90,8 +90,10 @@ function testAndroid() {
 function testMobile() {
 	cd "$REPO_DIR/mobile"
 
-	# TODO: kick off an eas build, and somehow check its success?
-	# eas build --platform all --profile development --no-wait
+	#rm -rf android/ ios/
+
+	# kick off an eas build TODO: somehow check its success?
+	eas build --platform all --profile development --no-wait
 
 	ENV=DEV
 	sed -E -i '' "s|(env = ).*|\1\"${ENV}\";|g" data/api/backEndServiceLocations.js

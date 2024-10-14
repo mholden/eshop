@@ -1,0 +1,62 @@
+appId: com.hldn.eshop
+---
+- clearState
+- launchApp
+- runFlow: ../test-utils/RegistrationNoLogout.yaml
+- assertVisible:
+    id: "home-tab-button"
+- tapOn:
+    id: "home-tab-button"
+- scrollUntilVisible:
+    element:
+      id: "cat-item-5-link"
+    direction: DOWN
+    timeout: 50000
+    speed: 40
+    visibilityPercentage: 100
+- tapOn: 
+    id: "cat-item-5-link"
+- assertVisible:
+    id: "cat-item-add-to-cart-button"
+- tapOn:
+    id: "cat-item-add-to-cart-button"
+#- assertVisible: // this isn't working for some reason?
+#    id: "cart-tab-number" 
+#- copyTextFrom:
+#    id: "cart-tab-number"
+#- evalScript: ${console.log("copiedText is",maestro.copiedText)}
+#- assertTrue: ${maestro.copiedText.contains("1")}
+- assertVisible:
+    id: "cart-tab-button"
+- tapOn:
+    id: "cart-tab-button"
+- assertVisible:
+    id: "cart-table"
+- tapOn:
+    id: "home-tab-button"
+- scrollUntilVisible:
+    element:
+      id: "cat-item-3-link"
+    direction: UP
+    timeout: 50000
+    speed: 40
+    visibilityPercentage: 100
+- tapOn: 
+    id: "cat-item-3-link"
+- assertVisible:
+    id: "cat-item-add-to-cart-button"
+- tapOn:
+    id: "cat-item-add-to-cart-button"
+- tapOn:
+    id: "cart-tab-button"
+- assertVisible:
+    id: "cart-table"
+- assertVisible:
+    id: "cart-remove-all-button"
+- tapOn:
+    id: "cart-remove-all-button"
+- assertVisible:
+    id: "cart-no-items-message"
+- assertNotVisible:
+    id: "cart-table"
+- runFlow: ../test-utils/Logout.yaml

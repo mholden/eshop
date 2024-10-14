@@ -1,6 +1,3 @@
-#
-# test user registration
-#
 appId: com.hldn.eshop
 ---
 - clearState

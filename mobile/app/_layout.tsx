@@ -5,6 +5,9 @@ import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
 import 'react-native-reanimated';
 import { AuthProvider } from '@/hooks/AuthProvider'
+import store from '@/data/redux/store';
+import { Provider } from 'react-redux';
+import AsyncChannelWrapper from '@/data/api/AsyncChannelWrapper';
 
 import { useColorScheme } from '@/hooks/useColorScheme';
 
@@ -28,14 +31,17 @@ export default function RootLayout() {
   }
 
   return (
-    //<ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-    <ThemeProvider value={DarkTheme}>
-      <AuthProvider>
-        <Stack>
-          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-          <Stack.Screen name="+not-found" />
-        </Stack>
-      </AuthProvider>
-    </ThemeProvider>
+    <Provider store={store}>
+      {/*<ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>*/}
+      <ThemeProvider value={DarkTheme}>
+        <AuthProvider>
+          <AsyncChannelWrapper/>
+          <Stack>
+            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+            <Stack.Screen name="+not-found" />
+          </Stack>
+        </AuthProvider>
+      </ThemeProvider>
+    </Provider>
   );
 }
