@@ -6,6 +6,7 @@ import identityServiceAPI, { IDENTITY_API_BASE_URL } from "../data/api/identityS
 import * as WebBrowser from 'expo-web-browser';
 import { makeRedirectUri, ResponseType, useAuthRequest, useAutoDiscovery } from 'expo-auth-session';
 import * as AuthSession from 'expo-auth-session';
+import { usePostHog } from "posthog-react-native";
 
 const defaultAuthState = {
     isLoggedIn: false,
@@ -47,6 +48,7 @@ export const AuthProvider = ({
 }) => {
   const [authState, setAuthState] = useState(defaultAuthState);
   const discovery = useAutoDiscovery(authConfig.issuer);
+  const posthog = usePostHog();
 
   const [request, response, promptAsync] = useAuthRequest(
     {
@@ -85,6 +87,8 @@ export const AuthProvider = ({
           setAuthState({
             ...newAuthState
           });
+          console.log("doing posthog identify with username",newAuthState.userInfo.preferred_username,"email",newAuthState.userInfo.email);
+          posthog.identify(newAuthState.userInfo.preferred_username, { email: newAuthState.userInfo.email });
         } catch (error) {
           console.error(error);
         }
@@ -160,6 +164,7 @@ export const AuthProvider = ({
       setAuthState({
         ...defaultAuthState
       });
+      posthog.reset();
     }
     /*await revoke(authConfig, {
       tokenToRevoke: authState.accessToken

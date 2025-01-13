@@ -16,6 +16,7 @@
     "mdi-react": "^7.4.0",
     "oidc-client-ts": "^3.0.1",
     "polished": "^4.0.5",
+    "posthog-js": "^1.194.3",
     "prop-types": "^15.7.2",
     "react": "^17.0.1",
     "react-bootstrap": "^2.7.1",

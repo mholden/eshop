@@ -24,6 +24,8 @@ import { AuthProvider } from 'react-oidc-context';
 import { WebStorageStateStore } from 'oidc-client-ts';
 import Orders from '../../pages/Orders';
 import BackEndServiceLocations from '../../utils/backEndServiceLocations';
+import { PostHogProvider} from 'posthog-js/react'
+import posthog from 'posthog-js';
 
 const ThemeComponent = ({
   children, 
@@ -76,6 +78,10 @@ const oidcConfig = {
   redirect_uri: "http://localhost:3000",
   post_logout_redirect_uri: "http://localhost:3000",
   userStore: new WebStorageStateStore({ store: window.localStorage }),
+  onSigninCallback: (user) => {
+    console.log("onSigninCallback() user",user,"username",user.profile.preferred_username);
+    posthog.identify(user.profile.preferred_username, { email: user.profile.email });
+  }
   // ...
 };
 
@@ -84,6 +90,12 @@ function App() {
     <Provider store={store}>
       <AuthProvider {...oidcConfig}>
         <StompSessionProvider url={BackEndServiceLocations.getLocation("NOTIFICATION_SERVICE") + "/notification/ws"}>
+        <PostHogProvider 
+          apiKey={"phc_HFRqZBvNP1mbB249aF3LEPfQquwlBW9WHfwzsS5kT0e"}
+          options={{
+            api_host: "https://us.i.posthog.com",
+          }}
+        >
           <AsyncChannel/>
           <BrowserRouter>
               <ConnectedThemeComponent>
@@ -98,6 +110,7 @@ function App() {
                 </ContainerWrap>
               </ConnectedThemeComponent>
           </BrowserRouter>
+          </PostHogProvider>
         </StompSessionProvider>
       </AuthProvider>
     </Provider>

@@ -16,9 +16,9 @@
       "supportsTablet": true,
       "bundleIdentifier": "com.hldn.eshop",
       "infoPlist": {
-          "NSAppTransportSecurity": {
-              "NSAllowsArbitraryLoads": true 
-          }
+        "NSAppTransportSecurity": {
+          "NSAllowsArbitraryLoads": true
+        }
       }
     },
     "android": {
@@ -42,7 +42,8 @@
             "usesCleartextTraffic": true
           }
         }
-      ]
+      ],
+      "expo-localization"
     ],
     "experiments": {
       "typedRoutes": true

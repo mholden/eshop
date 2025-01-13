@@ -8,6 +8,7 @@ import { AuthProvider } from '@/hooks/AuthProvider'
 import store from '@/data/redux/store';
 import { Provider } from 'react-redux';
 import AsyncChannelWrapper from '@/data/api/AsyncChannelWrapper';
+import { PostHogProvider } from 'posthog-react-native'
 
 import { useColorScheme } from '@/hooks/useColorScheme';
 
@@ -34,13 +35,26 @@ export default function RootLayout() {
     <Provider store={store}>
       {/*<ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>*/}
       <ThemeProvider value={DarkTheme}>
-        <AuthProvider>
-          <AsyncChannelWrapper/>
-          <Stack>
-            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-            <Stack.Screen name="+not-found" />
-          </Stack>
-        </AuthProvider>
+        <PostHogProvider 
+          apiKey={"phc_HFRqZBvNP1mbB249aF3LEPfQquwlBW9WHfwzsS5kT0e"} 
+          options={{
+            host: 'https://us.i.posthog.com', 
+            enableSessionReplay: true,
+            sessionReplayConfig: { // https://posthog.com/docs/session-replay/_snippets/react-native-installation
+              maskAllTextInputs: false,
+              maskAllImages: false,
+              maskAllSandboxedViews: false,
+            },
+          }}
+        > 
+          <AuthProvider>
+            <AsyncChannelWrapper/>
+            <Stack>
+              <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+              <Stack.Screen name="+not-found" />
+            </Stack>
+          </AuthProvider>
+        </PostHogProvider>
       </ThemeProvider>
     </Provider>
   );

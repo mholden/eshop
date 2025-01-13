@@ -1,5 +1,5 @@
 
-const env = "DEV";
+const env = "LOCAL";
 
 export default class BackEndServiceLocations {
 
