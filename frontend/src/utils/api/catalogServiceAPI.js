@@ -12,7 +12,7 @@ const catalogServiceAPI = {
     if (pageIndex != null && pageSize != null) {
       urlSuffix = "?pageIndex=" + pageIndex + "&pageSize=" + pageSize;
     }
-    console.log("getCatalogItems() pageIndex",pageIndex,"pageSize",pageSize,"urlSuffix",urlSuffix);
+    //console.log("getCatalogItems() pageIndex",pageIndex,"pageSize",pageSize,"urlSuffix",urlSuffix);
     const catalogResponse = await get(CATALOG_API_BASE_URL + "/items" + urlSuffix);
 
     urlSuffix = ""; // reset this

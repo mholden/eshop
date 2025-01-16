@@ -79,7 +79,7 @@ const oidcConfig = {
   post_logout_redirect_uri: "http://localhost:3000",
   userStore: new WebStorageStateStore({ store: window.localStorage }),
   onSigninCallback: (user) => {
-    console.log("onSigninCallback() user",user,"username",user.profile.preferred_username);
+    //console.log("onSigninCallback() user",user,"username",user.profile.preferred_username);
     posthog.identify(user.profile.preferred_username, { email: user.profile.email });
   }
   // ...
@@ -110,7 +110,7 @@ function App() {
                 </ContainerWrap>
               </ConnectedThemeComponent>
           </BrowserRouter>
-          </PostHogProvider>
+        </PostHogProvider>
         </StompSessionProvider>
       </AuthProvider>
     </Provider>
