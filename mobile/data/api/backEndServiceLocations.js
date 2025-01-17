@@ -1,5 +1,6 @@
 
 const env = "LOCAL";
+const IP = "10.0.0.43"
 
 export default class BackEndServiceLocations {
 
@@ -11,7 +12,7 @@ export default class BackEndServiceLocations {
             case "CONTENT_SERVICE":
                 switch (env) {
                     case "LOCAL": 
-                        return "http://localhost:8080";
+                        return "http://" + IP + ":8080";
                     case "DEV": 
                         return "http://eshop.hldn.live:8080";
                     default:
@@ -21,7 +22,7 @@ export default class BackEndServiceLocations {
             case "NOTIFICATION_SERVICE":
                 switch (env) {
                     case "LOCAL": 
-                        return "ws://localhost:8080";
+                        return "ws://" + IP + ":8080";
                     case "DEV": 
                         return "ws://eshop.hldn.live:8080";
                     default:
@@ -31,7 +32,7 @@ export default class BackEndServiceLocations {
             case "IDENTITY_SERVICE":
                 switch (env) {
                     case "LOCAL": 
-                        return "http://docker.for.mac.localhost:8090";
+                        return "http://" + IP + ":8090";
                     case "DEV": 
                         return "https://eshop.hldn.live:8543";
                     default:

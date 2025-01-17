@@ -80,7 +80,7 @@ const oidcConfig = {
   userStore: new WebStorageStateStore({ store: window.localStorage }),
   onSigninCallback: (user) => {
     //console.log("onSigninCallback() user",user,"username",user.profile.preferred_username);
-    posthog.identify(user.profile.preferred_username, { email: user.profile.email });
+    //posthog.identify(user.profile.preferred_username, { email: user.profile.email });
   }
   // ...
 };
@@ -90,12 +90,12 @@ function App() {
     <Provider store={store}>
       <AuthProvider {...oidcConfig}>
         <StompSessionProvider url={BackEndServiceLocations.getLocation("NOTIFICATION_SERVICE") + "/notification/ws"}>
-        <PostHogProvider 
+        {/*<PostHogProvider 
           apiKey={"phc_HFRqZBvNP1mbB249aF3LEPfQquwlBW9WHfwzsS5kT0e"}
           options={{
             api_host: "https://us.i.posthog.com",
           }}
-        >
+        >*/}
           <AsyncChannel/>
           <BrowserRouter>
               <ConnectedThemeComponent>
@@ -110,7 +110,7 @@ function App() {
                 </ContainerWrap>
               </ConnectedThemeComponent>
           </BrowserRouter>
-        </PostHogProvider>
+        {/*</PostHogProvider>*/}
         </StompSessionProvider>
       </AuthProvider>
     </Provider>

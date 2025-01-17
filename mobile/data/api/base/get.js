@@ -7,7 +7,7 @@ const get = async (url, params) => {
     //console.log("get() response:", response.data);
     return response;
   } catch (e) {
-    console.log("get() exception:", e);
+    console.log("get() exception:", e.toJSON());
     if (!e || !e.response || e.response.status !== 401) throw e;
     localStorage.setItem('url', `${window.location.pathname}${window.location.search}`);
     try {

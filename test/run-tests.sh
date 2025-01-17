@@ -22,119 +22,134 @@ function sleepWithUpdate() {
 	echo -ne "\033[1K\r"
 }
 
+function testBackEnd() {
+	cd "$REPO_DIR/backend/tools/test_eshop/TestEShop"
+
+  echo "building back end tests..."
+  mvn -DskipTests clean package
+
+  echo "running back end tests..."
+  java -jar target/test-eshop-0.0.1-SNAPSHOT.jar -q
+}
+
+function testWeb() {
+	cd "$REPO_DIR/frontend"
+
+	ENV=LOCAL
+  sed -E -i '' "s|(env = ).*|\1\"${ENV}\";|g" src/utils/backEndServiceLocations.js
+
+  echo "starting front end..."
+  BROWSER=none npm run start > /tmp/frontend.logs 2>&1 &
+
+  sleepWithUpdate 10
+
+  echo "running front end tests..."
+  npx playwright test --reporter=dot --workers 3
+
+  echo "killing front end..."
+  ps aux | grep -aE 'hldn_eshop.*frontend' | grep -v grep | awk '{print $2}' | xargs kill
+}
+
+function startBackEnd() {
+	restartDocker
+
+	cd $REPO_DIR
+
+	frontend=$1
+	case $frontend in
+    "web")
+			cp .env.local.web .env
+      ;;
+    "mobile")
+			IP=`ifconfig -l | xargs -n1 ipconfig getifaddr`
+			sed -E -i '' "s|(.*http://).*(:8090.*)|\1${IP}\2|g" .env.local.mobile
+			cp .env.local.mobile .env
+      ;;
+  esac
+
+  # start up the back end
+  echo "starting the back end..."
+  docker-compose up > /tmp/backend.logs 2>&1 &
+	sleepWithUpdate 30
+}
+
+function stopBackEnd() {
+	cd $REPO_DIR
+	echo "stopping the back end..."
+  docker-compose stop
+}
+
 ############################################################################################################
 #################################### test back end and web #################################################
 ############################################################################################################
 
 function testBackEndAndWeb() {
-	restartDocker
-
-	cd $REPO_DIR
-
-	# set ip in .env file to docker.for.mac.localhost
-	IP="docker.for.mac.localhost"
-	sed -E -i '' "s|(ESHOP_EXTERNAL_DNS_NAME_OR_IP=).*|\1${IP}|g" .env
-
-	# start up the back end
-	echo "starting the back end with ip ${IP}..."
-	docker-compose up > /tmp/backend.logs 2>&1 &
-
-	sleepWithUpdate 30
-
-	cd "$REPO_DIR/backend/tools/test_eshop/TestEShop"
-
-	echo "building back end tests..."
-	mvn -DskipTests clean package
-
-	echo "running back end tests..."
-	java -jar target/test-eshop-0.0.1-SNAPSHOT.jar -q
-
-	cd "$REPO_DIR/frontend"
-
-	echo "starting front end..."
-	BROWSER=none npm run start > /tmp/frontend.logs 2>&1 &
-
-	sleepWithUpdate 10
-
-	echo "running front end tests..."
-	npx playwright test --reporter=dot
-
-	echo "killing front end..."
-	ps aux | grep -aE 'hldn_eshop.*frontend' | grep -v grep | awk '{print $2}' | xargs kill
-
-	echo "stopping the back end..."
-	docker-compose stop
+	startBackEnd "web"
+	testBackEnd
+	testWeb
+	stopBackEnd
 }
 
 ############################################################################################################
 ######################################## test mobile #######################################################
 ############################################################################################################
 
-MOBILE_REPO_DIR=~/devel/mobile_tests/AwesomeProject
+MOBILE_SLEEP_TIME=60
 
 function testIOS() {
-	echo "starting ios..."
-	npx expo run:ios > /tmp/ios.logs 2>&1 &
-	PID=$!
+  echo "starting ios..."
+  npx expo run:ios --configuration Release > /tmp/ios.logs 2>&1 &
+  PID=$!
 
-	sleepWithUpdate 45
+  sleepWithUpdate ${MOBILE_SLEEP_TIME}
 
-	echo "running mobile tests on ios..."
-	maestro test tests/
+  echo "running mobile tests on ios..."
+  maestro test tests/
 
-	echo "killing ios (pid $PID)..."
-	pkill -P $PID
-	kill $PID
-	xcrun simctl shutdown all # kill the ios simulator, too
+  echo "killing ios (pid $PID)..."
+  pkill -P $PID
+  kill $PID
+  xcrun simctl shutdown all # kill the ios simulator, too
 }
 
 function testAndroid() {
-	echo "starting android..."
-	npx expo run:android > /tmp/android.logs 2>&1 &
-	PID=$!
+  echo "starting android..."
+  npx expo run:android --variant release > /tmp/android.logs 2>&1 &
+  PID=$!
 
-	sleepWithUpdate 90
+  sleepWithUpdate ${MOBILE_SLEEP_TIME}
 
-	echo "running mobile tests on android..."
-	maestro test tests/
+  echo "running mobile tests on android..."
+  maestro test tests/
 
-	echo "killing android (pid $PID)..."
-	pkill -P $PID
-	kill $PID
-	adb emu kill # kill the android simulator, too
+  echo "killing android (pid $PID)..."
+  pkill -P $PID
+  kill $PID
+  adb emu kill # kill the android simulator, too
 }
 
 function testMobile() {
-	restartDocker
+	startBackEnd "mobile"
 
-	cd $REPO_DIR
+	cd "$REPO_DIR/mobile"
 
-	# get ip
-	#IP=`ipconfig getifaddr en0`
+	#rm -rf android/ ios/
+
+  # kick off an eas build TODO: somehow check its success?
+  #eas build --platform all --profile development --no-wait
+
+  ENV=LOCAL
+  sed -E -i '' "s|(env = ).*|\1\"${ENV}\";|g" data/api/backEndServiceLocations.js
+
+	# backEndServiceLocations
 	IP=`ifconfig -l | xargs -n1 ipconfig getifaddr`
+  sed -E -i '' "s|(IP = ).*|\1\"${IP}\"|g" data/api/backEndServiceLocations.js
 
-	# set ip in .env file
-	sed -E -i '' "s|(ESHOP_EXTERNAL_DNS_NAME_OR_IP=).*|\1${IP}|g" .env
+  testIOS
+  testAndroid
 
-	# start up the back end
-	echo "starting the back end with ip ${IP}..."
-	docker-compose up > /tmp/backend.logs 2>&1 &
-
-	sleepWithUpdate 30
-
-	cd $MOBILE_REPO_DIR
-
-	# set ip in IP.js file
-	sed -E -i '' "s|(IP = ).*|\1\"${IP}\"|g" data/api/IP.js
-
-	testIOS
-	testAndroid
-
-	cd $REPO_DIR
-
-	echo "stopping the back end..."
-	docker-compose stop
+	stopBackEnd
 }
 
-testBackEndAndWeb
+#testBackEndAndWeb
 testMobile
