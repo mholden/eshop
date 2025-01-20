@@ -1,6 +1,6 @@
 
 const env = "LOCAL";
-const IP = "10.0.0.43"
+const IP = "10.0.0.181"
 
 export default class BackEndServiceLocations {
 

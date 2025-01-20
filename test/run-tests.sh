@@ -61,7 +61,7 @@ function startBackEnd() {
 			cp .env.local.web .env
       ;;
     "mobile")
-			IP=`ifconfig -l | xargs -n1 ipconfig getifaddr`
+			IP=`route get default | xargs -n1 ipconfig getifaddr`
 			sed -E -i '' "s|(.*http://).*(:8090.*)|\1${IP}\2|g" .env.local.mobile
 			cp .env.local.mobile .env
       ;;
@@ -139,10 +139,8 @@ function testMobile() {
   #eas build --platform all --profile development --no-wait
 
   ENV=LOCAL
+  IP=`route get default | xargs -n1 ipconfig getifaddr`
   sed -E -i '' "s|(env = ).*|\1\"${ENV}\";|g" data/api/backEndServiceLocations.js
-
-	# backEndServiceLocations
-	IP=`ifconfig -l | xargs -n1 ipconfig getifaddr`
   sed -E -i '' "s|(IP = ).*|\1\"${IP}\"|g" data/api/backEndServiceLocations.js
 
   testIOS
@@ -151,5 +149,5 @@ function testMobile() {
 	stopBackEnd
 }
 
-#testBackEndAndWeb
+testBackEndAndWeb
 testMobile
